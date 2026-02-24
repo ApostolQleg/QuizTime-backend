@@ -85,9 +85,9 @@ export const register = async (request, reply) => {
 // Login logic
 export const login = async (request, reply) => {
 	try {
-		const { userLogin, password } = request.body;
+		const { login, password } = request.body;
 
-		const user = await User.findOne({ login: userLogin });
+		const user = await User.findOne({ login: login });
 
 		if (!user) return reply.code(404).send({ error: "User not found" });
 
@@ -140,7 +140,8 @@ export const googleAuth = async (request, reply) => {
 		}
 
 		const appToken = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
-		reply.send({ ok: true, user: user.toObject(), token: appToken });
+		const { passwordHash: _, ...userData } = user.toObject();
+		reply.send({ ok: true, user: userData, token: appToken });
 	} catch (error) {
 		console.error("Google Auth Error:", error);
 		reply.code(500).send({ error: "Google login failed" });
@@ -153,17 +154,15 @@ export const googleExtract = async (request, reply) => {
 		const { token } = request.body;
 
 		const payload = await verifyGoogleToken(token);
-		const { login, email, nickname, picture, sub } = payload;
+		const { email, picture, sub } = payload;
 
-		console.log("Searching for user with email:", email);
 		const existingUser = await User.findOne({ email });
-		console.log("Found user:", existingUser);
 
 		if (existingUser) {
 			return reply.code(409).send({ error: "User with this email already exists" });
 		}
 
-		reply.send({ ok: true, email, nickname, login, picture, googleId: sub });
+		reply.send({ ok: true, email, picture, googleId: sub });
 	} catch (error) {
 		console.error("Google Extract Error:", error);
 		reply.code(500).send({ error: "Invalid Google Token" });
