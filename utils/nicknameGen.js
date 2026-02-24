@@ -9,5 +9,3 @@ export function* generateNickname() {
         yield nickname;
     }
 }
-const nickname = generateNickname().next();
-console.log(nickname);
