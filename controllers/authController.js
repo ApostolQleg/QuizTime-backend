@@ -85,9 +85,9 @@ export const register = async (request, reply) => {
 // Login logic
 export const login = async (request, reply) => {
 	try {
-		const { login, password } = request.body;
+		const { userLogin, password } = request.body;
 
-		const user = await User.findOne({ login: login });
+		const user = await User.findOne({ login: userLogin });
 
 		if (!user) return reply.code(404).send({ error: "User not found" });
 
