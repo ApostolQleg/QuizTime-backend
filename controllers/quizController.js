@@ -33,7 +33,7 @@ export const getAllQuizzes = async (request, reply) => {
 			.skip(skip)
 			.limit(limit)
 			.select("id title description questions authorId")
-			.populate("authorId", "name avatarUrl avatarType themeColor");
+			.populate("authorId", "nickname avatarUrl avatarType themeColor");
 
 		const mappedQuizzes = quizzes.map((q) => {
 			const author = q.authorId || {};
@@ -46,7 +46,7 @@ export const getAllQuizzes = async (request, reply) => {
 				questionsCount: q.questions.length,
 
 				authorId: author._id || null,
-				authorName: author.name,
+				authorName: author.nickname,
 				authorAvatarUrl: author.avatarUrl,
 				authorAvatarType: author.avatarType,
 				authorThemeColor: author.themeColor,
@@ -79,7 +79,7 @@ export const createQuiz = async (request, reply) => {
 			description,
 			questions,
 			authorId: request.userId,
-			authorName: user.name,
+			authorName: user.nickname,
 		});
 		await quiz.save();
 		reply.code(201).send({ ok: true, quiz });
@@ -94,7 +94,7 @@ export const getQuizById = async (request, reply) => {
 	try {
 		const quiz = await Quiz.findOne({ id: request.params.id }).populate(
 			"authorId",
-			"name avatarUrl avatarType themeColor",
+			"nickname avatarUrl avatarType themeColor",
 		);
 
 		if (!quiz) return reply.code(404).send({ error: "Quiz not found" });
@@ -104,7 +104,7 @@ export const getQuizById = async (request, reply) => {
 		const responseQuiz = {
 			...quiz.toObject(),
 			authorId: author._id || null,
-			authorName: author.name,
+			authorName: author.nickname,
 			authorAvatarUrl: author.avatarUrl,
 			authorAvatarType: author.avatarType,
 			authorThemeColor: author.themeColor,
