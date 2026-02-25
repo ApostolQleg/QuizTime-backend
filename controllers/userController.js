@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import User from "../models/User.js";
 import Result from "../models/Result.js";
+import { generateNickname } from "../utils/nicknameGen.js";
 
 // Get current user logic
 export const getUser = async (request, reply) => {
@@ -105,5 +106,20 @@ export const deleteAccount = async (request, reply) => {
 	} catch (error) {
 		console.error("Delete account error:", error);
 		return reply.code(500).send({ error: "Failed to delete account" });
+	}
+};
+
+export const getNicknameArray = async (request, reply) => {
+	try {
+		const nicknameArray = [];
+		for (let i=0; i<15; i++) {
+			const nickname = generateNickname().next().value;
+			nicknameArray.push(nickname);
+		}
+
+		return reply.send( { ok: true, nicknames: nicknameArray } );
+	} catch (error) {
+		console.error("Get nickname array error:", error);
+		return reply.code(500).send({ error: "Failed to get nickname array" });
 	}
 };
