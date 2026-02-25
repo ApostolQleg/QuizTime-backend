@@ -2,21 +2,22 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import TempCode from "../models/TempCode.js";
+import { generateNickname } from "../utils/nicknameGen.js";
 import { verifyGoogleToken } from "../utils/googleClient.js";
 import { sendVerificationEmail } from "../utils/emailService.js";
 
 // Registration logic
 export const register = async (request, reply) => {
 	try {
-		const { name, email, password, avatarUrl, code, googleToken } = request.body;
+		const { login, email, password, avatarUrl, code, googleToken } = request.body;
 
-		if (!name || !email || !password) {
-			return reply.code(400).send({ error: "Nickname, email and password are required" });
+		if (!login || !email || !password) {
+			return reply.code(400).send({ error: "Login, email and password are required" });
 		}
 
-		const existingNick = await User.findOne({ name });
-		if (existingNick) {
-			return reply.code(409).send({ error: "Nickname already taken" });
+		const existingLogin = await User.findOne({ login });
+		if (existingLogin) {
+			return reply.code(409).send({ error: "Login already taken" });
 		}
 
 		const existingEmail = await User.findOne({ email });
@@ -25,6 +26,7 @@ export const register = async (request, reply) => {
 		}
 
 		let googleId = null;
+		let nickname = generateNickname().next().value;
 		let finalAvatarUrl = avatarUrl;
 
 		if (googleToken) {
@@ -61,8 +63,9 @@ export const register = async (request, reply) => {
 		const passwordHash = await bcrypt.hash(password, salt);
 
 		const user = new User({
-			name,
+			login,
 			email,
+			nickname,
 			passwordHash,
 			avatarUrl: finalAvatarUrl,
 			googleId,
@@ -84,7 +87,7 @@ export const login = async (request, reply) => {
 	try {
 		const { login, password } = request.body;
 
-		const user = await User.findOne({ name: login });
+		const user = await User.findOne({ login: login });
 
 		if (!user) return reply.code(404).send({ error: "User not found" });
 
@@ -116,6 +119,11 @@ export const googleAuth = async (request, reply) => {
 
 		let hasChanges = false;
 
+		if (!user.nickname) {
+			user.nickname = generateNickname().next().value;
+			hasChanges = true;
+		}
+
 		if (!user.googleId) {
 			user.googleId = sub;
 			hasChanges = true;
@@ -132,7 +140,8 @@ export const googleAuth = async (request, reply) => {
 		}
 
 		const appToken = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
-		reply.send({ ok: true, user: user.toObject(), token: appToken });
+		const { passwordHash: _, ...userData } = user.toObject();
+		reply.send({ ok: true, user: userData, token: appToken });
 	} catch (error) {
 		console.error("Google Auth Error:", error);
 		reply.code(500).send({ error: "Google login failed" });
@@ -145,17 +154,15 @@ export const googleExtract = async (request, reply) => {
 		const { token } = request.body;
 
 		const payload = await verifyGoogleToken(token);
-		const { name, email, picture, sub } = payload;
+		const { email, picture, sub } = payload;
 
-		console.log("Searching for user with email:", email);
 		const existingUser = await User.findOne({ email });
-		console.log("Found user:", existingUser);
 
 		if (existingUser) {
 			return reply.code(409).send({ error: "User with this email already exists" });
 		}
 
-		reply.send({ ok: true, email, name, picture, googleId: sub });
+		reply.send({ ok: true, email, picture, googleId: sub });
 	} catch (error) {
 		console.error("Google Extract Error:", error);
 		reply.code(500).send({ error: "Invalid Google Token" });

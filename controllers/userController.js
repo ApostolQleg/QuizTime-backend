@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import User from "../models/User.js";
 import Result from "../models/Result.js";
+import { generateNickname } from "../utils/nicknameGen.js";
 
 // Get current user logic
 export const getUser = async (request, reply) => {
@@ -15,8 +16,9 @@ export const getUser = async (request, reply) => {
 			ok: true,
 			user: {
 				_id: user._id,
-				name: user.name,
+				login: user.login,
 				email: user.email,
+				nickname: user.nickname,
 				avatarUrl: user.avatarUrl,
 				themeColor: user.themeColor,
 				avatarType: user.avatarType,
@@ -62,7 +64,7 @@ export const changePassword = async (request, reply) => {
 // Profile update logic
 export const updateProfile = async (request, reply) => {
 	try {
-		const { name, themeColor, avatarType } = request.body;
+		const { login, nickname, themeColor, avatarType } = request.body;
 
 		const user = await User.findById(request.userId);
 
@@ -70,7 +72,8 @@ export const updateProfile = async (request, reply) => {
 			return reply.code(404).send({ error: "User not found" });
 		}
 
-		if (name) user.name = name;
+		if (login) user.login = login;
+		if (nickname) user.nickname = nickname;
 		if (themeColor) user.themeColor = themeColor;
 		if (avatarType) user.avatarType = avatarType;
 
@@ -103,5 +106,20 @@ export const deleteAccount = async (request, reply) => {
 	} catch (error) {
 		console.error("Delete account error:", error);
 		return reply.code(500).send({ error: "Failed to delete account" });
+	}
+};
+
+export const getNicknameArray = async (request, reply) => {
+	try {
+		const nicknameArray = [];
+		for (let i=0; i<15; i++) {
+			const nickname = generateNickname().next().value;
+			nicknameArray.push(nickname);
+		}
+
+		return reply.send( { ok: true, nicknames: nicknameArray } );
+	} catch (error) {
+		console.error("Get nickname array error:", error);
+		return reply.code(500).send({ error: "Failed to get nickname array" });
 	}
 };
