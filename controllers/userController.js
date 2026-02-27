@@ -123,9 +123,9 @@ export const getNicknameArray = async (request, reply) => {
 		while (!isUnique) {
 			const lastNickname = iterator.next().value;
 			const isTaken = await User.exists({ nickname: lastNickname });
+			nicknameArray.push(lastNickname);
 
 			if (!isTaken) {
-				nicknameArray.push(lastNickname);
 				isUnique = true;
 			}
 		}
