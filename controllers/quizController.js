@@ -20,7 +20,7 @@ export const getAllQuizzes = async (request, reply) => {
 	try {
 		await checkAndSeedDatabase();
 
-		const limit = parseInt(request.query.limit);
+		const limit = parseInt(request.query.limit) || 10;
 		let skip = parseInt(request.query.skip);
 
 		if (isNaN(skip)) {
@@ -28,7 +28,17 @@ export const getAllQuizzes = async (request, reply) => {
 			skip = (page - 1) * limit;
 		}
 
-		const quizzes = await Quiz.find()
+		const search = request.query.search || "";
+		const filter = search
+			? {
+					$or: [
+						{ title: { $regex: search, $options: "i" } },
+						{ description: { $regex: search, $options: "i" } },
+					],
+				}
+			: {};
+
+		const quizzes = await Quiz.find(filter)
 			.sort({ _id: -1 })
 			.skip(skip)
 			.limit(limit)
