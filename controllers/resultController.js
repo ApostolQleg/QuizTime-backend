@@ -14,11 +14,11 @@ export const getUserResults = async (request, reply) => {
 		const search = request.query.search || "";
 		const filter = {
 			userId: request.userId,
-			...(search && {
-				$or: [{ quizTitle: { $regex: search, $options: "i" } }],
-			}),
 		};
 
+		if (search) {
+			filter.quizTitle = { $regex: search, $options: "i" };
+		}
 		const results = await Result.find(filter)
 			.select("-questions")
 			.sort({ createdAt: -1 })
