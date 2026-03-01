@@ -11,7 +11,15 @@ export const getUserResults = async (request, reply) => {
 		const limit = parseInt(request.query.limit) || 36;
 		const skip = parseInt(request.query.skip) || 0;
 
-		const results = await Result.find({ userId: request.userId })
+		const search = request.query.search || "";
+		const filter = {
+			userId: request.userId,
+			...(search && {
+				$or: [{ quizTitle: { $regex: search, $options: "i" } }],
+			}),
+		};
+
+		const results = await Result.find(filter)
 			.select("-questions")
 			.sort({ createdAt: -1 })
 			.skip(skip)
