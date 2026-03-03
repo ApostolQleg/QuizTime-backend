@@ -29,6 +29,8 @@ export const getAllQuizzes = async (request, reply) => {
 		}
 
 		const search = request.query.search || "";
+		const sortParam = request.query.sort || "newest";
+
 		const filter = search
 			? {
 					$or: [
@@ -38,8 +40,14 @@ export const getAllQuizzes = async (request, reply) => {
 				}
 			: {};
 
+		let sortQuery = { _id: -1 };
+		if (sortParam === "oldest") sortQuery = { _id: 1 };
+		else if (sortParam === "az") sortQuery = { title: 1, _id: 1 };
+		else if (sortParam === "za") sortQuery = { title: -1, _id: -1 };
+
 		const quizzes = await Quiz.find(filter)
-			.sort({ _id: -1 })
+			.collation({ locale: "uk", strength: 2 })
+			.sort(sortQuery)
 			.skip(skip)
 			.limit(limit)
 			.select("id title description questions authorId")
