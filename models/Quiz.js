@@ -11,6 +11,7 @@ const quizSchema = new mongoose.Schema(
 			ref: "User",
 		},
 		authorName: String,
+		createdAt: { type: Date, default: Date.now, index: true },
 	},
 	{ versionKey: false },
 );
