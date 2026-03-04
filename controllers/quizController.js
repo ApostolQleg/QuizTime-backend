@@ -40,17 +40,17 @@ export const getAllQuizzes = async (request, reply) => {
 				}
 			: {};
 
-		let sortQuery = { _id: -1 };
-		if (sortParam === "oldest") sortQuery = { _id: 1 };
-		else if (sortParam === "az") sortQuery = { title: 1, _id: 1 };
-		else if (sortParam === "za") sortQuery = { title: -1, _id: -1 };
+		let sortQuery = { createdAt: -1 };
+		if (sortParam === "oldest") sortQuery = { createdAt: 1 };
+		else if (sortParam === "az") sortQuery = { title: 1, createdAt: 1 };
+		else if (sortParam === "za") sortQuery = { title: -1, createdAt: -1 };
 
 		const quizzes = await Quiz.find(filter)
 			.collation({ locale: "uk", strength: 2 })
 			.sort(sortQuery)
 			.skip(skip)
 			.limit(limit)
-			.select("id title description questions authorId")
+			.select("id title description questions authorId createdAt")
 			.populate("authorId", "nickname avatarUrl avatarType themeColor");
 
 		const mappedQuizzes = quizzes.map((q) => {
