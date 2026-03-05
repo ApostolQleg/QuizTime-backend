@@ -4,7 +4,6 @@ const resultSchema = new mongoose.Schema(
 	{
 		quizId: { type: String, required: true, index: true },
 		quizTitle: { type: String, required: true },
-		timestamp: { type: Number, required: true },
 		summary: {
 			score: Number,
 			correct: Number,
