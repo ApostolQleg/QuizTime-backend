@@ -42,7 +42,7 @@ export const getAllQuizzes = async (request, reply) => {
 
 		let sortQuery = { createdAt: -1 };
 		if (sortParam === "oldest") sortQuery = { createdAt: 1 };
-		else if (sortParam === "az") sortQuery = { title: 1, createdAt: 1 };
+		else if (sortParam === "az") sortQuery = { title: 1, createdAt: -1 };
 		else if (sortParam === "za") sortQuery = { title: -1, createdAt: -1 };
 
 		const quizzes = await Quiz.find(filter)

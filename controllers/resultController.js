@@ -12,16 +12,23 @@ export const getUserResults = async (request, reply) => {
 		const skip = parseInt(request.query.skip) || 0;
 
 		const search = request.query.search || "";
+		const sortParam = request.query.sort || "newest";
+
 		const filter = {
 			userId: request.userId,
 		};
+
+		let sortQuery = { createdAt: -1 };
+		if (sortParam === "oldest") sortQuery = { createdAt: 1 };
+		else if (sortParam === "az") sortQuery = { quizTitle: 1, createdAt: -1 };
+		else if (sortParam === "za") sortQuery = { quizTitle: -1, createdAt: -1 };
 
 		if (search) {
 			filter.quizTitle = { $regex: search, $options: "i" };
 		}
 		const results = await Result.find(filter)
 			.select("-questions")
-			.sort({ createdAt: -1 })
+			.sort(sortQuery)
 			.skip(skip)
 			.limit(limit)
 			.lean();
