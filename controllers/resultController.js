@@ -20,7 +20,7 @@ export const getUserResults = async (request, reply) => {
 
 		let sortQuery = { createdAt: -1 };
 		if (sortParam === "oldest") sortQuery = { createdAt: 1 };
-		else if (sortParam === "az") sortQuery = { quizTitle: 1, createdAt: 1 };
+		else if (sortParam === "az") sortQuery = { quizTitle: 1, createdAt: -1 };
 		else if (sortParam === "za") sortQuery = { quizTitle: -1, createdAt: -1 };
 
 		if (search) {
