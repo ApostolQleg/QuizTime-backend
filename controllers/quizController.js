@@ -30,15 +30,17 @@ export const getAllQuizzes = async (request, reply) => {
 
 		const search = request.query.search || "";
 		const sortParam = request.query.sort || "newest";
+		const authorId = request.query.authorId || "";
 
-		const filter = search
-			? {
-					$or: [
-						{ title: { $regex: search, $options: "i" } },
-						{ description: { $regex: search, $options: "i" } },
-					],
-				}
-			: {};
+		let filter = {};
+		if (search || authorId) {
+			filter = {
+				$and: [
+					{title: { $regex: search, $options: "i" }},
+					{authorId: authorId}
+				]
+			}
+		}
 
 		let sortQuery = { createdAt: -1 };
 		if (sortParam === "oldest") sortQuery = { createdAt: 1 };
