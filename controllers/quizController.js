@@ -33,17 +33,11 @@ export const getAllQuizzes = async (request, reply) => {
 		const authorId = request.query.authorId || "";
 
 		let filter = {};
-		if (search && authorId) {
-			filter = {
-				$and: [
-					{ title: { $regex: search, $options: "i" } },
-					{ authorId: authorId }
-				]
-			};
-		} else if (search) {
-			filter = { title: { $regex: search, $options: "i" } };
-		} else if (authorId) {
-			filter = { authorId: authorId };
+		if (search) {
+			filter.title = { $regex: search, $options: "i" };
+		}
+		if (authorId) {
+			filter.authorId = authorId;
 		}
 
 		let sortQuery = { createdAt: -1 };
