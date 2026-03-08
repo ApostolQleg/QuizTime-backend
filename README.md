@@ -26,7 +26,7 @@ The RESTful API backend for the QuizTime application. It handles user authentica
 ## 🛠️ Tech Stack
 
 - **Runtime:** Node.js
-- **Framework:** Express.js
+- **Framework:** Fastify
 - **Database:** MongoDB (via Mongoose)
 - **Authentication:** JWT, Google Auth Library
 - **Security:** CORS, bcrypt
@@ -62,6 +62,7 @@ The RESTful API backend for the QuizTime application. It handles user authentica
     EMAIL_USER=your_email_for_sending_codes
     EMAIL_PASS=your_email_password
     GOOGLE_CLIENT_ID=your_google_client_id
+    AUTHOR_ID=your_userId_on_the_website
     ```
 
 4.  Start the server:
@@ -87,12 +88,12 @@ The RESTful API backend for the QuizTime application. It handles user authentica
 
 - **Oleg Bondarenko** - _Lead Developer_
     - National Technical University of Ukraine "Igor Sikorsky Kyiv Polytechnic Institute"
-    - Faculty of Informatics and Computer Engineering (FIOT)
+    - Faculty of Informatics and Computer Engineering (FICE)
     - Group: **IM-54**
     
 - **dimpennn** - _Partner Developer_
     - National Technical University of Ukraine "Igor Sikorsky Kyiv Polytechnic Institute"
-    - Faculty of Informatics and Computer Engineering (FIOT)
+    - Faculty of Informatics and Computer Engineering (FICE)
     - Group: **IM-54**
 
 ## 📄 License
