@@ -9,12 +9,16 @@ import {
 import { checkAuth } from "../middleware/checkAuth.js";
 
 export default async function userRoutes(fastify) {
-	fastify.addHook("preHandler", checkAuth);
-
-	fastify.get("/", getUser);
+	// public routes
 	fastify.get("/users/:id", getUserById);
-	fastify.put("/update", updateProfile);
-	fastify.post("/password", changePassword);
-	fastify.delete("/delete", deleteAccount);
-	fastify.get("/nickname", getNicknameArray);
+
+	// protected routes
+	fastify.register(async function (protectedRoutes) {
+		protectedRoutes.addHook("preHandler", checkAuth);
+		protectedRoutes.get("/", getUser);
+		protectedRoutes.put("/update", updateProfile);
+		protectedRoutes.post("/password", changePassword);
+		protectedRoutes.delete("/delete", deleteAccount);
+		protectedRoutes.get("/nickname", getNicknameArray);
+	});
 }
