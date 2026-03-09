@@ -10,7 +10,7 @@ import { checkAuth } from "../middleware/checkAuth.js";
 
 export default async function userRoutes(fastify) {
 	// public routes
-	fastify.get("/users/:id", getUserById);
+	fastify.get("/:id", getUserById);
 
 	// protected routes
 	fastify.register(async function (protectedRoutes) {
