@@ -32,7 +32,7 @@ export const getUser = async (request, reply) => {
 
 export const getUserById = async (request, reply) => {
 	try {
-		const user = await User.findById(request.params.id);
+		const user = await User.findById(request.params.id).select("nickname avatarUrl themeColor avatarType");
 
 		if (!user) {
 			return reply.code(404).send({ error: "User not found" });
