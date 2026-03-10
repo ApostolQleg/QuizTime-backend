@@ -5,7 +5,7 @@ import {
 	deleteAccount,
 	getNicknameArray,
 	getUserById,
-} from "../controllers/userController.js";
+} from "../services/userService.js";
 import { checkAuth } from "../middleware/checkAuth.js";
 
 export default async function userRoutes(fastify) {

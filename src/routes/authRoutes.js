@@ -5,7 +5,7 @@ import {
 	googleExtract,
 	sendCode,
 	linkGoogle,
-} from "../controllers/authController.js";
+} from "../services/authService.js";
 import { checkAuth } from "../middleware/checkAuth.js";
 
 export default async function authRoutes(fastify) {

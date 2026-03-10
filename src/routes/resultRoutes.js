@@ -1,4 +1,4 @@
-import { getUserResults, saveResult, getResultById } from "../controllers/resultController.js";
+import { getUserResults, saveResult, getResultById } from "../services/resultService.js";
 import { checkAuth } from "../middleware/checkAuth.js";
 
 export default async function resultRoutes(fastify) {

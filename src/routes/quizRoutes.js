@@ -4,7 +4,7 @@ import {
 	getQuizById,
 	updateQuiz,
 	deleteQuiz,
-} from "../controllers/quizController.js";
+} from "../services/quizService.js";
 import { checkAuth } from "../middleware/checkAuth.js";
 
 export default async function quizRoutes(fastify) {
