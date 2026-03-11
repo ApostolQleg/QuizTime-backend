@@ -8,8 +8,8 @@
 		"start": "node src/index.js"
 	},
 	"keywords": [],
-	"author": "",
-	"license": "ISC",
+	"author": "ApostolQleg, dimpennn",
+	"license": "MIT",
 	"type": "module",
 	"dependencies": {
 		"@fastify/cors": "^11.2.0",
