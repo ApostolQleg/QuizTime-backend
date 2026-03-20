@@ -12,3 +12,6 @@ if (process.env.NODE_ENV !== "production") {
 		process.exit(1);
 	}
 }
+
+// Export handler for Vercel
+export { default } from "./app.js";
