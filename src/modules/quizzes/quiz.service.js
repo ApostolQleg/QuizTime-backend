@@ -1,6 +1,6 @@
-import Quiz from "../models/Quiz.js";
-import User from "../models/User.js";
-import { defaultQuizzes } from "../data/defaultQuizzes.js";
+import { Quiz } from "./index.js";
+import { User } from "../users/index.js";
+import { defaultQuizzes } from "../../data/defaultQuizzes.js";
 
 // seed database logic
 export const checkAndSeedDatabase = async () => {
