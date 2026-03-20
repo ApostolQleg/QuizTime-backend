@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
-import User from "../models/User.js";
-import Result from "../models/Result.js";
-import { generateNickname } from "../shared/utils/nicknameGen.js";
+import User from "./user.model.js";
+import Result from "../results/result.model.js";
+import { generateNickname } from "../../shared/utils/nicknameGen.js";
 
 // Get current user logic
 export const getUser = async (request, reply) => {

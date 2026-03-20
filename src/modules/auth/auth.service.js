@@ -1,10 +1,10 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import User from "../models/User.js";
-import TempCode from "../models/TempCode.js";
-import { generateNickname } from "../shared/utils/nicknameGen.js";
-import { verifyGoogleToken } from "../infrastructure/google/googleClient.js";
-import { sendVerificationEmail } from "../infrastructure/email/emailService.js";
+import User from "../users/user.model.js";
+import TempCode from "./temp-code.model.js";
+import { generateNickname } from "../../shared/utils/nicknameGen.js";
+import { verifyGoogleToken } from "../../infrastructure/google/googleClient.js";
+import { sendVerificationEmail } from "../../infrastructure/email/emailService.js";
 
 // Registration logic
 export const register = async (request, reply) => {

@@ -1,5 +1,5 @@
-import Result from "../models/Result.js";
-import Quiz from "../models/Quiz.js";
+import Result from "./result.model.js";
+import Quiz from "../quizzes/quiz.model.js";
 
 // User results getting logic
 export const getUserResults = async (request, reply) => {
