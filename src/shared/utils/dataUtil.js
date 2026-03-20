@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import "dotenv/config";
-import Quiz from "../../modules/quizzes/quiz.model.js";
-import Result from "../../modules/results/result.model.js";
+import { Quiz } from "../../modules/quizzes/index.js";
+import { Result } from "../../modules/results/index.js";
 import readline from "readline/promises";
 
 const AUTHOR_ID = process.env.AUTHOR_ID;

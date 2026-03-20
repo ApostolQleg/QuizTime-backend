@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
-import User from "./user.model.js";
-import Result from "../results/result.model.js";
+import { User } from "./index.js";
+import { Result } from "../results/index.js";
 import { generateNickname } from "../../shared/utils/nicknameGen.js";
 
 // Get current user logic

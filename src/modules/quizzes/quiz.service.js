@@ -1,5 +1,5 @@
-import Quiz from "./quiz.model.js";
-import User from "../users/user.model.js";
+import { Quiz } from "./index.js";
+import { User } from "../users/index.js";
 import { defaultQuizzes } from "../../data/defaultQuizzes.js";
 
 // seed database logic

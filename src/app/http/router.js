@@ -1,7 +1,7 @@
-import authRoutes from "../../modules/auth/auth.routes.js";
-import userRoutes from "../../modules/users/user.routes.js";
-import quizRoutes from "../../modules/quizzes/quiz.routes.js";
-import resultRoutes from "../../modules/results/result.routes.js";
+import { authRoutes } from "../../modules/auth/index.js";
+import { userRoutes } from "../../modules/users/index.js";
+import { quizRoutes } from "../../modules/quizzes/index.js";
+import { resultRoutes } from "../../modules/results/index.js";
 
 export default async function router(app, option) {
     // Health check route
