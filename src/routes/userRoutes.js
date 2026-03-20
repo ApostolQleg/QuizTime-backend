@@ -6,7 +6,7 @@ import {
 	getNicknameArray,
 	getUserById,
 } from "../services/userService.js";
-import { checkAuth } from "../middleware/checkAuth.js";
+import { checkAuth } from "../shared/middleware/checkAuth.js";
 
 export default async function userRoutes(fastify) {
 	// public routes

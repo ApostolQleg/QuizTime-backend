@@ -1,5 +1,5 @@
 import { getUserResults, saveResult, getResultById } from "../services/resultService.js";
-import { checkAuth } from "../middleware/checkAuth.js";
+import { checkAuth } from "../shared/middleware/checkAuth.js";
 
 export default async function resultRoutes(fastify) {
 	fastify.addHook("preHandler", checkAuth);

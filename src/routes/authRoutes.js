@@ -6,7 +6,7 @@ import {
 	sendCode,
 	linkGoogle,
 } from "../services/authService.js";
-import { checkAuth } from "../middleware/checkAuth.js";
+import { checkAuth } from "../shared/middleware/checkAuth.js";
 
 export default async function authRoutes(fastify) {
 	fastify.post("/register", register);

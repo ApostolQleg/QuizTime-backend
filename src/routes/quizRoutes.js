@@ -5,7 +5,7 @@ import {
 	updateQuiz,
 	deleteQuiz,
 } from "../services/quizService.js";
-import { checkAuth } from "../middleware/checkAuth.js";
+import { checkAuth } from "../shared/middleware/checkAuth.js";
 
 export default async function quizRoutes(fastify) {
 	// public routes
