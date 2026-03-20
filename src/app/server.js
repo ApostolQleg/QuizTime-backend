@@ -1,12 +1,12 @@
 import Fastify from "fastify";
 import cors from "@fastify/cors";
 import dotenv from "dotenv";
-import { connectToDatabase } from "./config/db.js";
+import { connectToDatabase } from "../config/db.js";
 
-import authRoutes from "./routes/authRoutes.js";
-import userRoutes from "./routes/userRoutes.js";
-import quizRoutes from "./routes/quizRoutes.js";
-import resultRoutes from "./routes/resultRoutes.js";
+import authRoutes from "../routes/authRoutes.js";
+import userRoutes from "../routes/userRoutes.js";
+import quizRoutes from "../routes/quizRoutes.js";
+import resultRoutes from "../routes/resultRoutes.js";
 
 dotenv.config();
 
