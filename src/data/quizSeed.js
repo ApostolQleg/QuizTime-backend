@@ -4,10 +4,10 @@ import { defaultQuizzes } from "./defaultQuizzes.js";
 export const seedQuizzesIfEmpty = async () => {
 	try {
 		if (Quiz.collection && typeof Quiz.collection.createIndex === "function") {
-			await QUiz.collection.createIndex({ id: 1 }, { unique: true });
+			await Quiz.collection.createIndex({ id: 1 }, { unique: true });
 		}
 	} catch (error) {
-		if (error.codename !== "IndexOptionsConflict" && error.code !== 85) {
+		if (error.codeName !== "IndexOptionsConflict" && error.code !== 85) {
 			throw error;
 		}
 	}
