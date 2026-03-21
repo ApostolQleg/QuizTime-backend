@@ -3,16 +3,15 @@ import { defaultQuizzes } from "./defaultQuizzes.js";
 
 export const seedQuizzesIfEmpty = async () => {
 	try {
-		if (Quiz.collection && typeof Quiz.collection.createIndex === "function"){
+		if (Quiz.collection && typeof Quiz.collection.createIndex === "function") {
 			await QUiz.collection.createIndex({ id: 1 }, { unique: true });
-			
 		}
-	} catch(error) {
-		if (error.codename !== "IndexOptionsConflict" && error.code !== 85){
+	} catch (error) {
+		if (error.codename !== "IndexOptionsConflict" && error.code !== 85) {
 			throw error;
-		}	
+		}
 	}
-	
+
 	const count = await Quiz.countDocuments();
 	if (count === 0) {
 		try {
@@ -22,4 +21,5 @@ export const seedQuizzesIfEmpty = async () => {
 				throw error;
 			}
 		}
+	}
 };
