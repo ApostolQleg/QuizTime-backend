@@ -1,25 +1,9 @@
 import { Quiz } from "./index.js";
 import { User } from "../users/index.js";
-import { defaultQuizzes } from "../../data/defaultQuizzes.js";
-
-// seed database logic
-export const checkAndSeedDatabase = async () => {
-	try {
-		const count = await Quiz.countDocuments();
-		if (count === 0) {
-			await Quiz.insertMany(defaultQuizzes.quizzes);
-			console.log("✅ Default quizzes seeded");
-		}
-	} catch (error) {
-		console.error("Seeding error:", error);
-	}
-};
 
 // Quiz getting logic with pagination
 export const getAllQuizzes = async (request, reply) => {
 	try {
-		await checkAndSeedDatabase();
-
 		const limit = parseInt(request.query.limit) || 10;
 		let skip = parseInt(request.query.skip);
 
