@@ -111,3 +111,77 @@ test("GET /api/results/:id only returns current user's result", async () => {
 	assert.equal(response.statusCode, 404);
 	assert.equal(response.json().error, "Result not found");
 });
+
+test("POST /api/results accepts answers as numeric array", async () => {
+	const user = await User.create({
+		login: "poster",
+		email: "poster@example.com",
+		nickname: "poster_nick",
+		passwordHash: "hash3",
+	});
+
+	const quiz = await Quiz.create({
+		id: "quiz-post-1",
+		title: "Posting Quiz",
+		description: "Post test",
+		questions: [{ q: "2+2?", options: ["3", "4"], answer: 1 }],
+		authorId: user._id,
+		authorName: "poster_nick",
+	});
+
+	const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
+
+	const response = await app.inject({
+		method: "POST",
+		url: "/api/results",
+		headers: {
+			authorization: `Bearer ${token}`,
+		},
+		payload: {
+			quizId: quiz.id,
+			answers: [1],
+			summary: { score: 1, correct: 1, total: 1 },
+			timestamp: new Date().toISOString(),
+		},
+	});
+
+	assert.equal(response.statusCode, 201);
+	assert.equal(response.json().ok, true);
+});
+
+test("POST /api/results accepts timestamp as unix milliseconds", async () => {
+	const user = await User.create({
+		login: "poster2",
+		email: "poster2@example.com",
+		nickname: "poster2_nick",
+		passwordHash: "hash4",
+	});
+
+	const quiz = await Quiz.create({
+		id: "quiz-post-2",
+		title: "Posting Quiz 2",
+		description: "Post test 2",
+		questions: [{ q: "2+3?", options: ["4", "5"], answer: 1 }],
+		authorId: user._id,
+		authorName: "poster2_nick",
+	});
+
+	const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
+
+	const response = await app.inject({
+		method: "POST",
+		url: "/api/results",
+		headers: {
+			authorization: `Bearer ${token}`,
+		},
+		payload: {
+			quizId: quiz.id,
+			answers: [1],
+			summary: { score: 1, correct: 1, total: 1 },
+			timestamp: Date.now(),
+		},
+	});
+
+	assert.equal(response.statusCode, 201);
+	assert.equal(response.json().ok, true);
+});

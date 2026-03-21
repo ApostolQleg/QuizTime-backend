@@ -50,8 +50,13 @@ export default async function resultRoutes(fastify) {
 					additionalProperties: false,
 					properties: {
 						quizId: { type: "string", minLength: 1, maxLength: 128 },
-						answers: { type: "array", minItems: 1, items: { type: "object" } },
-						timestamp: { type: "string", format: "date-time" },
+						answers: { type: "array", minItems: 1 },
+						timestamp: {
+							anyOf: [
+								{ type: "string", format: "date-time" },
+								{ type: "integer", minimum: 0 },
+							],
+						},
 						summary: {
 							type: "object",
 							required: ["score", "correct", "total"],
