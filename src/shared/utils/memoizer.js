@@ -3,7 +3,7 @@ export default class Memoizer {
         this.cache = new WeakMap();
     }
 
-    memoize(fn) {
+    memoize(fn, ttl = 30000) {
         return (...args) => {
             const key = JSON.stringify(args);
             let cache = this.cache.get(fn);
@@ -14,7 +14,6 @@ export default class Memoizer {
             }
 
             const accessTime = Date.now();
-            const ttl = 60000;
 
             if (cache.has(key)) {
                 const entry = cache.get(key);
