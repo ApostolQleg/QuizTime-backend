@@ -36,4 +36,19 @@ export default class Memoizer {
             return result;
         };
     }
+    clear(fn, ...args) {
+
+        const cache = this.cache.get(fn);
+        if (!cache) {
+            return;
+        }
+
+        if (args.length === 0) {
+            cache.clear();
+            return;
+        }
+
+        const key = JSON.stringify(args);
+        cache.delete(key);
+    }
 }
