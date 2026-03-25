@@ -157,7 +157,7 @@ export const updateQuiz = async (request, reply) => {
 			{ new: true },
 		);
 
-		clearQuizCache();
+		clearQuizCache(request.params.id);
 
 		reply.send({ ok: true, quiz: updatedQuiz });
 	} catch (error) {
