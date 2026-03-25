@@ -13,12 +13,21 @@ export default class Memoizer {
                 this.cache.set(fn, cache);
             }
 
+            const accessTime = Date.now();
+            const ttl = 60000;
+
             if (cache.has(key)) {
-                return cache.get(key).data;
+                const entry = cache.get(key);
+                const { data, timestamp } = entry;
+
+                if (accessTime - timestamp <= ttl) {
+                    return data;
+                }
+                cache.delete(key);
             }
 
             const result = fn(...args);
-            cache.set(key, { data: result });
+            cache.set(key, { data: result, timestamp: accessTime });
             return result;
         };
     }
