@@ -1,5 +1,19 @@
 import { Quiz } from "./index.js";
 import { User } from "../users/index.js";
+import Memoizer from "../../shared/utils/memoizer.js";
+
+const cache = new Memoizer();
+
+const findQuiz = async (id) => {
+	return await Quiz.findOne({ id: id}).populate(
+		"authorId",
+		"nickname avatarUrl avatarType themeColor",
+	);
+}
+
+const getCachedQuiz = cache.memoize(findQuiz);
+
+const clearQuizCache = () => cache.clear(findQuiz);
 
 // Quiz getting logic with pagination
 export const getAllQuizzes = async (request, reply) => {
@@ -94,10 +108,7 @@ export const createQuiz = async (request, reply) => {
 // Quiz fetching logic
 export const getQuizById = async (request, reply) => {
 	try {
-		const quiz = await Quiz.findOne({ id: request.params.id }).populate(
-			"authorId",
-			"nickname avatarUrl avatarType themeColor",
-		);
+		const quiz = await getCachedQuiz(request.params.id);
 
 		if (!quiz) return reply.code(404).send({ error: "Quiz not found" });
 
@@ -145,6 +156,9 @@ export const updateQuiz = async (request, reply) => {
 			{ $set: updates },
 			{ new: true },
 		);
+
+		clearQuizCache(request.params.id);
+
 		reply.send({ ok: true, quiz: updatedQuiz });
 	} catch (error) {
 		console.error("Update quiz error:", error);
