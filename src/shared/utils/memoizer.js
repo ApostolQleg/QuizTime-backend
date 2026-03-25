@@ -20,6 +20,8 @@ export default class Memoizer {
                 const { data, timestamp } = entry;
 
                 if (accessTime - timestamp <= ttl) {
+                    cache.delete(key);
+                    cache.set(key, entry);
                     return data;
                 }
                 cache.delete(key);
