@@ -13,6 +13,8 @@ const findQuiz = async (id) => {
 
 const getCachedQuiz = cache.memoize(findQuiz);
 
+const clearQuizCache = () => cache.clear(findQuiz);
+
 // Quiz getting logic with pagination
 export const getAllQuizzes = async (request, reply) => {
 	try {
