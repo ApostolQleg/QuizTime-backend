@@ -4,13 +4,15 @@ export default class Memoizer {
     }
 
     memoize(fn, ttl = 30000, capacity = 5) {
-        return (...args) => {
+        const that = this;
+
+        return function (...args) {
             const key = JSON.stringify(args);
-            let cache = this.cache.get(fn);
+            let cache = that.cache.get(fn);
 
             if (!cache) {
                 cache = new Map();
-                this.cache.set(fn, cache);
+                that.cache.set(fn, cache);
             }
 
             const accessTime = Date.now();
@@ -27,7 +29,7 @@ export default class Memoizer {
                 cache.delete(key);
             }
 
-            const result = fn(...args);
+            const result = fn.apply(this, args);
             if (cache.size >= capacity) {
                 const oldestKey = cache.keys().next().value;
                 cache.delete(oldestKey);
