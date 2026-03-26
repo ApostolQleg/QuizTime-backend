@@ -1,5 +1,5 @@
-import Result from "../models/Result.js";
-import Quiz from "../models/Quiz.js";
+import { Result } from "./index.js";
+import { Quiz } from "../quizzes/index.js";
 
 // User results getting logic
 export const getUserResults = async (request, reply) => {
@@ -47,13 +47,19 @@ export const saveResult = async (request, reply) => {
 		if (!quizId || !answers || !summary || !timestamp) {
 			return reply.code(400).send({ error: "Invalid payload" });
 		}
+
+		const normalizedTimestamp = new Date(timestamp);
+		if (Number.isNaN(normalizedTimestamp.getTime())) {
+			return reply.code(400).send({ error: "Invalid timestamp" });
+		}
+
 		const quiz = await Quiz.findOne({ id: String(quizId) }).lean();
 		if (!quiz) return reply.code(404).send({ error: "Quiz not found" });
 
 		const result = new Result({
 			quizId,
 			quizTitle: quiz.title,
-			timestamp,
+			timestamp: normalizedTimestamp,
 			summary,
 			answers,
 			questions: quiz.questions,
@@ -71,7 +77,10 @@ export const saveResult = async (request, reply) => {
 // Result fetching logic
 export const getResultById = async (request, reply) => {
 	try {
-		const result = await Result.findById(request.params.id).lean();
+		const result = await Result.findOne({
+			_id: request.params.id,
+			userId: request.userId,
+		}).lean();
 		if (!result) return reply.code(404).send({ error: "Result not found" });
 		reply.send(result);
 	} catch (error) {

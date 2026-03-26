@@ -56,44 +56,57 @@ Frontend project:
 |-- package.json
 |-- vercel.json
 `-- src/
-        |-- index.js
-        |-- config/
-        |   `-- db.js
+    |-- app/
+    |   |-- app.js
+    |   |-- server.js
+    |   `-- http/
+    |       `-- router.js
         |-- data/
         |   `-- defaultQuizzes.js
+    |   `-- quizSeed.js
+    |-- infrastructure/
+    |   |-- db/
+    |   |   `-- db.js
+    |   |-- email/
+    |   |   `-- emailService.js
+    |   `-- google/
+    |       `-- googleClient.js
+    |-- modules/
+    |   |-- auth/
+    |   |   |-- auth.routes.js
+    |   |   |-- auth.service.js
+    |   |   |-- index.js
+    |   |   `-- temp-code.model.js
+    |   |-- quizzes/
+    |   |   |-- index.js
+    |   |   |-- quiz.model.js
+    |   |   |-- quiz.routes.js
+    |   |   `-- quiz.service.js
+    |   |-- results/
+    |   |   |-- index.js
+    |   |   |-- result.model.js
+    |   |   |-- result.routes.js
+    |   |   `-- result.service.js
+    |   `-- users/
+    |       |-- index.js
+    |       |-- user.model.js
+    |       |-- user.routes.js
+    |       `-- user.service.js
+    `-- shared/
         |-- middleware/
         |   `-- checkAuth.js
-        |-- models/
-        |   |-- Quiz.js
-        |   |-- Result.js
-        |   |-- TempCode.js
-        |   `-- User.js
-        |-- routes/
-        |   |-- authRoutes.js
-        |   |-- quizRoutes.js
-        |   |-- resultRoutes.js
-        |   `-- userRoutes.js
-        |-- services/
-        |   |-- authService.js
-        |   |-- quizService.js
-        |   |-- resultService.js
-        |   `-- userService.js
         `-- utils/
-                |-- dataUtil.js
-                |-- emailService.js
-                |-- googleClient.js
-                `-- nicknameGen.js
+            |-- dataUtil.js
+            `-- nicknameGen.js
 ```
 
 ### Folder Responsibilities
 
-- src/routes: Fastify route registration and endpoint grouping
-- src/services: Business logic handlers for each route group
-- src/models: Mongoose schemas and model methods
-- src/middleware: Shared request guards (JWT auth)
-- src/config: Infrastructure setup (database connection)
-- src/data: Built-in seed data
-- src/utils: Third-party integration helpers and scripts
+- src/app: Fastify app bootstrap, local server startup, and root router
+- src/modules: Feature modules (routes + services + models + module exports)
+- src/infrastructure: External integrations (DB, Google, email)
+- src/shared: Shared middleware and utility helpers
+- src/data: Built-in seed data and seeding helpers
 
 ## Requirements
 
@@ -181,6 +194,8 @@ Important request notes:
 - `POST /auth/google`, `/auth/google-extract`, and `/auth/link-google` expect `{ token }`.
 - `POST /auth/send-code` expects `{ email }`.
 
+Rate limits are enabled for auth endpoints (stricter for `/auth/login` and `/auth/send-code`).
+
 ### Quiz Routes
 
 | Method   | Path               | Auth | Purpose                 |
@@ -250,7 +265,7 @@ All result routes are protected.
 
 ## Data Notes
 
-- Initial default quizzes are automatically inserted when the quizzes collection is empty.
+- Initial default quizzes are inserted during app startup when the quizzes collection is empty.
 - Email verification codes are stored in `temp_codes` and expire after 5 minutes (Mongo TTL).
 
 ## CORS
@@ -267,10 +282,11 @@ Allowed methods:
 
 ## Scripts
 
-| Command     | Description                                          |
-| ----------- | ---------------------------------------------------- |
-| `npm start` | Start backend (`node src/index.js`)                  |
-| `npm test`  | Placeholder test script (currently exits with error) |
+| Command              | Description                                     |
+| -------------------- | ----------------------------------------------- |
+| `npm start`          | Start backend (`node src/app/server.js`)        |
+| `npm test`           | Run integration tests (`node --test`)           |
+| `npm run test:watch` | Run tests in watch mode (`node --test --watch`) |
 
 ## License
 
