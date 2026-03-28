@@ -138,7 +138,7 @@ export const googleAuth = async (request, reply) => {
 		reply.send({ ok: true, user: userData, token: appToken });
 	} catch (error) {
 		console.error("Google Auth Error:", error);
-		reply.code(500).send({ error: "Google logging in failed" });
+		reply.code(500).send({ error: "Google authentication failed" });
 	}
 };
 
