@@ -16,7 +16,6 @@ export const getUser = async (request, reply) => {
 			ok: true,
 			user: {
 				_id: user._id,
-				login: user.login,
 				email: user.email,
 				nickname: user.nickname,
 				avatarUrl: user.avatarUrl,
@@ -86,7 +85,7 @@ export const changePassword = async (request, reply) => {
 // Profile update logic
 export const updateProfile = async (request, reply) => {
 	try {
-		const { login, nickname, themeColor, avatarType } = request.body;
+		const { nickname, themeColor, avatarType } = request.body;
 
 		const user = await User.findById(request.userId);
 
@@ -94,7 +93,6 @@ export const updateProfile = async (request, reply) => {
 			return reply.code(404).send({ error: "User not found" });
 		}
 
-		if (login) user.login = login;
 		if (nickname) user.nickname = nickname;
 		if (themeColor) user.themeColor = themeColor;
 		if (avatarType) user.avatarType = avatarType;

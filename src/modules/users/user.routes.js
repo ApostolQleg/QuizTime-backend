@@ -32,13 +32,11 @@ export default async function userRoutes(fastify) {
 						type: "object",
 						additionalProperties: false,
 						properties: {
-							login: { type: "string", minLength: 2, maxLength: 64 },
 							nickname: { type: "string", minLength: 2, maxLength: 64 },
 							themeColor: { type: "string", maxLength: 32 },
 							avatarType: { type: "string", maxLength: 32 },
 						},
 						anyOf: [
-							{ required: ["login"] },
 							{ required: ["nickname"] },
 							{ required: ["themeColor"] },
 							{ required: ["avatarType"] },
