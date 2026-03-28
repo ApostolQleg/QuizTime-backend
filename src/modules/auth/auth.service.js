@@ -121,7 +121,7 @@ export const googleAuth = async (request, reply) => {
 		const { token } = request.body;
 
 		const payload = await verifyGoogleToken(token);
-		const { email, googleId, picture } = payload;
+		const { email, sub, picture } = payload;
 
 		let user = await User.findOne({ email });
 
