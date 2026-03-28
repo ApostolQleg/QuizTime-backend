@@ -1,10 +1,28 @@
 import bcrypt from "bcrypt";
+import crypto from "node:crypto";
 import jwt from "jsonwebtoken";
 import { User } from "../users/index.js";
 import { TempCode } from "./index.js";
 import { generateNickname } from "../../shared/utils/nicknameGen.js";
 import { verifyGoogleToken } from "../../infrastructure/google/googleClient.js";
 import { sendVerificationEmail } from "../../infrastructure/email/emailService.js";
+
+const getUniqueNickname = async () => {
+	let candidate = generateNickname().next().value;
+	let exists = await User.exists({ nickname: candidate });
+
+	while (exists) {
+		candidate = generateNickname().next().value;
+		exists = await User.exists({ nickname: candidate });
+	}
+	return candidate;
+};
+
+const generateOAuthPasswordHash = async () => {
+	const randomPassword = crypto.randomBytes(32).toString("hex");
+	const salt = await bcrypt.genSalt(10);
+	return bcrypt.hash(randomPassword, salt);
+};
 
 // Registration logic
 export const register = async (request, reply) => {
@@ -108,13 +126,22 @@ export const googleAuth = async (request, reply) => {
 		let user = await User.findOne({ email });
 
 		if (!user) {
-			return reply.code(404).send({ error: "User not found" });
+			user = new User({
+				email,
+				nickname: await getUniqueNickname(),
+				passwordHash: await generateOAuthPasswordHash(),
+				googleId: googleId,
+				avatarUrl: picture,
+				avatarType: picture ? "google" : "generated",
+			});
+
+			await user.save();
 		}
 
 		let hasChanges = false;
 
 		if (!user.nickname) {
-			user.nickname = generateNickname().next().value;
+			user.nickname = await getUniqueNickname();
 			hasChanges = true;
 		}
 
