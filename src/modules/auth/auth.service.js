@@ -20,7 +20,7 @@ const getUniqueNickname = async () => {
 
 const generateOAuthPasswordHash = async () => {
 	const randomPassword = crypto.randomBytes(32).toString("hex");
-	const salt = await bcrypt.genSalt();
+	const salt = await bcrypt.genSalt(10);
 	return bcrypt.hash(randomPassword, salt);
 };
 
