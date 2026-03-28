@@ -35,7 +35,7 @@ export default async function authRoutes(fastify) {
 					required: ["email", "password"],
 					additionalProperties: false,
 					properties: {
-						email: { type: "string", minLength: 2, maxLength: 64 },
+						email: { type: "string", format: "email", maxLength: 254 },
 						password: { type: "string", minLength: 1, maxLength: 128 },
 					},
 				},
