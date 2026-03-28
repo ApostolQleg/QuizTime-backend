@@ -179,7 +179,7 @@ Base groups:
 | Method | Path                   | Auth | Purpose                                              |
 | ------ | ---------------------- | ---- | ---------------------------------------------------- |
 | `POST` | `/auth/register`       | No   | Register local or Google-backed user                 |
-| `POST` | `/auth/login`          | No   | Login with `login` + `password`                      |
+| `POST` | `/auth/login`          | No   | Login with `email` + `password`                      |
 | `POST` | `/auth/google`         | No   | Login existing user by Google token                  |
 | `POST` | `/auth/google-extract` | No   | Validate Google token and return profile for prefill |
 | `POST` | `/auth/send-code`      | No   | Send 6-digit email verification code                 |
@@ -187,10 +187,10 @@ Base groups:
 
 Important request notes:
 
-- `POST /auth/register` expects `login`, `email`, `password`, and either:
+- `POST /auth/register` expects `email`, `password`, and either:
     - `code` from `/auth/send-code`, or
     - `googleToken`.
-- `POST /auth/login` expects `{ login, password }`.
+- `POST /auth/login` expects `{ email, password }`.
 - `POST /auth/google`, `/auth/google-extract`, and `/auth/link-google` expect `{ token }`.
 - `POST /auth/send-code` expects `{ email }`.
 
@@ -254,7 +254,6 @@ All result routes are protected.
 
 `PUT /api/user/update` accepts any of:
 
-- `login`
 - `nickname`
 - `themeColor`
 - `avatarType`

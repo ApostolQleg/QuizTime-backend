@@ -9,15 +9,10 @@ import { sendVerificationEmail } from "../../infrastructure/email/emailService.j
 // Registration logic
 export const register = async (request, reply) => {
 	try {
-		const { login, email, password, avatarUrl, code, googleToken } = request.body;
+		const { email, password, avatarUrl, code, googleToken } = request.body;
 
-		if (!login || !email || !password) {
-			return reply.code(400).send({ error: "Login, email and password are required" });
-		}
-
-		const existingLogin = await User.findOne({ login });
-		if (existingLogin) {
-			return reply.code(409).send({ error: "Login already taken" });
+		if (!email || !password) {
+			return reply.code(400).send({ error: "Email and password are required" });
 		}
 
 		const existingEmail = await User.findOne({ email });
@@ -63,7 +58,6 @@ export const register = async (request, reply) => {
 		const passwordHash = await bcrypt.hash(password, salt);
 
 		const user = new User({
-			login,
 			email,
 			nickname,
 			passwordHash,
@@ -85,9 +79,9 @@ export const register = async (request, reply) => {
 // Login logic
 export const login = async (request, reply) => {
 	try {
-		const { login, password } = request.body;
+		const { email, password } = request.body;
 
-		const user = await User.findOne({ login: login });
+		const user = await User.findOne({ email: email });
 
 		if (!user) return reply.code(404).send({ error: "User not found" });
 
@@ -144,7 +138,7 @@ export const googleAuth = async (request, reply) => {
 		reply.send({ ok: true, user: userData, token: appToken });
 	} catch (error) {
 		console.error("Google Auth Error:", error);
-		reply.code(500).send({ error: "Google login failed" });
+		reply.code(500).send({ error: "Google authentication failed" });
 	}
 };
 
