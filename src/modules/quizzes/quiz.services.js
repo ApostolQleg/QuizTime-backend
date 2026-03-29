@@ -12,17 +12,12 @@ const findQuiz = async (id) => {
 };
 
 const getCachedQuiz = cache.memoize(findQuiz);
-
 const clearQuizCache = () => cache.clear(findQuiz);
 
 export const getAllQuizzes = async (limit, skip, searchParam, sortParam, authorId) => {
 	let filter = {};
-	if (searchParam) {
-		filter.title = { $regex: searchParam, $options: "i" };
-	}
-	if (authorId) {
-		filter.authorId = authorId;
-	}
+	if (searchParam) filter.title = { $regex: searchParam, $options: "i" };
+	if (authorId) filter.authorId = authorId;
 
 	let sortQuery = { createdAt: -1 };
 	if (sortParam === "oldest") sortQuery = { createdAt: 1 };
@@ -77,6 +72,7 @@ export const createQuiz = async (userId, id, title, description, questions) => {
 		authorId: userId,
 		authorName: user.nickname,
 	});
+    
 	await quiz.save();
 
 	return { ok: true, quiz };
@@ -106,9 +102,8 @@ export const updateQuiz = async (userId, id, title, description, questions) => {
 
 	if (!quiz.authorId) return { ok: false, error: "Cannot edit system quizzes" };
 
-	if (String(quiz.authorId) !== String(userId)) {
+	if (String(quiz.authorId) !== String(userId))
 		return reply.code(403).send({ ok: false, error: "You are not the author" });
-	}
 
 	const updates = {};
 	if (title) updates.title = title;
@@ -124,20 +119,16 @@ export const updateQuiz = async (userId, id, title, description, questions) => {
 	return { ok: true, quiz: updatedQuiz };
 };
 
-export const deleteQuiz = async (request, reply) => {
-	try {
-		const quiz = await Quiz.findOne({ id: request.params.id });
-		if (!quiz) return reply.code(404).send({ error: "Quiz not found" });
+export const deleteQuiz = async (userId, id) => {
+	const quiz = await Quiz.findOne({ id });
+	if (!quiz) return { ok: false, error: "Quiz not found" };
 
-		if (!quiz.authorId) return reply.code(403).send({ error: "Cannot delete system quizzes" });
+	if (!quiz.authorId) return { ok: false, error: "Cannot delete system quizzes" };
 
-		if (String(quiz.authorId) !== String(request.userId)) {
-			return reply.code(403).send({ error: "You are not the author" });
-		}
-		await Quiz.findOneAndDelete({ id: request.params.id });
-		reply.send({ ok: true });
-	} catch (error) {
-		console.error("Delete quiz error:", error);
-		reply.code(500).send({ error: "Failed to delete quiz" });
-	}
+	if (String(quiz.authorId) !== String(userId))
+		return { ok: false, error: "You are not the author" };
+
+	await Quiz.findOneAndDelete({ id });
+
+	return { ok: true, message: "Quiz deleted successfully" };
 };
