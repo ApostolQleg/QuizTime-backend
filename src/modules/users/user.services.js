@@ -2,12 +2,20 @@ import bcrypt from "bcrypt";
 import { User } from "./index.js";
 import { Result } from "../results/index.js";
 import { generateNickname } from "../../shared/utils/nicknameGen.js";
-import * as services from "./user.services.js";
 
-export const getUser = async (request, reply) => {
-	const user = await User.findById(request.userId);
-	const data = services.getUserData(user);
-	return reply.send(data);
+export const getUserData = (user) => {
+	return {
+		ok: true,
+		user: {
+			_id: user._id,
+			email: user.email,
+			nickname: user.nickname,
+			avatarUrl: user.avatarUrl,
+			themeColor: user.themeColor,
+			avatarType: user.avatarType,
+			googleId: user.googleId,
+		},
+	};
 };
 
 export const getUserById = async (request, reply) => {
