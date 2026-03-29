@@ -5,7 +5,7 @@ import { User } from "../users/index.js";
 import { TempCode } from "./index.js";
 import { generateNickname } from "../../shared/utils/nicknameGen.js";
 import { verifyGoogleToken } from "../../infrastructure/google/googleClient.js";
-import { sendVerificationEmail } from "../../infrastructure/email/emailService.js";
+import { sendVerificationEmail } from "../../infrastructure/email/email.service.js";
 
 const getUniqueNickname = async () => {
 	let candidate = generateNickname().next().value;
@@ -130,7 +130,7 @@ export const googleAuth = async (request, reply) => {
 				email,
 				nickname: await getUniqueNickname(),
 				passwordHash: await generateOAuthPasswordHash(),
-				googleId: googleId,
+				googleId: sub,
 				avatarUrl: picture,
 				avatarType: picture ? "google" : "generated",
 			});
