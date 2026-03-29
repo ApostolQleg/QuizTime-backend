@@ -11,7 +11,7 @@ const findQuiz = async (id) => {
 	);
 };
 
-export const getCachedQuiz = cache.memoize(findQuiz);
+const getCachedQuiz = cache.memoize(findQuiz);
 
 export const clearQuizCache = () => cache.clear(findQuiz);
 
@@ -82,28 +82,22 @@ export const createQuiz = async (userId, id, title, description, questions) => {
 	return { ok: true, quiz };
 };
 
-export const getQuizById = async (request, reply) => {
-	try {
-		const quiz = await services.getCachedQuiz(request.params.id);
+export const getQuizById = async (id) => {
+	const quiz = await getCachedQuiz(id);
+	if (!quiz) return { ok: false, error: "Quiz not found" };
 
-		if (!quiz) return reply.code(404).send({ error: "Quiz not found" });
+	const author = quiz.authorId || {};
 
-		const author = quiz.authorId || {};
+	const responseQuiz = {
+		...quiz.toObject(),
+		authorId: author._id || null,
+		authorName: author.nickname,
+		authorAvatarUrl: author.avatarUrl,
+		authorAvatarType: author.avatarType,
+		authorThemeColor: author.themeColor,
+	};
 
-		const responseQuiz = {
-			...quiz.toObject(),
-			authorId: author._id || null,
-			authorName: author.nickname,
-			authorAvatarUrl: author.avatarUrl,
-			authorAvatarType: author.avatarType,
-			authorThemeColor: author.themeColor,
-		};
-
-		reply.send({ ok: true, quiz: responseQuiz });
-	} catch (error) {
-		console.error("Fetch quiz error:", error);
-		reply.code(500).send({ error: "Failed to fetch quiz" });
-	}
+	return { ok: true, quiz: responseQuiz };
 };
 
 export const updateQuiz = async (request, reply) => {

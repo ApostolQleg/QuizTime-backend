@@ -24,27 +24,10 @@ export const createQuiz = async (request, reply) => {
 };
 
 export const getQuizById = async (request, reply) => {
-	try {
-		const quiz = await services.getCachedQuiz(request.params.id);
-
-		if (!quiz) return reply.code(404).send({ error: "Quiz not found" });
-
-		const author = quiz.authorId || {};
-
-		const responseQuiz = {
-			...quiz.toObject(),
-			authorId: author._id || null,
-			authorName: author.nickname,
-			authorAvatarUrl: author.avatarUrl,
-			authorAvatarType: author.avatarType,
-			authorThemeColor: author.themeColor,
-		};
-
-		reply.send({ ok: true, quiz: responseQuiz });
-	} catch (error) {
-		console.error("Fetch quiz error:", error);
-		reply.code(500).send({ error: "Failed to fetch quiz" });
-	}
+	const id = request.params.id;
+	const data = await services.getQuizById(id);
+	if (!data.ok) return reply.code(404).send({ error: "Quiz not found" });
+	reply.send(data);
 };
 
 export const updateQuiz = async (request, reply) => {
