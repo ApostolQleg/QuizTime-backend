@@ -16,8 +16,11 @@ const clearQuizCache = () => cache.clear(findQuiz);
 
 export const getAllQuizzes = async (limit, skip, searchParam, sortParam, authorId) => {
 	let filter = {};
-	if (searchParam) filter.title = { $regex: searchParam, $options: "i" };
 	if (authorId) filter.authorId = authorId;
+	if (searchParam) {
+		const escapedSearch = searchParam.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+		filter.title = { $regex: escapedSearch, $options: "i" };
+	}
 
 	let sortQuery = { createdAt: -1 };
 	if (sortParam === "oldest") sortQuery = { createdAt: 1 };
@@ -54,8 +57,12 @@ export const getAllQuizzes = async (limit, skip, searchParam, sortParam, authorI
 };
 
 export const createQuiz = async (userId, id, title, description, questions) => {
-	if (!id || !title || !Array.isArray(questions)) {
+	if (!id || !title) {
 		return { ok: false, error: "Invalid payload" };
+	}
+
+	if (!Array.isArray(questions) || questions.length === 0) {
+		return { ok: false, error: "Quiz must have at least one question" };
 	}
 
 	const exists = await Quiz.findOne({ id });
@@ -72,7 +79,7 @@ export const createQuiz = async (userId, id, title, description, questions) => {
 		authorId: userId,
 		authorName: user.nickname,
 	});
-    
+
 	await quiz.save();
 
 	return { ok: true, quiz };
@@ -103,7 +110,7 @@ export const updateQuiz = async (userId, id, title, description, questions) => {
 	if (!quiz.authorId) return { ok: false, error: "Cannot edit system quizzes" };
 
 	if (String(quiz.authorId) !== String(userId))
-		return reply.code(403).send({ ok: false, error: "You are not the author" });
+		return { ok: false, error: "You are not the author" };
 
 	const updates = {};
 	if (title) updates.title = title;
