@@ -1,6 +1,4 @@
 import { User } from "./index.js";
-import { Result } from "../results/index.js";
-import { generateNickname } from "../../shared/utils/nicknameGen.js";
 import * as services from "./user.services.js";
 
 export const getUser = async (request, reply) => {
@@ -68,30 +66,7 @@ export const deleteAccount = async (request, reply) => {
 	return reply.send({ ok: true, message: "Account deleted successfully" });
 };
 
-export const getNicknameArray = async (request, reply) => {
-	try {
-		const nicknameArray = [];
-		const iterator = generateNickname();
-
-		for (let i = 0; i < 14; i++) {
-			const nickname = iterator.next().value;
-			nicknameArray.push(nickname);
-		}
-
-		let isUnique = false;
-		while (!isUnique) {
-			const lastNickname = iterator.next().value;
-			const isTaken = await User.exists({ nickname: lastNickname });
-			nicknameArray.push(lastNickname);
-
-			if (!isTaken) {
-				isUnique = true;
-			}
-		}
-
-		return reply.send({ ok: true, nicknames: nicknameArray });
-	} catch (error) {
-		console.error("Get nickname array error:", error);
-		return reply.code(500).send({ error: "Failed to get nickname array" });
-	}
+export const getNicknameArray = async (_, reply) => {
+	const data = await services.getNicknameArray();
+	return reply.send(data);
 };

@@ -61,30 +61,25 @@ export const deleteAccount = async (userId) => {
 	await Result.deleteMany({ userId: userId });
 };
 
-export const getNicknameArray = async (request, reply) => {
-	try {
-		const nicknameArray = [];
-		const iterator = generateNickname();
+export const getNicknameArray = async () => {
+	const nicknameArray = [];
+	const iterator = generateNickname();
 
-		for (let i = 0; i < 14; i++) {
-			const nickname = iterator.next().value;
-			nicknameArray.push(nickname);
-		}
-
-		let isUnique = false;
-		while (!isUnique) {
-			const lastNickname = iterator.next().value;
-			const isTaken = await User.exists({ nickname: lastNickname });
-			nicknameArray.push(lastNickname);
-
-			if (!isTaken) {
-				isUnique = true;
-			}
-		}
-
-		return reply.send({ ok: true, nicknames: nicknameArray });
-	} catch (error) {
-		console.error("Get nickname array error:", error);
-		return reply.code(500).send({ error: "Failed to get nickname array" });
+	for (let i = 0; i < 14; i++) {
+		const nickname = iterator.next().value;
+		nicknameArray.push(nickname);
 	}
+
+	let isUnique = false;
+	while (!isUnique) {
+		const lastNickname = iterator.next().value;
+		const isTaken = await User.exists({ nickname: lastNickname });
+		nicknameArray.push(lastNickname);
+
+		if (!isTaken) {
+			isUnique = true;
+		}
+	}
+
+	return { ok: true, nicknames: nicknameArray };
 };
