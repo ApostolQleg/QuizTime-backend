@@ -31,38 +31,14 @@ export const getQuizById = async (request, reply) => {
 };
 
 export const updateQuiz = async (request, reply) => {
-	try {
-		const quiz = await Quiz.findOne({ id: request.params.id });
-		if (!quiz) return reply.code(404).send({ error: "Quiz not found" });
+	const userId = request.userId;
+	const id = request.params.id;
+	const { title, description, questions } = request.body;
 
-		if (!quiz.authorId) return reply.code(403).send({ error: "Cannot edit system quizzes" });
-
-		if (String(quiz.authorId) !== String(request.userId)) {
-			return reply.code(403).send({ error: "You are not the author" });
-		}
-
-		const updates = {};
-		const { title, description, questions } = request.body;
-		if (title !== undefined) updates.title = title;
-		if (description !== undefined) updates.description = description;
-		if (questions !== undefined) {
-			if (!Array.isArray(questions))
-				return reply.code(400).send({ error: "Questions must be an array" });
-			updates.questions = questions;
-		}
-		const updatedQuiz = await Quiz.findOneAndUpdate(
-			{ id: request.params.id },
-			{ $set: updates },
-			{ new: true },
-		);
-
-		services.clearQuizCache(request.params.id);
-
-		reply.send({ ok: true, quiz: updatedQuiz });
-	} catch (error) {
-		console.error("Update quiz error:", error);
-		reply.code(500).send({ error: "Failed to update quiz" });
-	}
+	const data = await services.updateQuiz(userId, id, title, description, questions);
+	if (!data.ok) return reply.code(400).send(data);
+	
+	reply.send(data);
 };
 
 export const deleteQuiz = async (request, reply) => {

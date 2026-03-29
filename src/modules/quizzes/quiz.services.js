@@ -13,7 +13,7 @@ const findQuiz = async (id) => {
 
 const getCachedQuiz = cache.memoize(findQuiz);
 
-export const clearQuizCache = () => cache.clear(findQuiz);
+const clearQuizCache = () => cache.clear(findQuiz);
 
 export const getAllQuizzes = async (limit, skip, searchParam, sortParam, authorId) => {
 	let filter = {};
@@ -100,39 +100,28 @@ export const getQuizById = async (id) => {
 	return { ok: true, quiz: responseQuiz };
 };
 
-export const updateQuiz = async (request, reply) => {
-	try {
-		const quiz = await Quiz.findOne({ id: request.params.id });
-		if (!quiz) return reply.code(404).send({ error: "Quiz not found" });
+export const updateQuiz = async (userId, id, title, description, questions) => {
+	const quiz = await Quiz.findOne({ id });
+	if (!quiz) return { ok: false, error: "Quiz not found" };
 
-		if (!quiz.authorId) return reply.code(403).send({ error: "Cannot edit system quizzes" });
+	if (!quiz.authorId) return { ok: false, error: "Cannot edit system quizzes" };
 
-		if (String(quiz.authorId) !== String(request.userId)) {
-			return reply.code(403).send({ error: "You are not the author" });
-		}
-
-		const updates = {};
-		const { title, description, questions } = request.body;
-		if (title !== undefined) updates.title = title;
-		if (description !== undefined) updates.description = description;
-		if (questions !== undefined) {
-			if (!Array.isArray(questions))
-				return reply.code(400).send({ error: "Questions must be an array" });
-			updates.questions = questions;
-		}
-		const updatedQuiz = await Quiz.findOneAndUpdate(
-			{ id: request.params.id },
-			{ $set: updates },
-			{ new: true },
-		);
-
-		services.clearQuizCache(request.params.id);
-
-		reply.send({ ok: true, quiz: updatedQuiz });
-	} catch (error) {
-		console.error("Update quiz error:", error);
-		reply.code(500).send({ error: "Failed to update quiz" });
+	if (String(quiz.authorId) !== String(userId)) {
+		return reply.code(403).send({ ok: false, error: "You are not the author" });
 	}
+
+	const updates = {};
+	if (title) updates.title = title;
+	if (description) updates.description = description;
+	if (questions) {
+		if (!Array.isArray(questions)) return { ok: false, error: "Questions must be an array" };
+		updates.questions = questions;
+	}
+	const updatedQuiz = await Quiz.findOneAndUpdate({ id }, { $set: updates }, { new: true });
+
+	clearQuizCache(id);
+
+	return { ok: true, quiz: updatedQuiz };
 };
 
 export const deleteQuiz = async (request, reply) => {
