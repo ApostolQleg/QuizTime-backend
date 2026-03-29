@@ -1,4 +1,3 @@
-import { Result } from "./index.js";
 import * as services from "./result.services.js";
 
 export const getUserResults = async (request, reply) => {
@@ -28,15 +27,10 @@ export const saveResult = async (request, reply) => {
 };
 
 export const getResultById = async (request, reply) => {
-	try {
-		const result = await Result.findOne({
-			_id: request.params.id,
-			userId: request.userId,
-		}).lean();
-		if (!result) return reply.code(404).send({ error: "Result not found" });
-		reply.send(result);
-	} catch (error) {
-		console.error("Fetch result error:", error);
-		reply.code(500).send({ error: "Failed to fetch result" });
-	}
+	const id = request.params.id;
+	const userId = request.userId;
+
+	const data = await services.getResultById(id, userId);
+	if (!data.ok) return reply.code(404).send({ error: "Result not found" });
+	reply.send(data);
 };

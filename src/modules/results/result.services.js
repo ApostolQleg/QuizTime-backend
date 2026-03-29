@@ -23,7 +23,7 @@ export const getResults = async (userId, limit, skip, searchParam, sortParam) =>
 		.limit(limit)
 		.lean();
 
-	return results;
+	return { ok: true, results };
 };
 
 export const saveResult = async (userId, quizId, answers, summary, timestamp) => {
@@ -52,16 +52,12 @@ export const saveResult = async (userId, quizId, answers, summary, timestamp) =>
 	return { ok: true, resultId: result._id };
 };
 
-export const getResultById = async (request, reply) => {
-	try {
-		const result = await Result.findOne({
-			_id: request.params.id,
-			userId: request.userId,
-		}).lean();
-		if (!result) return reply.code(404).send({ error: "Result not found" });
-		reply.send(result);
-	} catch (error) {
-		console.error("Fetch result error:", error);
-		reply.code(500).send({ error: "Failed to fetch result" });
-	}
+export const getResultById = async (id, userId) => {
+	const result = await Result.findOne({
+		_id: id,
+		userId: userId,
+	}).lean();
+	if (!result) return { ok: false, error: "Result not found" };
+
+	return { ok: true, result };
 };
