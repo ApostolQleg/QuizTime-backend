@@ -24,73 +24,65 @@ export const generateOAuthPasswordHash = async () => {
 	return bcrypt.hash(randomPassword, salt);
 };
 
-export const register = async (request, reply) => {
-	try {
-		const { email, password, avatarUrl, code, googleToken } = request.body;
-
-		if (!email || !password) {
-			return reply.code(400).send({ error: "Email and password are required" });
-		}
-
-		const existingEmail = await User.findOne({ email });
-		if (existingEmail) {
-			return reply.code(409).send({ error: "User with this email already exists" });
-		}
-
-		let googleId = null;
-		let nickname = generateNickname().next().value;
-		let finalAvatarUrl = avatarUrl;
-
-		if (googleToken) {
-			const payload = await verifyGoogleToken(googleToken);
-
-			if (payload.email !== email) {
-				return reply
-					.code(400)
-					.send({ error: "Google email does not match provided email" });
-			}
-
-			googleId = payload.sub;
-			if (!finalAvatarUrl) finalAvatarUrl = payload.picture;
-		} else {
-			if (!code) {
-				return reply.code(400).send({ error: "Verification code is required" });
-			}
-
-			const record = await TempCode.findOne({ email });
-			if (!record) {
-				return reply
-					.code(400)
-					.send({ error: "Verification code expired or not found. Please try again." });
-			}
-
-			if (record.code !== code.trim()) {
-				return reply.code(400).send({ error: "Invalid verification code" });
-			}
-
-			await TempCode.deleteOne({ email });
-		}
-
-		const salt = await bcrypt.genSalt(10);
-		const passwordHash = await bcrypt.hash(password, salt);
-
-		const user = new User({
-			email,
-			nickname,
-			passwordHash,
-			avatarUrl: finalAvatarUrl,
-			googleId,
-		});
-
-		await user.save();
-
-		const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
-		const { passwordHash: _, ...userData } = user.toObject();
-		reply.code(201).send({ ok: true, user: userData, token });
-	} catch (error) {
-		console.error("Register error:", error);
-		reply.code(500).send({ error: "Registration failed" });
+export const register = async (email, password, avatarUrl, code, googleToken) => {
+	if (!email || !password) {
+		return { ok: false, error: "Email and password are required" };
 	}
+
+	const existingEmail = await User.findOne({ email });
+	if (existingEmail) {
+		return { ok: false, error: "User with this email already exists" };
+	}
+
+	let googleId = null;
+	let nickname = generateNickname().next().value;
+	let finalAvatarUrl = avatarUrl;
+
+	if (googleToken) {
+		const payload = await verifyGoogleToken(googleToken);
+
+		if (payload.email !== email) {
+			return { ok: false, error: "Google email does not match provided email" };
+		}
+
+		googleId = payload.sub;
+		if (!finalAvatarUrl) finalAvatarUrl = payload.picture;
+	} else {
+		if (!code) {
+			return { ok: false, error: "Verification code is required" };
+		}
+
+		const record = await TempCode.findOne({ email });
+		if (!record) {
+			return {
+				ok: false,
+				error: "Verification code expired or not found. Please try again.",
+			};
+		}
+
+		if (record.code !== code.trim()) {
+			return { ok: false, error: "Invalid verification code" };
+		}
+
+		await TempCode.deleteOne({ email });
+	}
+
+	const salt = await bcrypt.genSalt(10);
+	const passwordHash = await bcrypt.hash(password, salt);
+
+	const user = new User({
+		email,
+		nickname,
+		passwordHash,
+		avatarUrl: finalAvatarUrl,
+		googleId,
+	});
+
+	await user.save();
+
+	const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
+	const { passwordHash: _, ...userData } = user.toObject();
+	return { ok: true, user: userData, token };
 };
 
 export const login = async (request, reply) => {
