@@ -18,28 +18,16 @@ export const getUserData = (user) => {
 	};
 };
 
-export const getUserById = async (request, reply) => {
-	try {
-		const user = await User.findById(request.params.id).select(
-			"nickname avatarUrl themeColor avatarType",
-		);
-
-		if (!user) {
-			return reply.code(404).send({ error: "User not found" });
-		}
-
-		return reply.send({
-			ok: true,
-			user: {
-				nickname: user.nickname,
-				avatarUrl: user.avatarUrl,
-				themeColor: user.themeColor,
-				avatarType: user.avatarType,
-			},
-		});
-	} catch (error) {
-		return reply.code(500).send({ error: "Failed to fetch user" });
-	}
+export const getUserDataById = (user) => {
+	return {
+		ok: true,
+		user: {
+			nickname: user.nickname,
+			avatarUrl: user.avatarUrl,
+			themeColor: user.themeColor,
+			avatarType: user.avatarType,
+		},
+	};
 };
 
 export const changePassword = async (request, reply) => {
