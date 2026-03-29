@@ -1,30 +1,12 @@
 import bcrypt from "bcrypt";
-import crypto from "node:crypto";
 import jwt from "jsonwebtoken";
 import { User } from "../users/index.js";
 import { TempCode } from "./index.js";
 import { generateNickname } from "../../shared/utils/nicknameGen.js";
 import { verifyGoogleToken } from "../../infrastructure/google/googleClient.js";
 import { sendVerificationEmail } from "../../infrastructure/email/email.service.js";
+import * as services from "./auth.services.js";
 
-const getUniqueNickname = async () => {
-	let candidate = generateNickname().next().value;
-	let exists = await User.exists({ nickname: candidate });
-
-	while (exists) {
-		candidate = generateNickname().next().value;
-		exists = await User.exists({ nickname: candidate });
-	}
-	return candidate;
-};
-
-const generateOAuthPasswordHash = async () => {
-	const randomPassword = crypto.randomBytes(32).toString("hex");
-	const salt = await bcrypt.genSalt(10);
-	return bcrypt.hash(randomPassword, salt);
-};
-
-// Registration logic
 export const register = async (request, reply) => {
 	try {
 		const { email, password, avatarUrl, code, googleToken } = request.body;
@@ -94,7 +76,6 @@ export const register = async (request, reply) => {
 	}
 };
 
-// Login logic
 export const login = async (request, reply) => {
 	try {
 		const { email, password } = request.body;
@@ -115,7 +96,6 @@ export const login = async (request, reply) => {
 	}
 };
 
-// Google authentication logic
 export const googleAuth = async (request, reply) => {
 	try {
 		const { token } = request.body;
@@ -128,7 +108,7 @@ export const googleAuth = async (request, reply) => {
 		if (!user) {
 			user = new User({
 				email,
-				nickname: await getUniqueNickname(),
+				nickname: await services.getUniqueNickname(),
 				passwordHash: await generateOAuthPasswordHash(),
 				googleId: sub,
 				avatarUrl: picture,
@@ -141,7 +121,7 @@ export const googleAuth = async (request, reply) => {
 		let hasChanges = false;
 
 		if (!user.nickname) {
-			user.nickname = await getUniqueNickname();
+			user.nickname = await services.getUniqueNickname();
 			hasChanges = true;
 		}
 
@@ -169,7 +149,6 @@ export const googleAuth = async (request, reply) => {
 	}
 };
 
-// Google token extraction logic (for registration)
 export const googleExtract = async (request, reply) => {
 	try {
 		const { token } = request.body;
@@ -190,7 +169,6 @@ export const googleExtract = async (request, reply) => {
 	}
 };
 
-// Send verification code logic
 export const sendCode = async (request, reply) => {
 	try {
 		const { email } = request.body;
@@ -218,7 +196,6 @@ export const sendCode = async (request, reply) => {
 	}
 };
 
-// Link Google account logic
 export const linkGoogle = async (request, reply) => {
 	try {
 		const userId = request.userId;
