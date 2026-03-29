@@ -1,46 +1,22 @@
 import { Result } from "./index.js";
 import { Quiz } from "../quizzes/index.js";
+import * as services from "./result.services.js";
 
-// User results getting logic
 export const getUserResults = async (request, reply) => {
-	try {
-		if (!request.userId) {
-			return reply.code(400).send({ error: "User ID missing" });
-		}
-
-		const limit = parseInt(request.query.limit) || 36;
-		const skip = parseInt(request.query.skip) || 0;
-
-		const search = request.query.search || "";
-		const sortParam = request.query.sort || "newest";
-
-		const filter = {
-			userId: request.userId,
-		};
-
-		let sortQuery = { createdAt: -1 };
-		if (sortParam === "oldest") sortQuery = { createdAt: 1 };
-		else if (sortParam === "az") sortQuery = { quizTitle: 1, createdAt: -1 };
-		else if (sortParam === "za") sortQuery = { quizTitle: -1, createdAt: -1 };
-
-		if (search) {
-			filter.quizTitle = { $regex: search, $options: "i" };
-		}
-		const results = await Result.find(filter)
-			.select("-questions")
-			.sort(sortQuery)
-			.skip(skip)
-			.limit(limit)
-			.lean();
-
-		reply.send(results);
-	} catch (error) {
-		console.error("Error fetching results:", error);
-		reply.code(500).send({ error: "Failed to fetch results" });
+	const userId = request.userId;
+	if (!userId) {
+		return reply.code(400).send({ ok: false, error: "User ID missing" });
 	}
+
+	const limit = parseInt(request.query.limit) || 36;
+	const skip = parseInt(request.query.skip) || 0;
+	const searchParam = request.query.search || "";
+	const sortParam = request.query.sort || "newest";
+
+	const data = await services.getResults(userId, limit, skip, searchParam, sortParam);
+	reply.send(data);
 };
 
-// Result saving logic
 export const saveResult = async (request, reply) => {
 	try {
 		const { quizId, answers, summary, timestamp } = request.body;
@@ -74,7 +50,6 @@ export const saveResult = async (request, reply) => {
 	}
 };
 
-// Result fetching logic
 export const getResultById = async (request, reply) => {
 	try {
 		const result = await Result.findOne({
