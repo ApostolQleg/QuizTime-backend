@@ -28,23 +28,10 @@ export const googleAuth = async (request, reply) => {
 };
 
 export const googleExtract = async (request, reply) => {
-	try {
-		const { token } = request.body;
-
-		const payload = await verifyGoogleToken(token);
-		const { email, picture, sub } = payload;
-
-		const existingUser = await User.findOne({ email });
-
-		if (existingUser) {
-			return reply.code(409).send({ error: "User with this email already exists" });
-		}
-
-		reply.send({ ok: true, email, picture, googleId: sub });
-	} catch (error) {
-		console.error("Google Extract Error:", error);
-		reply.code(500).send({ error: "Invalid Google Token" });
-	}
+	const { token } = request.body;
+	const data = await services.googleExtract(token);
+	if (!data.ok) return reply.code(400).send(data);
+	reply.send(data);
 };
 
 export const sendCode = async (request, reply) => {

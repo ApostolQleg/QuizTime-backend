@@ -146,24 +146,17 @@ export const googleAuth = async (token) => {
 	return { ok: true, user: userData, token: appToken };
 };
 
-export const googleExtract = async (request, reply) => {
-	try {
-		const { token } = request.body;
+export const googleExtract = async (token) => {
+	const payload = await verifyGoogleToken(token);
+	const { email, picture, sub } = payload;
 
-		const payload = await verifyGoogleToken(token);
-		const { email, picture, sub } = payload;
+	const existingUser = await User.findOne({ email });
 
-		const existingUser = await User.findOne({ email });
-
-		if (existingUser) {
-			return reply.code(409).send({ error: "User with this email already exists" });
-		}
-
-		reply.send({ ok: true, email, picture, googleId: sub });
-	} catch (error) {
-		console.error("Google Extract Error:", error);
-		reply.code(500).send({ error: "Invalid Google Token" });
+	if (existingUser) {
+		return { ok: false, error: "User with this email already exists" };
 	}
+
+	return { ok: true, email, picture, googleId: sub };
 };
 
 export const sendCode = async (request, reply) => {
