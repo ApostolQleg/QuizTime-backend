@@ -58,32 +58,28 @@ export const getAllQuizzes = async (limit, skip, searchParam, sortParam, authorI
 	return { ok: true, quizzes: mappedQuizzes };
 };
 
-export const createQuiz = async (request, reply) => {
-	try {
-		const { id, title, description, questions } = request.body;
-		if (!id || !title || !Array.isArray(questions)) {
-			return reply.code(400).send({ error: "Invalid payload" });
-		}
-		const exists = await Quiz.findOne({ id });
-		if (exists) return reply.code(409).send({ error: "Quiz with this id already exists" });
-
-		const user = await User.findById(request.userId);
-		if (!user) return reply.code(404).send({ error: "Author not found" });
-
-		const quiz = new Quiz({
-			id: String(id),
-			title,
-			description,
-			questions,
-			authorId: request.userId,
-			authorName: user.nickname,
-		});
-		await quiz.save();
-		reply.code(201).send({ ok: true, quiz });
-	} catch (error) {
-		console.error("Create quiz error:", error);
-		reply.code(500).send({ error: "Failed to create quiz" });
+export const createQuiz = async (userId, id, title, description, questions) => {
+	if (!id || !title || !Array.isArray(questions)) {
+		return { ok: false, error: "Invalid payload" };
 	}
+
+	const exists = await Quiz.findOne({ id });
+	if (exists) return { ok: false, error: "Quiz with this id already exists" };
+
+	const user = await User.findById(userId);
+	if (!user) return { ok: false, error: "Author not found" };
+
+	const quiz = new Quiz({
+		id: String(id),
+		title: title,
+		description: description,
+		questions: questions,
+		authorId: userId,
+		authorName: user.nickname,
+	});
+	await quiz.save();
+
+	return { ok: true, quiz };
 };
 
 export const getQuizById = async (request, reply) => {

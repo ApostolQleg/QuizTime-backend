@@ -1,5 +1,4 @@
 import { Quiz } from "./index.js";
-import { User } from "../users/index.js";
 import * as services from "./quiz.services.js";
 
 export const getAllQuizzes = async (request, reply) => {
@@ -15,31 +14,13 @@ export const getAllQuizzes = async (request, reply) => {
 };
 
 export const createQuiz = async (request, reply) => {
-	try {
-		const { id, title, description, questions } = request.body;
-		if (!id || !title || !Array.isArray(questions)) {
-			return reply.code(400).send({ error: "Invalid payload" });
-		}
-		const exists = await Quiz.findOne({ id });
-		if (exists) return reply.code(409).send({ error: "Quiz with this id already exists" });
+	const userId = request.userId;
+	const { id, title, description, questions } = request.body;
 
-		const user = await User.findById(request.userId);
-		if (!user) return reply.code(404).send({ error: "Author not found" });
+	const data = await services.createQuiz(userId, id, title, description, questions);
+	if (!data.ok) return reply.code(400).send(data);
 
-		const quiz = new Quiz({
-			id: String(id),
-			title,
-			description,
-			questions,
-			authorId: request.userId,
-			authorName: user.nickname,
-		});
-		await quiz.save();
-		reply.code(201).send({ ok: true, quiz });
-	} catch (error) {
-		console.error("Create quiz error:", error);
-		reply.code(500).send({ error: "Failed to create quiz" });
-	}
+	reply.code(201).send(data);
 };
 
 export const getQuizById = async (request, reply) => {
