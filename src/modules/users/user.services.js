@@ -57,21 +57,8 @@ export const updateProfile = async (user, nickname, themeColor, avatarType) => {
 	return { ok: true, user: userData };
 };
 
-export const deleteAccount = async (request, reply) => {
-	try {
-		const deletedUser = await User.findByIdAndDelete(request.userId);
-
-		if (!deletedUser) {
-			return reply.code(404).send({ error: "User not found" });
-		}
-
-		await Result.deleteMany({ userId: request.userId });
-
-		return reply.send({ ok: true, message: "Account deleted successfully" });
-	} catch (error) {
-		console.error("Delete account error:", error);
-		return reply.code(500).send({ error: "Failed to delete account" });
-	}
+export const deleteAccount = async (userId) => {
+	await Result.deleteMany({ userId: userId });
 };
 
 export const getNicknameArray = async (request, reply) => {
