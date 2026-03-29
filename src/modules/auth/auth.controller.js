@@ -1,10 +1,3 @@
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import { User } from "../users/index.js";
-import { TempCode } from "./index.js";
-import { generateNickname } from "../../shared/utils/nicknameGen.js";
-import { verifyGoogleToken } from "../../infrastructure/google/googleClient.js";
-import { sendVerificationEmail } from "../../infrastructure/email/email.service.js";
 import * as services from "./auth.services.js";
 
 export const register = async (request, reply) => {
@@ -47,6 +40,6 @@ export const linkGoogle = async (request, reply) => {
 
 	const data = await services.linkGoogle(userId, token);
 	if (!data.ok) return reply.code(400).send(data);
-	
+
 	reply.send(data);
 };
