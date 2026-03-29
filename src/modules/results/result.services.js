@@ -26,37 +26,30 @@ export const getResults = async (userId, limit, skip, searchParam, sortParam) =>
 	return results;
 };
 
-export const saveResult = async (request, reply) => {
-	try {
-		const { quizId, answers, summary, timestamp } = request.body;
-		if (!quizId || !answers || !summary || !timestamp) {
-			return reply.code(400).send({ error: "Invalid payload" });
-		}
+export const saveResult = async (userId, quizId, answers, summary, timestamp) => {
+	if (!quizId || !answers || !summary || !timestamp)
+		return { ok: false, error: "Invalid payload" };
 
-		const normalizedTimestamp = new Date(timestamp);
-		if (Number.isNaN(normalizedTimestamp.getTime())) {
-			return reply.code(400).send({ error: "Invalid timestamp" });
-		}
+	const normalizedTimestamp = new Date(timestamp);
+	if (Number.isNaN(normalizedTimestamp.getTime()))
+		return { ok: false, error: "Invalid timestamp" };
 
-		const quiz = await Quiz.findOne({ id: String(quizId) }).lean();
-		if (!quiz) return reply.code(404).send({ error: "Quiz not found" });
+	const quiz = await Quiz.findOne({ id: String(quizId) }).lean();
+	if (!quiz) return { ok: false, error: "Quiz not found" };
 
-		const result = new Result({
-			quizId,
-			quizTitle: quiz.title,
-			timestamp: normalizedTimestamp,
-			summary,
-			answers,
-			questions: quiz.questions,
-			userId: request.userId,
-		});
+	const result = new Result({
+		quizId: quizId,
+		quizTitle: quiz.title,
+		timestamp: normalizedTimestamp,
+		summary: summary,
+		answers: answers,
+		questions: quiz.questions,
+		userId: userId,
+	});
 
-		await result.save();
-		reply.code(201).send({ ok: true, resultId: result._id });
-	} catch (error) {
-		console.error("Save result error:", error);
-		reply.code(500).send({ error: "Failed to save result" });
-	}
+	await result.save();
+
+	return { ok: true, resultId: result._id };
 };
 
 export const getResultById = async (request, reply) => {

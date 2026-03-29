@@ -1,5 +1,4 @@
 import { Result } from "./index.js";
-import { Quiz } from "../quizzes/index.js";
 import * as services from "./result.services.js";
 
 export const getUserResults = async (request, reply) => {
@@ -14,40 +13,18 @@ export const getUserResults = async (request, reply) => {
 	const sortParam = request.query.sort || "newest";
 
 	const data = await services.getResults(userId, limit, skip, searchParam, sortParam);
+
 	reply.send(data);
 };
 
 export const saveResult = async (request, reply) => {
-	try {
-		const { quizId, answers, summary, timestamp } = request.body;
-		if (!quizId || !answers || !summary || !timestamp) {
-			return reply.code(400).send({ error: "Invalid payload" });
-		}
+	const userId = request.userId;
+	const { quizId, answers, summary, timestamp } = request.body;
 
-		const normalizedTimestamp = new Date(timestamp);
-		if (Number.isNaN(normalizedTimestamp.getTime())) {
-			return reply.code(400).send({ error: "Invalid timestamp" });
-		}
+	const data = await services.saveResult(userId, quizId, answers, summary, timestamp);
+	if (!data.ok) return reply.code(400).send(data);
 
-		const quiz = await Quiz.findOne({ id: String(quizId) }).lean();
-		if (!quiz) return reply.code(404).send({ error: "Quiz not found" });
-
-		const result = new Result({
-			quizId,
-			quizTitle: quiz.title,
-			timestamp: normalizedTimestamp,
-			summary,
-			answers,
-			questions: quiz.questions,
-			userId: request.userId,
-		});
-
-		await result.save();
-		reply.code(201).send({ ok: true, resultId: result._id });
-	} catch (error) {
-		console.error("Save result error:", error);
-		reply.code(500).send({ error: "Failed to save result" });
-	}
+	reply.code(201).send(data);
 };
 
 export const getResultById = async (request, reply) => {
