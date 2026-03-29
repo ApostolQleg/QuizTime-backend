@@ -3,7 +3,10 @@ import { User } from "./index.js";
 import { Result } from "../results/index.js";
 import { generateNickname } from "../../shared/utils/nicknameGen.js";
 
-export const getUserData = (user) => {
+export const getUserData = async (userId) => {
+	const user = await User.findById(userId);
+	if (!user) return { ok: false, error: "User not found" };
+
 	return {
 		ok: true,
 		user: {
@@ -18,7 +21,10 @@ export const getUserData = (user) => {
 	};
 };
 
-export const getUserDataById = (user) => {
+export const getUserDataById = async (userId) => {
+	const user = await User.findById(userId).select("nickname avatarUrl themeColor avatarType");
+	if (!user) return { ok: false, error: "User not found" };
+
 	return {
 		ok: true,
 		user: {
@@ -30,11 +36,12 @@ export const getUserDataById = (user) => {
 	};
 };
 
-export const changePassword = async (user, currentPassword, newPassword) => {
+export const changePassword = async (userId, currentPassword, newPassword) => {
+	const user = await User.findById(userId);
+	if (!user) return { ok: false, error: "User not found" };
+
 	const isMatch = await user.comparePassword(currentPassword);
-	if (!isMatch) {
-		return { ok: false, error: "Current password is incorrect" };
-	}
+	if (!isMatch) return { ok: false, error: "Current password is incorrect" };
 
 	const salt = await bcrypt.genSalt(10);
 	const passwordHash = await bcrypt.hash(newPassword, salt);
@@ -45,7 +52,10 @@ export const changePassword = async (user, currentPassword, newPassword) => {
 	return { ok: true, message: "Password changed successfully" };
 };
 
-export const updateProfile = async (user, nickname, themeColor, avatarType) => {
+export const updateProfile = async (userId, nickname, themeColor, avatarType) => {
+	const user = await User.findById(userId);
+	if (!user) return { ok: false, error: "User not found" };
+
 	if (nickname) user.nickname = nickname;
 	if (themeColor) user.themeColor = themeColor;
 	if (avatarType) user.avatarType = avatarType;
@@ -58,7 +68,12 @@ export const updateProfile = async (user, nickname, themeColor, avatarType) => {
 };
 
 export const deleteAccount = async (userId) => {
+	const user = await User.findByIdAndDelete(userId);
+	if (!user) return { ok: false, error: "User not found" };
+
 	await Result.deleteMany({ userId: userId });
+
+	return { ok: true, message: "Account deleted successfully" };
 };
 
 export const getNicknameArray = async () => {
