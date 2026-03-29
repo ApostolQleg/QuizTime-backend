@@ -35,30 +35,10 @@ export const googleExtract = async (request, reply) => {
 };
 
 export const sendCode = async (request, reply) => {
-	try {
-		const { email } = request.body;
-		if (!email) return reply.code(400).send({ error: "Email is required" });
-
-		const existingUser = await User.findOne({ email });
-		if (existingUser) {
-			return reply.code(409).send({ error: "User with this email already exists" });
-		}
-
-		const code = Math.floor(100000 + Math.random() * 900000).toString();
-
-		await TempCode.findOneAndUpdate(
-			{ email },
-			{ code, createdAt: new Date() },
-			{ upsert: true, new: true, setDefaultsOnInsert: true },
-		);
-
-		await sendVerificationEmail(email, code);
-
-		reply.send({ ok: true, message: "Code sent" });
-	} catch (error) {
-		console.error("Send code error:", error);
-		reply.code(500).send({ error: "Failed to send verification code" });
-	}
+	const { email } = request.body;
+	const data = await services.sendCode(email);
+	if (!data.ok) return reply.code(400).send(data);
+	reply.send(data);
 };
 
 export const linkGoogle = async (request, reply) => {
