@@ -22,56 +22,9 @@ export const login = async (request, reply) => {
 };
 
 export const googleAuth = async (request, reply) => {
-	try {
-		const { token } = request.body;
-
-		const payload = await verifyGoogleToken(token);
-		const { email, sub, picture } = payload;
-
-		let user = await User.findOne({ email });
-
-		if (!user) {
-			user = new User({
-				email,
-				nickname: await services.getUniqueNickname(),
-				passwordHash: await services.generateOAuthPasswordHash(),
-				googleId: sub,
-				avatarUrl: picture,
-				avatarType: picture ? "google" : "generated",
-			});
-
-			await user.save();
-		}
-
-		let hasChanges = false;
-
-		if (!user.nickname) {
-			user.nickname = await services.getUniqueNickname();
-			hasChanges = true;
-		}
-
-		if (!user.googleId) {
-			user.googleId = sub;
-			hasChanges = true;
-		}
-
-		if (!user.avatarUrl && picture) {
-			user.avatarUrl = picture;
-			user.avatarType = "google";
-			hasChanges = true;
-		}
-
-		if (hasChanges) {
-			await user.save();
-		}
-
-		const appToken = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
-		const { passwordHash: _, ...userData } = user.toObject();
-		reply.send({ ok: true, user: userData, token: appToken });
-	} catch (error) {
-		console.error("Google Auth Error:", error);
-		reply.code(500).send({ error: "Google authentication failed" });
-	}
+	const { token } = request.body;
+	const data = await services.googleAuth(token);
+	reply.send(data);
 };
 
 export const googleExtract = async (request, reply) => {

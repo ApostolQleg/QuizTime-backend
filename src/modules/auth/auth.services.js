@@ -7,7 +7,7 @@ import { generateNickname } from "../../shared/utils/nicknameGen.js";
 import { verifyGoogleToken } from "../../infrastructure/google/googleClient.js";
 import { sendVerificationEmail } from "../../infrastructure/email/email.service.js";
 
-export const getUniqueNickname = async () => {
+const getUniqueNickname = async () => {
 	let candidate = generateNickname().next().value;
 	let exists = await User.exists({ nickname: candidate });
 
@@ -18,7 +18,7 @@ export const getUniqueNickname = async () => {
 	return candidate;
 };
 
-export const generateOAuthPasswordHash = async () => {
+const generateOAuthPasswordHash = async () => {
 	const randomPassword = crypto.randomBytes(32).toString("hex");
 	const salt = await bcrypt.genSalt(10);
 	return bcrypt.hash(randomPassword, salt);
@@ -99,57 +99,51 @@ export const login = async (email, password) => {
 	return { ok: true, user: userData, token };
 };
 
-export const googleAuth = async (request, reply) => {
-	try {
-		const { token } = request.body;
+export const googleAuth = async (token) => {
+	const payload = await verifyGoogleToken(token);
+	const { email, sub, picture } = payload;
 
-		const payload = await verifyGoogleToken(token);
-		const { email, sub, picture } = payload;
+	let user = await User.findOne({ email });
 
-		let user = await User.findOne({ email });
+	if (!user) {
+		user = new User({
+			email,
+			nickname: await getUniqueNickname(),
+			passwordHash: await generateOAuthPasswordHash(),
+			googleId: sub,
+			avatarUrl: picture,
+			avatarType: picture ? "google" : "generated",
+		});
 
-		if (!user) {
-			user = new User({
-				email,
-				nickname: await services.getUniqueNickname(),
-				passwordHash: await generateOAuthPasswordHash(),
-				googleId: sub,
-				avatarUrl: picture,
-				avatarType: picture ? "google" : "generated",
-			});
-
-			await user.save();
-		}
-
-		let hasChanges = false;
-
-		if (!user.nickname) {
-			user.nickname = await services.getUniqueNickname();
-			hasChanges = true;
-		}
-
-		if (!user.googleId) {
-			user.googleId = sub;
-			hasChanges = true;
-		}
-
-		if (!user.avatarUrl && picture) {
-			user.avatarUrl = picture;
-			user.avatarType = "google";
-			hasChanges = true;
-		}
-
-		if (hasChanges) {
-			await user.save();
-		}
-
-		const appToken = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
-		const { passwordHash: _, ...userData } = user.toObject();
-		reply.send({ ok: true, user: userData, token: appToken });
-	} catch (error) {
-		console.error("Google Auth Error:", error);
-		reply.code(500).send({ error: "Google authentication failed" });
+		await user.save();
 	}
+
+	let hasChanges = false;
+
+	if (!user.nickname) {
+		user.nickname = await getUniqueNickname();
+		hasChanges = true;
+	}
+
+	if (!user.googleId) {
+		user.googleId = sub;
+		hasChanges = true;
+	}
+
+	if (!user.avatarUrl && picture) {
+		user.avatarUrl = picture;
+		user.avatarType = "google";
+		hasChanges = true;
+	}
+
+	if (hasChanges) {
+		await user.save();
+	}
+
+	const appToken = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
+	const { passwordHash: _, ...userData } = user.toObject();
+
+	return { ok: true, user: userData, token: appToken };
 };
 
 export const googleExtract = async (request, reply) => {
