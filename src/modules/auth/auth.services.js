@@ -85,24 +85,18 @@ export const register = async (email, password, avatarUrl, code, googleToken) =>
 	return { ok: true, user: userData, token };
 };
 
-export const login = async (request, reply) => {
-	try {
-		const { email, password } = request.body;
+export const login = async (email, password) => {
+	const user = await User.findOne({ email: email });
 
-		const user = await User.findOne({ email: email });
+	if (!user) return { ok: false, error: "User not found" };
 
-		if (!user) return reply.code(404).send({ error: "User not found" });
+	const isValidPass = await bcrypt.compare(password, user.passwordHash);
+	if (!isValidPass) return { ok: false, error: "Invalid password" };
 
-		const isValidPass = await bcrypt.compare(password, user.passwordHash);
-		if (!isValidPass) return reply.code(400).send({ error: "Invalid password" });
+	const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
+	const { passwordHash, ...userData } = user.toObject();
 
-		const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
-		const { passwordHash: _, ...userData } = user.toObject();
-		reply.send({ ok: true, user: userData, token });
-	} catch (error) {
-		console.error("Login error:", error);
-		reply.code(500).send({ error: "Login failed" });
-	}
+	return { ok: true, user: userData, token };
 };
 
 export const googleAuth = async (request, reply) => {
