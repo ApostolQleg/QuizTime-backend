@@ -1,4 +1,3 @@
-import bcrypt from "bcrypt";
 import { User } from "./index.js";
 import { Result } from "../results/index.js";
 import { generateNickname } from "../../shared/utils/nicknameGen.js";
@@ -6,7 +5,12 @@ import * as services from "./user.services.js";
 
 export const getUser = async (request, reply) => {
 	const user = await User.findById(request.userId);
+	if (!user) {
+		return reply.code(404).send({ ok: false, error: "User is not found" });
+	}
+
 	const data = services.getUserData(user);
+
 	return reply.send(data);
 };
 
@@ -14,66 +18,42 @@ export const getUserById = async (request, reply) => {
 	const user = await User.findById(request.params.id).select(
 		"nickname avatarUrl themeColor avatarType",
 	);
+	if (!user) {
+		return reply.code(404).send({ ok: false, error: "User is not found" });
+	}
+
 	const data = services.getUserDataById(user);
+
 	return reply.send(data);
 };
 
 export const changePassword = async (request, reply) => {
-	try {
-		const { currentPassword, newPassword } = request.body;
-		if (!currentPassword || !newPassword) {
-			return reply.code(400).send({ error: "Current and new passwords are required" });
-		}
-
-		const user = await User.findById(request.userId);
-		if (!user) {
-			return reply.code(404).send({ error: "User not found" });
-		}
-
-		const isMatch = await user.comparePassword(currentPassword);
-		if (!isMatch) {
-			return reply.code(400).send({ error: "Current password is incorrect" });
-		}
-
-		const salt = await bcrypt.genSalt(10);
-		const passwordHash = await bcrypt.hash(newPassword, salt);
-		user.passwordHash = passwordHash;
-
-		await user.save();
-
-		return reply.send({ ok: true, message: "Password changed successfully" });
-	} catch (error) {
-		console.error("Change password error:", error);
-		return reply.code(500).send({ error: "Failed to change password" });
+	const user = await User.findById(request.userId);
+	if (!user) {
+		return reply.code(404).send({ ok: false, error: "User is not found" });
 	}
+
+	const { currentPassword, newPassword } = request.body;
+
+	const data = await services.changePassword(user, currentPassword, newPassword);
+	if (!data.ok) {
+		return reply.code(400).send(data);
+	}
+
+	return reply.send(data);
 };
 
 export const updateProfile = async (request, reply) => {
-	try {
-		const { nickname, themeColor, avatarType } = request.body;
-
-		const user = await User.findById(request.userId);
-
-		if (!user) {
-			return reply.code(404).send({ error: "User not found" });
-		}
-
-		if (nickname) user.nickname = nickname;
-		if (themeColor) user.themeColor = themeColor;
-		if (avatarType) user.avatarType = avatarType;
-
-		await user.save();
-
-		const { passwordHash, ...userData } = user.toObject();
-
-		return reply.send({
-			ok: true,
-			user: userData,
-		});
-	} catch (error) {
-		console.error("Profile update error:", error);
-		return reply.code(500).send({ error: "Failed to update profile" });
+	const user = await User.findById(request.userId);
+	if (!user) {
+		return reply.code(404).send({ ok: false, error: "User is not found" });
 	}
+
+	const { nickname, themeColor, avatarType } = request.body;
+
+	const data = await services.updateProfile(user, nickname, themeColor, avatarType);
+
+	return reply.send(data);
 };
 
 export const deleteAccount = async (request, reply) => {
