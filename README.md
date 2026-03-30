@@ -68,7 +68,7 @@ Frontend project:
     |   |-- db/
     |   |   `-- db.js
     |   |-- email/
-    |   |   `-- emailService.js
+    |   |   `-- email.service.js
     |   `-- google/
     |       `-- googleClient.js
     |-- modules/
