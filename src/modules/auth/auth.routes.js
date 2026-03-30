@@ -1,4 +1,4 @@
-import { authService } from "./index.js";
+import { authController } from "./index.js";
 import { checkAuth } from "../../shared/middleware/checkAuth.js";
 
 export default async function authRoutes(fastify) {
@@ -22,7 +22,7 @@ export default async function authRoutes(fastify) {
 				},
 			},
 		},
-		authService.register,
+		authController.register,
 	);
 
 	fastify.post(
@@ -41,7 +41,7 @@ export default async function authRoutes(fastify) {
 				},
 			},
 		},
-		authService.login,
+		authController.login,
 	);
 
 	fastify.post(
@@ -59,7 +59,7 @@ export default async function authRoutes(fastify) {
 				},
 			},
 		},
-		authService.googleAuth,
+		authController.googleAuth,
 	);
 
 	fastify.post(
@@ -77,7 +77,7 @@ export default async function authRoutes(fastify) {
 				},
 			},
 		},
-		authService.googleExtract,
+		authController.googleExtract,
 	);
 
 	fastify.post(
@@ -95,7 +95,7 @@ export default async function authRoutes(fastify) {
 				},
 			},
 		},
-		authService.sendCode,
+		authController.sendCode,
 	);
 
 	fastify.post(
@@ -114,6 +114,6 @@ export default async function authRoutes(fastify) {
 				},
 			},
 		},
-		authService.linkGoogle,
+		authController.linkGoogle,
 	);
 }

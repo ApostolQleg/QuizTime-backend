@@ -1,4 +1,4 @@
-import { quizService } from "./index.js";
+import { quizController } from "./index.js";
 import { checkAuth } from "../../shared/middleware/checkAuth.js";
 
 export default async function quizRoutes(fastify) {
@@ -21,7 +21,7 @@ export default async function quizRoutes(fastify) {
 				},
 			},
 		},
-		quizService.getAllQuizzes,
+		quizController.getAllQuizzes,
 	);
 
 	fastify.get(
@@ -38,7 +38,7 @@ export default async function quizRoutes(fastify) {
 				},
 			},
 		},
-		quizService.getQuizById,
+		quizController.getQuizById,
 	);
 
 	// protected routes
@@ -62,7 +62,7 @@ export default async function quizRoutes(fastify) {
 					},
 				},
 			},
-			quizService.createQuiz,
+			quizController.createQuiz,
 		);
 
 		protectedRoutes.put(
@@ -93,7 +93,7 @@ export default async function quizRoutes(fastify) {
 					},
 				},
 			},
-			quizService.updateQuiz,
+			quizController.updateQuiz,
 		);
 
 		protectedRoutes.delete(
@@ -110,7 +110,7 @@ export default async function quizRoutes(fastify) {
 					},
 				},
 			},
-			quizService.deleteQuiz,
+			quizController.deleteQuiz,
 		);
 	});
 }
