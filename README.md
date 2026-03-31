@@ -61,8 +61,8 @@ Frontend project:
     |   |-- server.js
     |   `-- http/
     |       `-- router.js
-        |-- data/
-        |   `-- defaultQuizzes.js
+    |-- data/
+    |   |-- defaultQuizzes.js
     |   `-- quizSeed.js
     |-- infrastructure/
     |   |-- db/
@@ -73,30 +73,35 @@ Frontend project:
     |       `-- googleClient.js
     |-- modules/
     |   |-- auth/
+    |   |   |-- auth.controller.js
     |   |   |-- auth.routes.js
-    |   |   |-- auth.service.js
+    |   |   |-- auth.services.js
     |   |   |-- index.js
     |   |   `-- temp-code.model.js
     |   |-- quizzes/
     |   |   |-- index.js
+    |   |   |-- quiz.controller.js
     |   |   |-- quiz.model.js
     |   |   |-- quiz.routes.js
-    |   |   `-- quiz.service.js
+    |   |   `-- quiz.services.js
     |   |-- results/
     |   |   |-- index.js
+    |   |   |-- result.controller.js
     |   |   |-- result.model.js
     |   |   |-- result.routes.js
-    |   |   `-- result.service.js
+    |   |   `-- result.services.js
     |   `-- users/
     |       |-- index.js
+    |       |-- user.controller.js
     |       |-- user.model.js
     |       |-- user.routes.js
-    |       `-- user.service.js
+    |       `-- user.services.js
     `-- shared/
         |-- middleware/
         |   `-- checkAuth.js
         `-- utils/
             |-- dataUtil.js
+            |-- memoizer.js
             `-- nicknameGen.js
 ```
 
