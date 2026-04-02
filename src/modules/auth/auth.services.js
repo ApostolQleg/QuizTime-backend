@@ -26,12 +26,12 @@ const generateOAuthPasswordHash = async () => {
 
 export const register = async (email, password, avatarUrl, code, googleToken) => {
 	if (!email || !password) {
-		return { ok: false, error: "Email and password are required" };
+		return { ok: false, error: "Email and password are required", code: 400 };
 	}
 
 	const existingEmail = await User.findOne({ email });
 	if (existingEmail) {
-		return { ok: false, error: "User with this email already exists" };
+		return { ok: false, error: "User with this email already exists", code: 409 };
 	}
 
 	let googleId = null;
@@ -42,14 +42,14 @@ export const register = async (email, password, avatarUrl, code, googleToken) =>
 		const payload = await verifyGoogleToken(googleToken);
 
 		if (payload.email !== email) {
-			return { ok: false, error: "Google email does not match provided email" };
+			return { ok: false, error: "Google email does not match provided email", code: 401 };
 		}
 
 		googleId = payload.sub;
 		if (!finalAvatarUrl) finalAvatarUrl = payload.picture;
 	} else {
 		if (!code) {
-			return { ok: false, error: "Verification code is required" };
+			return { ok: false, error: "Verification code is required", code: 400 };
 		}
 
 		const record = await TempCode.findOne({ email });
@@ -57,11 +57,12 @@ export const register = async (email, password, avatarUrl, code, googleToken) =>
 			return {
 				ok: false,
 				error: "Verification code expired or not found. Please try again.",
+				code: 404,
 			};
 		}
 
 		if (record.code !== code.trim()) {
-			return { ok: false, error: "Invalid verification code" };
+			return { ok: false, error: "Invalid verification code", code: 400 };
 		}
 
 		await TempCode.deleteOne({ email });
@@ -82,21 +83,20 @@ export const register = async (email, password, avatarUrl, code, googleToken) =>
 
 	const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
 	const { passwordHash: _, ...userData } = user.toObject();
-	return { ok: true, user: userData, token };
+	return { ok: true, user: userData, token, code: 201 };
 };
 
 export const login = async (email, password) => {
 	const user = await User.findOne({ email: email });
 
-	if (!user) return { ok: false, error: "User not found" };
+	if (!user) return { ok: false, error: "User not found", code: 404 };
 
 	const isValidPass = await bcrypt.compare(password, user.passwordHash);
-	if (!isValidPass) return { ok: false, error: "Invalid password" };
+	if (!isValidPass) return { ok: false, error: "Invalid password", code: 401 };
 
 	const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
-	const { passwordHash, ...userData } = user.toObject();
-
-	return { ok: true, user: userData, token };
+	const { passwordHash: _, ...userData } = user.toObject();
+	return { ok: true, user: userData, token, code: 200 };
 };
 
 export const googleAuth = async (token) => {
@@ -143,7 +143,7 @@ export const googleAuth = async (token) => {
 	const appToken = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
 	const { passwordHash: _, ...userData } = user.toObject();
 
-	return { ok: true, user: userData, token: appToken };
+	return { ok: true, user: userData, token: appToken, code: 200 };
 };
 
 export const googleExtract = async (token) => {
@@ -153,17 +153,17 @@ export const googleExtract = async (token) => {
 	const existingUser = await User.findOne({ email });
 
 	if (existingUser) {
-		return { ok: false, error: "User with this email already exists" };
+		return { ok: false, error: "User with this email already exists", code: 409 };
 	}
 
-	return { ok: true, email, picture, googleId: sub };
+	return { ok: true, email, picture, googleId: sub, code: 200 };
 };
 
 export const sendCode = async (email) => {
-	if (!email) return { ok: false, error: "Email is required" };
+	if (!email) return { ok: false, error: "Email is required", code: 400 };
 
 	const existingUser = await User.findOne({ email });
-	if (existingUser) return { ok: false, error: "User with this email already exists" };
+	if (existingUser) return { ok: false, error: "User with this email already exists", code: 409 };
 
 	const code = Math.floor(100000 + Math.random() * 900000).toString();
 
@@ -175,7 +175,7 @@ export const sendCode = async (email) => {
 
 	await sendVerificationEmail(email, code);
 
-	return { ok: true, message: "Code sent" };
+	return { ok: true, message: "Code sent", code: 200 };
 };
 
 export const linkGoogle = async (userId, token) => {
@@ -184,11 +184,15 @@ export const linkGoogle = async (userId, token) => {
 
 	const existingGoogleUser = await User.findOne({ googleId: sub });
 	if (existingGoogleUser && String(existingGoogleUser._id) !== String(userId)) {
-		return { ok: false, error: "This Google account is already linked to another user" };
+		return {
+			ok: false,
+			error: "This Google account is already linked to another user",
+			code: 409,
+		};
 	}
 
 	const user = await User.findById(userId);
-	if (!user) return { ok: false, error: "User not found" };
+	if (!user) return { ok: false, error: "User not found", code: 404 };
 
 	user.googleId = sub;
 
@@ -200,5 +204,5 @@ export const linkGoogle = async (userId, token) => {
 	await user.save();
 
 	const { passwordHash, ...userData } = user.toObject();
-	return { ok: true, user: userData };
+	return { ok: true, user: userData, code: 200 };
 };

@@ -53,23 +53,23 @@ export const getAllQuizzes = async (limit, skip, searchParam, sortParam, authorI
 		};
 	});
 
-	return { ok: true, quizzes: mappedQuizzes };
+	return { ok: true, quizzes: mappedQuizzes, code: 200 };
 };
 
 export const createQuiz = async (userId, id, title, description, questions) => {
 	if (!id || !title) {
-		return { ok: false, error: "Invalid payload" };
+		return { ok: false, error: "Invalid payload", code: 400 };
 	}
 
 	if (!Array.isArray(questions) || questions.length === 0) {
-		return { ok: false, error: "Quiz must have at least one question" };
+		return { ok: false, error: "Quiz must have at least one question", code: 400 };
 	}
 
 	const exists = await Quiz.findOne({ id });
-	if (exists) return { ok: false, error: "Quiz with this id already exists" };
+	if (exists) return { ok: false, error: "Quiz with this id already exists", code: 409 };
 
 	const user = await User.findById(userId);
-	if (!user) return { ok: false, error: "Author not found" };
+	if (!user) return { ok: false, error: "Author not found", code: 404 };
 
 	const quiz = new Quiz({
 		id: String(id),
@@ -82,12 +82,12 @@ export const createQuiz = async (userId, id, title, description, questions) => {
 
 	await quiz.save();
 
-	return { ok: true, quiz };
+	return { ok: true, quiz, code: 201 };
 };
 
 export const getQuizById = async (id) => {
 	const quiz = await getCachedQuiz(id);
-	if (!quiz) return { ok: false, error: "Quiz not found" };
+	if (!quiz) return { ok: false, error: "Quiz not found", code: 404 };
 
 	const author = quiz.authorId || {};
 
@@ -100,42 +100,43 @@ export const getQuizById = async (id) => {
 		authorThemeColor: author.themeColor,
 	};
 
-	return { ok: true, quiz: responseQuiz };
+	return { ok: true, quiz: responseQuiz, code: 200 };
 };
 
 export const updateQuiz = async (userId, id, title, description, questions) => {
 	const quiz = await Quiz.findOne({ id });
-	if (!quiz) return { ok: false, error: "Quiz not found" };
+	if (!quiz) return { ok: false, error: "Quiz not found", code: 404 };
 
-	if (!quiz.authorId) return { ok: false, error: "Cannot edit system quizzes" };
+	if (!quiz.authorId) return { ok: false, error: "Cannot edit system quizzes", code: 403 };
 
 	if (String(quiz.authorId) !== String(userId))
-		return { ok: false, error: "You are not the author" };
+		return { ok: false, error: "You are not the author", code: 403 };
 
 	const updates = {};
 	if (title) updates.title = title;
 	if (description) updates.description = description;
 	if (questions) {
-		if (!Array.isArray(questions)) return { ok: false, error: "Questions must be an array" };
+		if (!Array.isArray(questions))
+			return { ok: false, error: "Questions must be an array", code: 400 };
 		updates.questions = questions;
 	}
 	const updatedQuiz = await Quiz.findOneAndUpdate({ id }, { $set: updates }, { new: true });
 
 	clearQuizCache(id);
 
-	return { ok: true, quiz: updatedQuiz };
+	return { ok: true, quiz: updatedQuiz, code: 200 };
 };
 
 export const deleteQuiz = async (userId, id) => {
 	const quiz = await Quiz.findOne({ id });
-	if (!quiz) return { ok: false, error: "Quiz not found" };
+	if (!quiz) return { ok: false, error: "Quiz not found", code: 404 };
 
-	if (!quiz.authorId) return { ok: false, error: "Cannot delete system quizzes" };
+	if (!quiz.authorId) return { ok: false, error: "Cannot delete system quizzes", code: 403 };
 
 	if (String(quiz.authorId) !== String(userId))
-		return { ok: false, error: "You are not the author" };
+		return { ok: false, error: "You are not the author", code: 403 };
 
 	await Quiz.findOneAndDelete({ id });
 
-	return { ok: true, message: "Quiz deleted successfully" };
+	return { ok: true, message: "Quiz deleted successfully", code: 200 };
 };

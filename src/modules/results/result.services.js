@@ -2,6 +2,10 @@ import { Result } from "./index.js";
 import { Quiz } from "../quizzes/index.js";
 
 export const getResults = async (userId, limit, skip, searchParam, sortParam) => {
+	if (!userId) {
+		return { ok: false, error: "User ID missing", code: 400 };
+	}
+
 	const filter = {
 		userId: userId,
 	};
@@ -23,19 +27,19 @@ export const getResults = async (userId, limit, skip, searchParam, sortParam) =>
 		.limit(limit)
 		.lean();
 
-	return { ok: true, results };
+	return { ok: true, results, code: 200 };
 };
 
 export const saveResult = async (userId, quizId, answers, summary, timestamp) => {
 	if (!quizId || !answers || !summary || !timestamp)
-		return { ok: false, error: "Invalid payload" };
+		return { ok: false, error: "Invalid payload", code: 400 };
 
 	const normalizedTimestamp = new Date(timestamp);
 	if (Number.isNaN(normalizedTimestamp.getTime()))
-		return { ok: false, error: "Invalid timestamp" };
+		return { ok: false, error: "Invalid timestamp", code: 400 };
 
 	const quiz = await Quiz.findOne({ id: String(quizId) }).lean();
-	if (!quiz) return { ok: false, error: "Quiz not found" };
+	if (!quiz) return { ok: false, error: "Quiz not found", code: 404 };
 
 	const result = new Result({
 		quizId: quizId,
@@ -49,7 +53,7 @@ export const saveResult = async (userId, quizId, answers, summary, timestamp) =>
 
 	await result.save();
 
-	return { ok: true, resultId: result._id };
+	return { ok: true, resultId: result._id, code: 201 };
 };
 
 export const getResultById = async (id, userId) => {
@@ -57,7 +61,7 @@ export const getResultById = async (id, userId) => {
 		_id: id,
 		userId: userId,
 	}).lean();
-	if (!result) return { ok: false, error: "Result not found" };
+	if (!result) return { ok: false, error: "Result not found", code: 404 };
 
-	return { ok: true, result };
+	return { ok: true, result, code: 200 };
 };
