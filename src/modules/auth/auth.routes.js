@@ -1,26 +1,14 @@
-import { authController } from "./index.js";
+import { authController, oauthController } from "./index.js";
 import { checkAuth } from "../../shared/middleware/checkAuth.js";
+import { loginSchema, registerSchema, sendCodeSchema } from "./schemas/auth.js";
+import { googleAuthSchema, googleExtractSchema, linkGoogleSchema } from "./schemas/oauth.js";
 
 export default async function authRoutes(fastify) {
 	fastify.post(
 		"/register",
 		{
 			config: { rateLimit: { max: 8, timeWindow: "1 minute" } },
-			schema: {
-				body: {
-					type: "object",
-					required: ["email", "password"],
-					additionalProperties: false,
-					properties: {
-						email: { type: "string", format: "email" },
-						password: { type: "string", minLength: 6, maxLength: 128 },
-						avatarUrl: { type: "string", maxLength: 512 },
-						code: { type: "string", minLength: 6, maxLength: 6 },
-						googleToken: { type: "string", minLength: 16 },
-					},
-					oneOf: [{ required: ["code"] }, { required: ["googleToken"] }],
-				},
-			},
+			schema: registerSchema,
 		},
 		authController.register,
 	);
@@ -29,17 +17,7 @@ export default async function authRoutes(fastify) {
 		"/login",
 		{
 			config: { rateLimit: { max: 6, timeWindow: "1 minute" } },
-			schema: {
-				body: {
-					type: "object",
-					required: ["email", "password"],
-					additionalProperties: false,
-					properties: {
-						email: { type: "string", format: "email", maxLength: 254 },
-						password: { type: "string", minLength: 1, maxLength: 128 },
-					},
-				},
-			},
+			schema: loginSchema,
 		},
 		authController.login,
 	);
@@ -48,52 +26,25 @@ export default async function authRoutes(fastify) {
 		"/google",
 		{
 			config: { rateLimit: { max: 10, timeWindow: "1 minute" } },
-			schema: {
-				body: {
-					type: "object",
-					required: ["token"],
-					additionalProperties: false,
-					properties: {
-						token: { type: "string", minLength: 16 },
-					},
-				},
-			},
+			schema: googleAuthSchema,
 		},
-		authController.googleAuth,
+		oauthController.googleAuth,
 	);
 
 	fastify.post(
 		"/google-extract",
 		{
 			config: { rateLimit: { max: 10, timeWindow: "1 minute" } },
-			schema: {
-				body: {
-					type: "object",
-					required: ["token"],
-					additionalProperties: false,
-					properties: {
-						token: { type: "string", minLength: 16 },
-					},
-				},
-			},
+			schema: googleExtractSchema,
 		},
-		authController.googleExtract,
+		oauthController.googleExtract,
 	);
 
 	fastify.post(
 		"/send-code",
 		{
 			config: { rateLimit: { max: 3, timeWindow: "1 minute" } },
-			schema: {
-				body: {
-					type: "object",
-					required: ["email"],
-					additionalProperties: false,
-					properties: {
-						email: { type: "string", format: "email" },
-					},
-				},
-			},
+			schema: sendCodeSchema,
 		},
 		authController.sendCode,
 	);
@@ -103,17 +54,8 @@ export default async function authRoutes(fastify) {
 		{
 			preHandler: checkAuth,
 			config: { rateLimit: { max: 10, timeWindow: "1 minute" } },
-			schema: {
-				body: {
-					type: "object",
-					required: ["token"],
-					additionalProperties: false,
-					properties: {
-						token: { type: "string", minLength: 16 },
-					},
-				},
-			},
+			schema: linkGoogleSchema,
 		},
-		authController.linkGoogle,
+		oauthController.linkGoogle,
 	);
 }
