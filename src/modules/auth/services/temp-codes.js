@@ -1,22 +1,19 @@
-import TempCode from "../temp-code.model.js";
+import * as tempCodeRepository from "../repositories/temp-code.js";
 import { sendVerificationEmail } from "../../../infrastructure/email/email.service.js";
+import { InvalidVerificationCodeError, VerificationCodeExpiredError } from "../errors/auth.js";
 
 const generateVerificationCode = () => {
 	return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
 export const findByEmail = async (email) => {
-	return TempCode.findOne({ email });
+	return tempCodeRepository.findByEmail(email);
 };
 
 export const issueForEmail = async (email) => {
 	const code = generateVerificationCode();
 
-	await TempCode.findOneAndUpdate(
-		{ email },
-		{ code, createdAt: new Date() },
-		{ upsert: true, new: true, setDefaultsOnInsert: true },
-	);
+	await tempCodeRepository.upsertByEmail(email, code);
 
 	await sendVerificationEmail(email, code);
 
@@ -27,17 +24,12 @@ export const verifyCode = async (email, code) => {
 	const record = await findByEmail(email);
 
 	if (!record) {
-		return {
-			ok: false,
-			errorType: "NOT_FOUND",
-			error: "Verification code expired or not found. Please try again.",
-		};
+		throw new VerificationCodeExpiredError();
 	}
 
 	if (record.code !== code.trim()) {
-		return { ok: false, errorType: "VALIDATION", error: "Invalid verification code" };
+		throw new InvalidVerificationCodeError();
 	}
 
-	await TempCode.deleteOne({ email });
-	return { ok: true };
+	await tempCodeRepository.deleteByEmail(email);
 };

@@ -1,46 +1,44 @@
-import User from "../../users/user.model.js";
+import * as userRepository from "../repositories/user.js";
 import { generateNickname } from "../../../shared/utils/nicknameGen.js";
 import { generateOAuthPasswordHash } from "./security.js";
 
 const buildUniqueNickname = async () => {
 	let candidate = generateNickname().next().value;
-	let exists = await User.exists({ nickname: candidate });
+	let exists = await userRepository.existsByNickname(candidate);
 
 	while (exists) {
 		candidate = generateNickname().next().value;
-		exists = await User.exists({ nickname: candidate });
+		exists = await userRepository.existsByNickname(candidate);
 	}
 
 	return candidate;
 };
 
 export const findByEmail = async (email) => {
-	return User.findOne({ email });
+	return userRepository.findByEmail(email);
 };
 
 export const findByGoogleId = async (googleId) => {
-	return User.findOne({ googleId });
+	return userRepository.findByGoogleId(googleId);
 };
 
 export const findById = async (userId) => {
-	return User.findById(userId);
+	return userRepository.findById(userId);
 };
 
 export const createLocalUser = async ({ email, passwordHash, avatarUrl, googleId }) => {
-	const user = new User({
+	const user = await userRepository.create({
 		email,
 		nickname: await buildUniqueNickname(),
 		passwordHash,
 		avatarUrl,
 		googleId: googleId || null,
 	});
-
-	await user.save();
 	return user;
 };
 
 export const createGoogleUser = async ({ email, picture, googleId }) => {
-	const user = new User({
+	const user = await userRepository.create({
 		email,
 		nickname: await buildUniqueNickname(),
 		passwordHash: await generateOAuthPasswordHash(),
@@ -48,8 +46,6 @@ export const createGoogleUser = async ({ email, picture, googleId }) => {
 		avatarUrl: picture,
 		avatarType: picture ? "google" : "generated",
 	});
-
-	await user.save();
 	return user;
 };
 
@@ -73,7 +69,7 @@ export const ensureGoogleFields = async (user, { googleId, picture }) => {
 	}
 
 	if (hasChanges) {
-		await user.save();
+		await userRepository.save(user);
 	}
 
 	return user;
@@ -87,7 +83,7 @@ export const linkGoogleAccount = async (user, { googleId, picture }) => {
 		user.avatarType = "google";
 	}
 
-	await user.save();
+	await userRepository.save(user);
 	return user;
 };
 
