@@ -1,14 +1,14 @@
-import { DomainError } from "./domain-error.js";
+import { DomainError } from "../../../errors/domain-error.js";
 
 export class AuthValidationError extends DomainError {
 	constructor(message, details) {
-		super(message, { type: "VALIDATION", statusCode: 400, details });
+		super(message, 400, "AUTH_VALIDATION_ERROR", details);
 	}
 }
 
 export class EmailAlreadyExistsError extends DomainError {
 	constructor(message = "User with this email already exists") {
-		super(message, { type: "CONFLICT", statusCode: 409 });
+		super(message, 409, "EMAIL_ALREADY_EXISTS");
 	}
 }
 
@@ -20,10 +20,11 @@ export class VerificationCodeRequiredError extends AuthValidationError {
 
 export class VerificationCodeExpiredError extends DomainError {
 	constructor() {
-		super("Verification code expired or not found. Please try again.", {
-			type: "NOT_FOUND",
-			statusCode: 404,
-		});
+		super(
+			"Verification code expired or not found. Please try again.",
+			404,
+			"VERIFICATION_CODE_EXPIRED",
+		);
 	}
 }
 
@@ -35,36 +36,34 @@ export class InvalidVerificationCodeError extends AuthValidationError {
 
 export class UserNotFoundError extends DomainError {
 	constructor(message = "User not found") {
-		super(message, { type: "NOT_FOUND", statusCode: 404 });
+		super(message, 404, "USER_NOT_FOUND");
 	}
 }
 
 export class InvalidPasswordError extends DomainError {
 	constructor() {
-		super("Invalid password", { type: "UNAUTHORIZED", statusCode: 401 });
+		super("Invalid password", 401, "INVALID_PASSWORD");
 	}
 }
 
 export class GoogleEmailMismatchError extends DomainError {
 	constructor() {
-		super("Google email does not match provided email", {
-			type: "UNAUTHORIZED",
-			statusCode: 401,
-		});
+		super("Google email does not match provided email", 401, "GOOGLE_EMAIL_MISMATCH");
 	}
 }
 
 export class GoogleAccountAlreadyLinkedError extends DomainError {
 	constructor() {
-		super("This Google account is already linked to another user", {
-			type: "CONFLICT",
-			statusCode: 409,
-		});
+		super(
+			"This Google account is already linked to another user",
+			409,
+			"GOOGLE_ACCOUNT_ALREADY_LINKED",
+		);
 	}
 }
 
 export class InvalidGoogleTokenError extends DomainError {
 	constructor() {
-		super("Invalid Google token", { type: "UNAUTHORIZED", statusCode: 401 });
+		super("Invalid Google token", 401, "INVALID_GOOGLE_TOKEN");
 	}
 }

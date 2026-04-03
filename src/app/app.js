@@ -4,6 +4,7 @@ import rateLimit from "@fastify/rate-limit";
 import dotenv from "dotenv";
 import { connectToDatabase } from "../infrastructure/db/db.js";
 import { seedQuizzesIfEmpty } from "../data/quizSeed.js";
+import errorHandlerPlugin from "../plugins/error-handler.js";
 import router from "./http/router.js";
 
 dotenv.config();
@@ -30,6 +31,8 @@ await app.register(cors, {
 await app.register(rateLimit, {
 	global: false,
 });
+
+await app.register(errorHandlerPlugin);
 
 // Database connection via plugin
 app.register(async (instance) => {
