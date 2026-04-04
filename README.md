@@ -61,42 +61,47 @@ Frontend project:
     |   |-- server.js
     |   `-- http/
     |       `-- router.js
-        |-- data/
-        |   `-- defaultQuizzes.js
+    |-- data/
+    |   |-- defaultQuizzes.js
     |   `-- quizSeed.js
     |-- infrastructure/
     |   |-- db/
     |   |   `-- db.js
     |   |-- email/
-    |   |   `-- emailService.js
+    |   |   `-- email.service.js
     |   `-- google/
     |       `-- googleClient.js
     |-- modules/
     |   |-- auth/
+    |   |   |-- auth.controller.js
     |   |   |-- auth.routes.js
-    |   |   |-- auth.service.js
+    |   |   |-- auth.services.js
     |   |   |-- index.js
     |   |   `-- temp-code.model.js
     |   |-- quizzes/
     |   |   |-- index.js
+    |   |   |-- quiz.controller.js
     |   |   |-- quiz.model.js
     |   |   |-- quiz.routes.js
-    |   |   `-- quiz.service.js
+    |   |   `-- quiz.services.js
     |   |-- results/
     |   |   |-- index.js
+    |   |   |-- result.controller.js
     |   |   |-- result.model.js
     |   |   |-- result.routes.js
-    |   |   `-- result.service.js
+    |   |   `-- result.services.js
     |   `-- users/
     |       |-- index.js
+    |       |-- user.controller.js
     |       |-- user.model.js
     |       |-- user.routes.js
-    |       `-- user.service.js
+    |       `-- user.services.js
     `-- shared/
         |-- middleware/
         |   `-- checkAuth.js
         `-- utils/
             |-- dataUtil.js
+            |-- memoizer.js
             `-- nicknameGen.js
 ```
 
@@ -179,7 +184,7 @@ Base groups:
 | Method | Path                   | Auth | Purpose                                              |
 | ------ | ---------------------- | ---- | ---------------------------------------------------- |
 | `POST` | `/auth/register`       | No   | Register local or Google-backed user                 |
-| `POST` | `/auth/login`          | No   | Login with `login` + `password`                      |
+| `POST` | `/auth/login`          | No   | Login with `email` + `password`                      |
 | `POST` | `/auth/google`         | No   | Login existing user by Google token                  |
 | `POST` | `/auth/google-extract` | No   | Validate Google token and return profile for prefill |
 | `POST` | `/auth/send-code`      | No   | Send 6-digit email verification code                 |
@@ -187,10 +192,10 @@ Base groups:
 
 Important request notes:
 
-- `POST /auth/register` expects `login`, `email`, `password`, and either:
+- `POST /auth/register` expects `email`, `password`, and either:
     - `code` from `/auth/send-code`, or
     - `googleToken`.
-- `POST /auth/login` expects `{ login, password }`.
+- `POST /auth/login` expects `{ email, password }`.
 - `POST /auth/google`, `/auth/google-extract`, and `/auth/link-google` expect `{ token }`.
 - `POST /auth/send-code` expects `{ email }`.
 
@@ -254,7 +259,6 @@ All result routes are protected.
 
 `PUT /api/user/update` accepts any of:
 
-- `login`
 - `nickname`
 - `themeColor`
 - `avatarType`

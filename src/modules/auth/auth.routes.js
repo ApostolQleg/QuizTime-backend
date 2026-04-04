@@ -1,4 +1,4 @@
-import { authService } from "./index.js";
+import { authController } from "./index.js";
 import { checkAuth } from "../../shared/middleware/checkAuth.js";
 
 export default async function authRoutes(fastify) {
@@ -9,10 +9,9 @@ export default async function authRoutes(fastify) {
 			schema: {
 				body: {
 					type: "object",
-					required: ["login", "email", "password"],
+					required: ["email", "password"],
 					additionalProperties: false,
 					properties: {
-						login: { type: "string", minLength: 2, maxLength: 64 },
 						email: { type: "string", format: "email" },
 						password: { type: "string", minLength: 6, maxLength: 128 },
 						avatarUrl: { type: "string", maxLength: 512 },
@@ -23,7 +22,7 @@ export default async function authRoutes(fastify) {
 				},
 			},
 		},
-		authService.register,
+		authController.register,
 	);
 
 	fastify.post(
@@ -33,16 +32,16 @@ export default async function authRoutes(fastify) {
 			schema: {
 				body: {
 					type: "object",
-					required: ["login", "password"],
+					required: ["email", "password"],
 					additionalProperties: false,
 					properties: {
-						login: { type: "string", minLength: 2, maxLength: 64 },
+						email: { type: "string", format: "email", maxLength: 254 },
 						password: { type: "string", minLength: 1, maxLength: 128 },
 					},
 				},
 			},
 		},
-		authService.login,
+		authController.login,
 	);
 
 	fastify.post(
@@ -60,7 +59,7 @@ export default async function authRoutes(fastify) {
 				},
 			},
 		},
-		authService.googleAuth,
+		authController.googleAuth,
 	);
 
 	fastify.post(
@@ -78,7 +77,7 @@ export default async function authRoutes(fastify) {
 				},
 			},
 		},
-		authService.googleExtract,
+		authController.googleExtract,
 	);
 
 	fastify.post(
@@ -96,7 +95,7 @@ export default async function authRoutes(fastify) {
 				},
 			},
 		},
-		authService.sendCode,
+		authController.sendCode,
 	);
 
 	fastify.post(
@@ -115,6 +114,6 @@ export default async function authRoutes(fastify) {
 				},
 			},
 		},
-		authService.linkGoogle,
+		authController.linkGoogle,
 	);
 }

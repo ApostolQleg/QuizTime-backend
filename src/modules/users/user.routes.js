@@ -1,4 +1,4 @@
-import { userService } from "./index.js";
+import { userController } from "./index.js";
 import { checkAuth } from "../../shared/middleware/checkAuth.js";
 
 export default async function userRoutes(fastify) {
@@ -17,13 +17,13 @@ export default async function userRoutes(fastify) {
 				},
 			},
 		},
-		userService.getUserById,
+		userController.getUserById,
 	);
 
 	// protected routes
 	fastify.register(async function (protectedRoutes) {
 		protectedRoutes.addHook("preHandler", checkAuth);
-		protectedRoutes.get("/", userService.getUser);
+		protectedRoutes.get("/", userController.getUser);
 		protectedRoutes.put(
 			"/update",
 			{
@@ -32,13 +32,11 @@ export default async function userRoutes(fastify) {
 						type: "object",
 						additionalProperties: false,
 						properties: {
-							login: { type: "string", minLength: 2, maxLength: 64 },
 							nickname: { type: "string", minLength: 2, maxLength: 64 },
 							themeColor: { type: "string", maxLength: 32 },
 							avatarType: { type: "string", maxLength: 32 },
 						},
 						anyOf: [
-							{ required: ["login"] },
 							{ required: ["nickname"] },
 							{ required: ["themeColor"] },
 							{ required: ["avatarType"] },
@@ -46,7 +44,7 @@ export default async function userRoutes(fastify) {
 					},
 				},
 			},
-			userService.updateProfile,
+			userController.updateProfile,
 		);
 
 		protectedRoutes.post(
@@ -64,9 +62,9 @@ export default async function userRoutes(fastify) {
 					},
 				},
 			},
-			userService.changePassword,
+			userController.changePassword,
 		);
-		protectedRoutes.delete("/delete", userService.deleteAccount);
-		protectedRoutes.get("/nickname", userService.getNicknameArray);
+		protectedRoutes.delete("/delete", userController.deleteAccount);
+		protectedRoutes.get("/nickname", userController.getNicknameArray);
 	});
 }

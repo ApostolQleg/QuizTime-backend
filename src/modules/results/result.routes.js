@@ -1,4 +1,4 @@
-import { resultService } from "./index.js";
+import { resultController } from "./index.js";
 import { checkAuth } from "../../shared/middleware/checkAuth.js";
 
 export default async function resultRoutes(fastify) {
@@ -20,7 +20,7 @@ export default async function resultRoutes(fastify) {
 				},
 			},
 		},
-		resultService.getUserResults,
+		resultController.getUserResults,
 	);
 
 	fastify.get(
@@ -37,7 +37,7 @@ export default async function resultRoutes(fastify) {
 				},
 			},
 		},
-		resultService.getResultById,
+		resultController.getResultById,
 	);
 
 	fastify.post(
@@ -71,6 +71,6 @@ export default async function resultRoutes(fastify) {
 				},
 			},
 		},
-		resultService.saveResult,
+		resultController.saveResult,
 	);
 }

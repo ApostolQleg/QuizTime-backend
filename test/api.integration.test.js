@@ -67,14 +67,12 @@ test("GET /api/results without token is rejected", async () => {
 
 test("GET /api/results/:id only returns current user's result", async () => {
 	const alice = await User.create({
-		login: "alice",
 		email: "alice@example.com",
 		nickname: "alice_nick",
 		passwordHash: "hash1",
 	});
 
 	const bob = await User.create({
-		login: "bob",
 		email: "bob@example.com",
 		nickname: "bob_nick",
 		passwordHash: "hash2",
@@ -114,7 +112,6 @@ test("GET /api/results/:id only returns current user's result", async () => {
 
 test("POST /api/results accepts answers as numeric array", async () => {
 	const user = await User.create({
-		login: "poster",
 		email: "poster@example.com",
 		nickname: "poster_nick",
 		passwordHash: "hash3",
@@ -151,7 +148,6 @@ test("POST /api/results accepts answers as numeric array", async () => {
 
 test("POST /api/results accepts timestamp as unix milliseconds", async () => {
 	const user = await User.create({
-		login: "poster2",
 		email: "poster2@example.com",
 		nickname: "poster2_nick",
 		passwordHash: "hash4",
