@@ -3,9 +3,9 @@ import { checkAuth } from "../../shared/middleware/checkAuth.js";
 import {
 	quizzesSchema,
 	quizByIdSchema,
-	createSchema,
-	updateSchema,
-	deleteSchema,
+	createQuizSchema,
+	updateQuizSchema,
+	deleteQuizSchema,
 } from "./schemas/quiz.js";
 
 export default async function quizRoutes(fastify) {
@@ -15,8 +15,8 @@ export default async function quizRoutes(fastify) {
 	fastify.register(async function (protectedRoutes) {
 		protectedRoutes.addHook("preHandler", checkAuth);
 
-		protectedRoutes.post("/", { schema: createSchema }, quizController.createQuiz);
-		protectedRoutes.put("/:id", { schema: updateSchema }, quizController.updateQuiz);
-		protectedRoutes.delete("/:id", { schema: deleteSchema }, quizController.deleteQuiz);
+		protectedRoutes.post("/", { schema: createQuizSchema }, quizController.createQuiz);
+		protectedRoutes.put("/:id", { schema: updateQuizSchema }, quizController.updateQuiz);
+		protectedRoutes.delete("/:id", { schema: deleteQuizSchema }, quizController.deleteQuiz);
 	});
 }
