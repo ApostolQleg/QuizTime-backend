@@ -1,6 +1,6 @@
 import Result from "../result.model.js";
 
-export const findById = async (id, userId) => {
+export const findByIdAndUserId = async (id, userId) => {
 	return Result.findOne({ _id: id, userId }).lean();
 };
 
