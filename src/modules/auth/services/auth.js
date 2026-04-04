@@ -1,58 +1,35 @@
 import * as securityService from "./security.js";
-import * as googleService from "./google.js";
-import * as userService from "./users.js";
-import * as tempCodesService from "./temp-codes.js";
-import {
-	AuthValidationError,
-	EmailAlreadyExistsError,
-	GoogleAccountAlreadyLinkedError,
-	GoogleEmailMismatchError,
-	InvalidGoogleTokenError,
-	InvalidPasswordError,
-	UserNotFoundError,
-	VerificationCodeRequiredError,
-} from "../errors/auth.js";
-
-const getGoogleProfile = async (token) => {
-	try {
-		return await googleService.verifyAndNormalizeGoogleToken(token);
-	} catch {
-		throw new InvalidGoogleTokenError();
-	}
-};
+import * as googleAdapter from "./google-adapter.js";
+import * as normalizationService from "./normalization.js";
+import * as permissionService from "./permissions.js";
+import * as persistenceService from "./persistence.js";
 
 export const register = async ({ email, password, avatarUrl, code, googleToken }) => {
-	if (!email || !password) {
-		throw new AuthValidationError("Email and password are required");
-	}
+	permissionService.assertRegisterPayload({ email, password });
 
-	const existingUser = await userService.findByEmail(email);
-	if (existingUser) {
-		throw new EmailAlreadyExistsError();
-	}
+	const existingUser = await persistenceService.findUserByEmail(email);
+	permissionService.assertEmailAvailable(existingUser);
 
-	let googleId = null;
-	let finalAvatarUrl = avatarUrl;
+	let googleProfile = null;
 
 	if (googleToken) {
-		const googleProfile = await getGoogleProfile(googleToken);
-
-		if (googleProfile.email !== email) {
-			throw new GoogleEmailMismatchError();
-		}
-
-		googleId = googleProfile.googleId;
-		if (!finalAvatarUrl) finalAvatarUrl = googleProfile.picture;
+		googleProfile = await googleAdapter.getGoogleProfileOrThrow(googleToken);
+		permissionService.assertGoogleEmailMatches({
+			expectedEmail: email,
+			actualEmail: googleProfile.email,
+		});
 	} else {
-		if (!code) {
-			throw new VerificationCodeRequiredError();
-		}
-
-		await tempCodesService.verifyCode(email, code);
+		permissionService.assertVerificationCodeProvided(code);
+		await persistenceService.verifyCode({ email, code });
 	}
 
+	const { googleId, finalAvatarUrl } = normalizationService.resolveRegisterIdentity({
+		avatarUrl,
+		googleProfile,
+	});
+
 	const passwordHash = await securityService.hashPassword(password);
-	const user = await userService.createLocalUser({
+	const user = await persistenceService.createLocalUser({
 		email,
 		passwordHash,
 		avatarUrl: finalAvatarUrl,
@@ -60,86 +37,70 @@ export const register = async ({ email, password, avatarUrl, code, googleToken }
 	});
 
 	const token = securityService.signAccessToken(user._id);
-	return { user: userService.sanitizeUser(user), token };
+	return { user: normalizationService.sanitizeUser(user), token };
 };
 
 export const login = async ({ email, password }) => {
-	const user = await userService.findByEmail(email);
-
-	if (!user) {
-		throw new UserNotFoundError();
-	}
+	const user = await persistenceService.findUserByEmail(email);
+	permissionService.assertUserExists(user);
 
 	const isValidPassword = await securityService.verifyPassword(password, user.passwordHash);
-	if (!isValidPassword) {
-		throw new InvalidPasswordError();
-	}
+	permissionService.assertValidPassword(isValidPassword);
 
 	const token = securityService.signAccessToken(user._id);
-	return { user: userService.sanitizeUser(user), token };
+	return { user: normalizationService.sanitizeUser(user), token };
 };
 
 export const sendCode = async ({ email }) => {
-	if (!email) {
-		throw new AuthValidationError("Email is required");
-	}
+	permissionService.assertSendCodePayload({ email });
 
-	const existingUser = await userService.findByEmail(email);
-	if (existingUser) {
-		throw new EmailAlreadyExistsError();
-	}
+	const existingUser = await persistenceService.findUserByEmail(email);
+	permissionService.assertEmailAvailable(existingUser);
 
-	await tempCodesService.issueForEmail(email);
+	await persistenceService.issueCode({ email });
 	return { message: "Code sent" };
 };
 
 export const googleAuth = async ({ token }) => {
-	const googleProfile = await getGoogleProfile(token);
+	const googleProfile = await googleAdapter.getGoogleProfileOrThrow(token);
 	const { email, googleId, picture } = googleProfile;
 
-	let user = await userService.findByEmail(email);
+	let user = await persistenceService.findUserByEmail(email);
 	if (!user) {
-		user = await userService.createGoogleUser({ email, picture, googleId });
+		user = await persistenceService.createGoogleUser({ email, picture, googleId });
 	} else {
-		user = await userService.ensureGoogleFields(user, { googleId, picture });
+		user = await persistenceService.ensureGoogleFields({ user, googleId, picture });
 	}
 
 	const appToken = securityService.signAccessToken(user._id);
-	return { user: userService.sanitizeUser(user), token: appToken };
+	return { user: normalizationService.sanitizeUser(user), token: appToken };
 };
 
 export const googleExtract = async ({ token }) => {
-	const googleProfile = await getGoogleProfile(token);
-	const existingUser = await userService.findByEmail(googleProfile.email);
+	const googleProfile = await googleAdapter.getGoogleProfileOrThrow(token);
+	const existingUser = await persistenceService.findUserByEmail(googleProfile.email);
+	permissionService.assertEmailAvailable(existingUser);
 
-	if (existingUser) {
-		throw new EmailAlreadyExistsError();
-	}
-
-	return {
-		email: googleProfile.email,
-		picture: googleProfile.picture,
-		googleId: googleProfile.googleId,
-	};
+	return normalizationService.buildGoogleExtractPayload(googleProfile);
 };
 
 export const linkGoogle = async ({ userId, token }) => {
-	const googleProfile = await getGoogleProfile(token);
+	const googleProfile = await googleAdapter.getGoogleProfileOrThrow(token);
 
-	const existingGoogleUser = await userService.findByGoogleId(googleProfile.googleId);
-	if (existingGoogleUser && String(existingGoogleUser._id) !== String(userId)) {
-		throw new GoogleAccountAlreadyLinkedError();
-	}
+	const existingGoogleUser = await persistenceService.findUserByGoogleId(googleProfile.googleId);
+	permissionService.assertGoogleAccountCanBeLinked({
+		existingGoogleUser,
+		userId,
+	});
 
-	const user = await userService.findById(userId);
-	if (!user) {
-		throw new UserNotFoundError();
-	}
+	const user = await persistenceService.findUserById(userId);
+	permissionService.assertUserExists(user);
 
-	await userService.linkGoogleAccount(user, {
+	await persistenceService.linkGoogleAccount({
+		user,
 		googleId: googleProfile.googleId,
 		picture: googleProfile.picture,
 	});
 
-	return { user: userService.sanitizeUser(user) };
+	return { user: normalizationService.sanitizeUser(user) };
 };
