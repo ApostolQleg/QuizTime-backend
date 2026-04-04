@@ -12,6 +12,10 @@ export const updateById = async (userId, updates) => {
 	return await User.findByIdAndUpdate(userId, { $set: updates }, { new: true });
 };
 
+export const save = async (user) => {
+	return await user.save();
+};
+
 export const deleteById = async (userId) => {
 	return await User.findByIdAndDelete(userId);
 };
