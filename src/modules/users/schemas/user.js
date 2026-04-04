@@ -1,4 +1,4 @@
-export const getUserParamsSchema = {
+export const userByIdParamsSchema = {
 	type: "object",
 	required: ["id"],
 	additionalProperties: false,
@@ -28,6 +28,10 @@ export const changePasswordBodySchema = {
 	},
 };
 
-export const getUserSchema = { params: getUserParamsSchema };
+export const getCurrentUserSchema = { params: userByIdParamsSchema };
 export const updateProfileSchema = { body: updateProfileBodySchema };
 export const changePasswordSchema = { body: changePasswordBodySchema };
+
+export const getNicknameSuggestionsSchema = {
+	querystring: { type: "object", additionalProperties: false },
+};

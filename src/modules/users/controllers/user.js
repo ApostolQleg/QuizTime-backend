@@ -1,16 +1,16 @@
 import * as userService from "../services/user.js";
 
-export const getUser = async (request, reply) => {
+export const getCurrentUser = async (request, reply) => {
 	const userId = request.userId;
 
-	const data = await userService.getUserData({ userId });
+	const data = await userService.getCurrentUser({ userId });
 	return reply.send({ success: true, ...data });
 };
 
 export const getUserById = async (request, reply) => {
 	const { id } = request.params;
 
-	const data = await userService.getUserDataById({ userId: id });
+	const data = await userService.getPublicUserById({ userId: id });
 	return reply.send({ success: true, ...data });
 };
 
@@ -37,7 +37,7 @@ export const deleteAccount = async (request, reply) => {
 	return reply.send({ success: true, ...data });
 };
 
-export const getNicknameArray = async (_, reply) => {
-	const data = await userService.getNicknameArray();
+export const getNicknameSuggestions = async (_, reply) => {
+	const data = await userService.getNicknameSuggestions();
 	return reply.send({ success: true, ...data });
 };

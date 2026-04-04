@@ -3,7 +3,7 @@ import * as normalizationService from "./normalization.js";
 import * as permissionService from "./permissions.js";
 import * as persistenceService from "./persistence.js";
 
-export const getResults = async ({ userId, limit, skip, search, sort }) => {
+export const getAllResults = async ({ userId, limit, skip, search, sort }) => {
 	permissionService.assertUserId(userId);
 
 	const filter = filtersService.buildResultsFilter({ userId, search });
@@ -13,7 +13,7 @@ export const getResults = async ({ userId, limit, skip, search, sort }) => {
 	return { results: normalizationService.normalizeResultList(results) };
 };
 
-export const saveResult = async ({ userId, quizId, answers, summary, timestamp }) => {
+export const createResult = async ({ userId, quizId, answers, summary, timestamp }) => {
 	permissionService.assertValidSavePayload({ userId, quizId, answers, summary });
 
 	const quiz = await persistenceService.findQuizById(quizId);

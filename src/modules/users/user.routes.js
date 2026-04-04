@@ -1,9 +1,14 @@
 import { userController } from "./index.js";
 import { checkAuth } from "../../shared/middleware/checkAuth.js";
-import { getUserSchema, updateProfileSchema, changePasswordSchema } from "./schemas/user.js";
+import {
+	getCurrentUserSchema,
+	updateProfileSchema,
+	changePasswordSchema,
+	getNicknameSuggestionsSchema,
+} from "./schemas/user.js";
 
 export default async function userRoutes(fastify) {
-	fastify.get("/:id", { schema: getUserSchema }, userController.getUserById);
+	fastify.get("/:id", { schema: getCurrentUserSchema }, userController.getUserById);
 
 	fastify.register(async function (protectedRoutes) {
 		protectedRoutes.addHook("preHandler", checkAuth);
@@ -20,6 +25,10 @@ export default async function userRoutes(fastify) {
 			userController.changePassword,
 		);
 		protectedRoutes.delete("/delete", userController.deleteAccount);
-		protectedRoutes.get("/nickname", userController.getNicknameArray);
+		protectedRoutes.get(
+			"/nickname",
+			{ schema: getNicknameSuggestionsSchema },
+			userController.getNicknameSuggestions,
+		);
 	});
 }
