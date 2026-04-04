@@ -1,7 +1,7 @@
 import Result from "../result.model.js";
 
-export const findByIdAndUserId = async (id, userId) => {
-	return Result.findOne({ _id: id, userId }).lean();
+export const findById = async (id) => {
+	return Result.findOne({ _id: id }).lean();
 };
 
 export const create = async (payload) => {
