@@ -1,4 +1,4 @@
-import { app } from "./app.js"
+import { app } from "#src/app/app.js"
 
 // Local development server
 if (process.env.NODE_ENV !== "production") {
@@ -14,4 +14,4 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 // Export handler for Vercel
-export { default } from "./app.js";
+export { default } from "#src/app/app.js";

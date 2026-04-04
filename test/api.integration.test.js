@@ -19,10 +19,10 @@ before(async () => {
 	process.env.SMTP_PASS = "test-smtp-pass";
 	process.env.NODE_ENV = "test";
 
-	const appModule = await import("../src/app/app.js");
-	const usersModule = await import("../src/modules/users/index.js");
-	const quizzesModule = await import("../src/modules/quizzes/index.js");
-	const resultsModule = await import("../src/modules/results/index.js");
+	const appModule = await import("#src/app/app.js");
+	const usersModule = await import("#src/modules/users/index.js");
+	const quizzesModule = await import("#src/modules/quizzes/index.js");
+	const resultsModule = await import("#src/modules/results/index.js");
 
 	app = appModule.app;
 	User = usersModule.User;
