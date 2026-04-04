@@ -9,7 +9,7 @@ export const register = async (request, reply) => {
 		code,
 		googleToken,
 	});
-	return reply.send({ success: true, ...data });
+	return reply.code(201).send({ success: true, ...data });
 };
 
 export const login = async (request, reply) => {
