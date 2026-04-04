@@ -1,6 +1,6 @@
 import * as persistenceService from "./persistence.js";
 
-export const filter = async (limit, skip, search, sort, authorId) => {
+export const filter = async (authorId, limit, skip, search, sort) => {
 	let filter = {};
 	if (authorId) filter.authorId = authorId;
 	if (search) {
@@ -13,10 +13,5 @@ export const filter = async (limit, skip, search, sort, authorId) => {
 	else if (sort === "az") sortQuery = { title: 1, createdAt: -1 };
 	else if (sort === "za") sortQuery = { title: -1, createdAt: -1 };
 
-	return await persistenceService.findQuizzes({
-		limit,
-		skip,
-		filter,
-		sort: sortQuery,
-	});
+	return await persistenceService.findQuizzes({ limit, skip, filter, sort: sortQuery });
 };

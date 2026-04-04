@@ -3,8 +3,8 @@ import * as normalizationService from "./normalization.js";
 import * as permissionService from "./permissions.js";
 import * as persistenceService from "./persistence.js";
 
-export const getAllQuizzes = async ({ limit, skip, search, sort, authorId }) => {
-	const quizzes = await filterService.filter(limit, skip, search, sort, authorId);
+export const getAllQuizzes = async ({ authorId, limit, skip, search, sort }) => {
+	const quizzes = await filterService.filter(authorId, limit, skip, search, sort);
 	return { quizzes: normalizationService.normalizeQuizList(quizzes) };
 };
 
