@@ -1,4 +1,4 @@
-import TempCode from "../temp-code.model.js";
+import TempCode from "#src/modules/auth/temp-code.model.js";
 
 export const findByEmail = async (email) => {
 	return TempCode.findOne({ email });

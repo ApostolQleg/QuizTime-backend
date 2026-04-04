@@ -1,4 +1,4 @@
-import * as resultService from "../services/result.js";
+import * as resultService from "#src/modules/results/services/result.js";
 
 export const getAllResults = async (request, reply) => {
 	const userId = request.userId;

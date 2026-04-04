@@ -1,4 +1,4 @@
-import { verifyGoogleToken } from "../../../infrastructure/google/googleClient.js";
+import { verifyGoogleToken } from "#src/infrastructure/google/googleClient.js";
 
 export const verifyAndNormalizeGoogleToken = async (token) => {
 	const payload = await verifyGoogleToken(token);

@@ -1,5 +1,5 @@
-import { generateNickname } from "../../../shared/utils/nicknameGen.js";
-import * as userRepository from "../repositories/user.js";
+import { generateNickname } from "#src/shared/utils/nicknameGen.js";
+import * as userRepository from "#src/modules/users/repositories/user.js";
 
 export const generateUniqueNickname = async () => {
 	let candidate = generateNickname().next().value;

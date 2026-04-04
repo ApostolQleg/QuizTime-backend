@@ -1,7 +1,7 @@
-import { generateNickname } from "../../../shared/utils/nicknameGen.js";
-import * as tempCodeService from "./temp-codes.js";
-import * as userRepository from "../repositories/user.js";
-import * as securityService from "./security.js";
+import { generateNickname } from "#src/shared/utils/nicknameGen.js";
+import * as tempCodeService from "#src/modules/auth/services/temp-codes.js";
+import * as userRepository from "#src/modules/auth/repositories/user.js";
+import * as securityService from "#src/modules/auth/services/security.js";
 
 const buildUniqueNickname = async () => {
 	let candidate = generateNickname().next().value;

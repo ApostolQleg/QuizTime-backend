@@ -1,7 +1,7 @@
-import * as cleanupService from "./cleanup.js";
-import * as nicknameService from "./nickname.js";
-import * as profileService from "./profile.js";
-import * as securityService from "./security.js";
+import * as cleanupService from "#src/modules/users/services/cleanup.js";
+import * as nicknameService from "#src/modules/users/services/nickname.js";
+import * as profileService from "#src/modules/users/services/profile.js";
+import * as securityService from "#src/modules/users/services/security.js";
 
 export const getCurrentUser = async ({ userId }) => {
 	return profileService.getCurrentUserProfile({ userId });

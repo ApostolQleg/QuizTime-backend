@@ -1,12 +1,12 @@
-import { quizController } from "./index.js";
-import { checkAuth } from "../../shared/middleware/checkAuth.js";
+import { quizController } from "#src/modules/quizzes/index.js";
+import { checkAuth } from "#src/shared/middleware/checkAuth.js";
 import {
 	quizzesSchema,
 	quizByIdSchema,
 	createQuizSchema,
 	updateQuizSchema,
 	deleteQuizSchema,
-} from "./schemas/quiz.js";
+} from "#src/modules/quizzes/schemas/quiz.js";
 
 export default async function quizRoutes(fastify) {
 	fastify.get("/", { schema: quizzesSchema }, quizController.getAllQuizzes);

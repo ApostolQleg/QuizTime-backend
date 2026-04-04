@@ -1,4 +1,4 @@
-import * as persistenceService from "./persistence.js";
+import * as persistenceService from "#src/modules/quizzes/services/persistence.js";
 
 export const filter = async (authorId, limit, skip, search, sort) => {
 	let filter = {};

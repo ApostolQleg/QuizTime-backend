@@ -1,4 +1,4 @@
-import * as quizService from "../services/quiz.js";
+import * as quizService from "#src/modules/quizzes/services/quiz.js";
 
 export const getAllQuizzes = async (request, reply) => {
 	const limit = parseInt(request.query.limit) || 36;

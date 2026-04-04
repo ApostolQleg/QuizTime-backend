@@ -4,7 +4,7 @@ import {
 	ResultForbiddenError,
 	ResultNotFoundError,
 	ResultValidationError,
-} from "../errors/result.js";
+} from "#src/modules/results/errors/result.js";
 
 export const assertUserId = (userId) => {
 	if (!userId) {

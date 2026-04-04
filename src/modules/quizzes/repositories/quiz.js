@@ -1,4 +1,4 @@
-import Quiz from "../quiz.model.js";
+import Quiz from "#src/modules/quizzes/quiz.model.js";
 
 export const findById = async (id) => {
 	return await Quiz.findOne({ id });

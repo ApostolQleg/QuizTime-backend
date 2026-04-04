@@ -1,5 +1,5 @@
-import * as userRepository from "../repositories/user.js";
-import { InvalidUserPayloadError, UserNotFoundError } from "../errors/user.js";
+import * as userRepository from "#src/modules/users/repositories/user.js";
+import { InvalidUserPayloadError, UserNotFoundError } from "#src/modules/users/errors/user.js";
 
 const sanitizeUser = (user) => {
 	const { passwordHash, ...userData } = user.toObject();

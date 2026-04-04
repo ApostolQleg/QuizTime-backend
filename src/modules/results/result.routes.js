@@ -1,6 +1,6 @@
-import { resultController } from "./index.js";
-import { checkAuth } from "../../shared/middleware/checkAuth.js";
-import { resultByIdSchema, resultsSchema, saveResultSchema } from "./schemas/result.js";
+import { resultController } from "#src/modules/results/index.js";
+import { checkAuth } from "#src/shared/middleware/checkAuth.js";
+import { resultByIdSchema, resultsSchema, saveResultSchema } from "#src/modules/results/schemas/result.js";
 
 export default async function resultRoutes(fastify) {
 	fastify.addHook("preHandler", checkAuth);

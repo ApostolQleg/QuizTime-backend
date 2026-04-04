@@ -1,8 +1,8 @@
-import * as securityService from "./security.js";
-import * as googleAdapter from "./google-adapter.js";
-import * as normalizationService from "./normalization.js";
-import * as permissionService from "./permissions.js";
-import * as persistenceService from "./persistence.js";
+import * as securityService from "#src/modules/auth/services/security.js";
+import * as googleAdapter from "#src/modules/auth/services/google-adapter.js";
+import * as normalizationService from "#src/modules/auth/services/normalization.js";
+import * as permissionService from "#src/modules/auth/services/permissions.js";
+import * as persistenceService from "#src/modules/auth/services/persistence.js";
 
 export const register = async ({ email, password, avatarUrl, code, googleToken }) => {
 	permissionService.assertRegisterPayload({ email, password });

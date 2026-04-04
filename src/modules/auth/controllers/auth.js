@@ -1,4 +1,4 @@
-import * as authService from "../services/auth.js";
+import * as authService from "#src/modules/auth/services/auth.js";
 
 export const register = async (request, reply) => {
 	const { email, password, avatarUrl, code, googleToken } = request.body;

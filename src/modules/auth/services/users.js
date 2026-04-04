@@ -1,6 +1,6 @@
-import * as userRepository from "../repositories/user.js";
-import { generateNickname } from "../../../shared/utils/nicknameGen.js";
-import { generateOAuthPasswordHash } from "./security.js";
+import * as userRepository from "#src/modules/auth/repositories/user.js";
+import { generateNickname } from "#src/shared/utils/nicknameGen.js";
+import { generateOAuthPasswordHash } from "#src/modules/auth/services/security.js";
 
 const buildUniqueNickname = async () => {
 	let candidate = generateNickname().next().value;

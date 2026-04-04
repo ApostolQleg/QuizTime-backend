@@ -1,5 +1,5 @@
-import * as quizRepository from "../repositories/quiz.js";
-import * as userRepository from "../repositories/user.js";
+import * as quizRepository from "#src/modules/quizzes/repositories/quiz.js";
+import * as userRepository from "#src/modules/quizzes/repositories/user.js";
 
 export const findQuizzes = async ({ limit, skip, filter, sort }) => {
 	return quizRepository.filteredQuizzes(limit, skip, filter, sort);

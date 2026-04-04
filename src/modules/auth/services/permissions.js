@@ -6,7 +6,7 @@ import {
 	InvalidPasswordError,
 	UserNotFoundError,
 	VerificationCodeRequiredError,
-} from "../errors/auth.js";
+} from "#src/modules/auth/errors/auth.js";
 
 export const assertRegisterPayload = ({ email, password }) => {
 	if (!email || !password) {

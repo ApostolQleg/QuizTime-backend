@@ -1,7 +1,7 @@
-import * as filtersService from "./filters.js";
-import * as normalizationService from "./normalization.js";
-import * as permissionService from "./permissions.js";
-import * as persistenceService from "./persistence.js";
+import * as filtersService from "#src/modules/results/services/filters.js";
+import * as normalizationService from "#src/modules/results/services/normalization.js";
+import * as permissionService from "#src/modules/results/services/permissions.js";
+import * as persistenceService from "#src/modules/results/services/persistence.js";
 
 export const getAllResults = async ({ userId, limit, skip, search, sort }) => {
 	permissionService.assertUserId(userId);

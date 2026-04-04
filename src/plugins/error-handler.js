@@ -1,4 +1,4 @@
-import { DomainError } from "../errors/domain-error.js";
+import { DomainError } from "#src/errors/domain-error.js";
 
 const formatValidationDetails = (validation = []) => {
 	return validation.map((item) => ({
