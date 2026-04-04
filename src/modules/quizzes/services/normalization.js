@@ -30,9 +30,14 @@ export const normalizeQuizList = (quizzes = []) => {
 export const normalizeQuizDetails = (quiz) => {
 	if (!quiz) return null;
 
+	const quizData = quiz.toObject();
+	if (!quizData.authorId && typeof quizData.authorId !== "object") {
+		return quizData;
+	}
+
 	return {
-		...quiz.toObject(),
-		...toAuthorDto(quiz.authorId),
+		...quizData,
+		...toAuthorDto(quizData.authorId),
 	};
 };
 

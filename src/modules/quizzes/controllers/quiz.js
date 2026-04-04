@@ -23,7 +23,7 @@ export const createQuiz = async (request, reply) => {
 	const { id, title, description, questions } = request.body;
 
 	const data = await quizService.createQuiz({ userId, id, title, description, questions });
-	return reply.send({ success: true, ...data });
+	return reply.code(201).send({ success: true, ...data });
 };
 
 export const updateQuiz = async (request, reply) => {
@@ -38,7 +38,7 @@ export const updateQuiz = async (request, reply) => {
 export const deleteQuiz = async (request, reply) => {
 	const userId = request.userId;
 	const { id } = request.params;
-    
+
 	const data = await quizService.deleteQuiz({ userId, id });
 	return reply.send({ success: true, ...data });
 };
