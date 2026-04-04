@@ -1,4 +1,4 @@
-import * as quizRepository from "../repositories/quiz.js";
+import * as persistenceService from "./persistence.js";
 
 export const filter = async (limit, skip, search, sort, authorId) => {
 	let filter = {};
@@ -13,5 +13,10 @@ export const filter = async (limit, skip, search, sort, authorId) => {
 	else if (sort === "az") sortQuery = { title: 1, createdAt: -1 };
 	else if (sort === "za") sortQuery = { title: -1, createdAt: -1 };
 
-	return await quizRepository.filteredQuizzes(limit, skip, filter, sortQuery);
+	return await persistenceService.findQuizzes({
+		limit,
+		skip,
+		filter,
+		sort: sortQuery,
+	});
 };

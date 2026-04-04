@@ -1,67 +1,63 @@
-import * as cacheService from "./cache.js";
 import * as filterService from "./filters.js";
 import * as normalizationService from "./normalization.js";
 import * as permissionService from "./permissions.js";
-import { findById, updateById, deleteById, create } from "../repositories/quiz.js";
-import { findUserById } from "../repositories/user.js";
-import {} from "../errors/quiz.js";
+import * as persistenceService from "./persistence.js";
 
 export const getAllQuizzes = async ({ limit, skip, search, sort, authorId }) => {
 	const quizzes = await filterService.filter(limit, skip, search, sort, authorId);
-	const mappedQuizzes = quizzes.map((q) => {
-		const author = q.authorId || {};
-
-		return {
-			_id: q._id,
-			id: q.id,
-			title: q.title,
-			description: q.description,
-			questionsCount: q.questions.length,
-
-			authorId: author._id || null,
-			authorName: author.nickname,
-			authorAvatarUrl: author.avatarUrl,
-			authorAvatarType: author.avatarType,
-			authorThemeColor: author.themeColor,
-		};
-	});
-
-	return { quizzes: mappedQuizzes };
+	return { quizzes: normalizationService.normalizeQuizList(quizzes) };
 };
 
 export const getQuizById = async ({ id }) => {
-	const quiz = await findById(id);
-	return { quiz };
+	const quiz = await persistenceService.findQuizById(id);
+	permissionService.assertQuizExists(quiz);
+
+	return { quiz: normalizationService.normalizeQuizDetails(quiz) };
 };
 
 export const createQuiz = async ({ userId, id, title, description, questions }) => {
-	const exists = await findById(id);
-	const user = await findUserById(userId);
+	permissionService.assertValidCreatePayload({ id, title, questions });
 
-	const payload = {
-		id: String(id),
-		title: title,
-		description: description,
-		questions: questions,
-		authorId: userId,
-		authorName: user.nickname,
-	};
+	const existingQuiz = await persistenceService.findQuizById(id);
+	permissionService.assertQuizNotExists(existingQuiz);
 
-	const quiz = await create(payload);
+	const author = await persistenceService.findAuthorById(userId);
+	permissionService.assertAuthorExists(author);
+
+	const payload = normalizationService.buildCreatePayload({
+		id,
+		title,
+		description,
+		questions,
+		userId,
+		user: author,
+	});
+
+	const quiz = await persistenceService.createQuiz(payload);
 	return { quiz };
 };
 
 export const updateQuiz = async ({ userId, id, title, description, questions }) => {
-	const quiz = await findById(id);
-	const updates = {};
-	if (title) updates.title = title;
-	if (description) updates.description = description;
-	if (questions) updates.questions = questions;
-	const updatedQuiz = await updateById(id, updates);
-	return { updatedQuiz };
+	const quiz = await persistenceService.findQuizById(id);
+	permissionService.assertQuizExists(quiz);
+	permissionService.assertCanEditQuiz(quiz, userId);
+	permissionService.assertValidQuestionsForUpdate(questions);
+
+	const updates = normalizationService.buildQuizUpdates({
+		title,
+		description,
+		questions,
+	});
+
+	const updatedQuiz = await persistenceService.updateQuizById(id, updates);
+	return { quiz: updatedQuiz };
 };
 
 export const deleteQuiz = async ({ userId, id }) => {
-	const quiz = await deleteById(id);
+	const quiz = await persistenceService.findQuizById(id);
+	permissionService.assertQuizExists(quiz);
+	permissionService.assertCanDeleteQuiz(quiz, userId);
+
+	await persistenceService.deleteQuizById(id);
 	return { message: "Quiz deleted successfully" };
 };
