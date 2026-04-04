@@ -28,10 +28,7 @@ await app.register(cors, {
 	credentials: true,
 });
 
-await app.register(rateLimit, {
-	global: false,
-});
-
+await app.register(rateLimit, { global: false });
 await app.register(errorHandlerPlugin);
 
 // Database connection via plugin
