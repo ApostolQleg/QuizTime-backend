@@ -1,11 +1,9 @@
 const quizIdParams = {
-	params: {
-		type: "object",
-		required: ["id"],
-		additionalProperties: false,
-		properties: {
-			id: { type: "string", minLength: 1, maxLength: 128 },
-		},
+	type: "object",
+	required: ["id"],
+	additionalProperties: false,
+	properties: {
+		id: { type: "string", minLength: 1, maxLength: 128 },
 	},
 };
 
@@ -23,7 +21,7 @@ export const quizzesSchema = {
 	},
 };
 
-export const quizByIdSchema = { quizIdParams };
+export const quizByIdSchema = { params: quizIdParams };
 
 export const createSchema = {
 	body: {
@@ -40,7 +38,7 @@ export const createSchema = {
 };
 
 export const updateSchema = {
-	quizIdParams,
+	params: quizIdParams,
 	body: {
 		type: "object",
 		additionalProperties: false,
@@ -57,4 +55,4 @@ export const updateSchema = {
 	},
 };
 
-export const deleteSchema = { quizIdParams };
+export const deleteSchema = { params: quizIdParams };
