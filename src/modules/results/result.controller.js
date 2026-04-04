@@ -4,10 +4,10 @@ export const getUserResults = async (request, reply) => {
 	const userId = request.userId;
 	const limit = parseInt(request.query.limit) || 36;
 	const skip = parseInt(request.query.skip) || 0;
-	const searchParam = request.query.search || "";
-	const sortParam = request.query.sort || "newest";
+	const search = request.query.search || "";
+	const sort = request.query.sort || "newest";
 
-	const data = await services.getResults(userId, limit, skip, searchParam, sortParam);
+	const data = await services.getResults(userId, limit, skip, search, sort);
 	reply.code(data.code || (data.ok ? 200 : 400)).send(data);
 };
 

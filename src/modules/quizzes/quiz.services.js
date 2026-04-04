@@ -1,31 +1,18 @@
 import { Quiz } from "./index.js";
 import { User } from "../users/index.js";
-import Memoizer from "../../shared/utils/memoizer.js";
 
-const cache = new Memoizer();
-
-const findQuiz = async (id) => {
-	return await Quiz.findOne({ id: id }).populate(
-		"authorId",
-		"nickname avatarUrl avatarType themeColor",
-	);
-};
-
-const getCachedQuiz = cache.memoize(findQuiz);
-const clearQuizCache = () => cache.clear(findQuiz);
-
-export const getAllQuizzes = async (limit, skip, searchParam, sortParam, authorId) => {
+export const getAllQuizzes = async (authorId, limit, skip, search, sort) => {
 	let filter = {};
 	if (authorId) filter.authorId = authorId;
-	if (searchParam) {
-		const escapedSearch = searchParam.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+	if (search) {
+		const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 		filter.title = { $regex: escapedSearch, $options: "i" };
 	}
 
 	let sortQuery = { createdAt: -1 };
-	if (sortParam === "oldest") sortQuery = { createdAt: 1 };
-	else if (sortParam === "az") sortQuery = { title: 1, createdAt: -1 };
-	else if (sortParam === "za") sortQuery = { title: -1, createdAt: -1 };
+	if (sort === "oldest") sortQuery = { createdAt: 1 };
+	else if (sort === "az") sortQuery = { title: 1, createdAt: -1 };
+	else if (sort === "za") sortQuery = { title: -1, createdAt: -1 };
 
 	const quizzes = await Quiz.find(filter)
 		.collation({ locale: "uk", strength: 2 })
@@ -86,21 +73,9 @@ export const createQuiz = async (userId, id, title, description, questions) => {
 };
 
 export const getQuizById = async (id) => {
-	const quiz = await getCachedQuiz(id);
+	const quiz = await Quiz.findOne({ id });
 	if (!quiz) return { ok: false, error: "Quiz not found", code: 404 };
-
-	const author = quiz.authorId || {};
-
-	const responseQuiz = {
-		...quiz.toObject(),
-		authorId: author._id || null,
-		authorName: author.nickname,
-		authorAvatarUrl: author.avatarUrl,
-		authorAvatarType: author.avatarType,
-		authorThemeColor: author.themeColor,
-	};
-
-	return { ok: true, quiz: responseQuiz, code: 200 };
+	return { ok: true, quiz, code: 200 };
 };
 
 export const updateQuiz = async (userId, id, title, description, questions) => {
@@ -116,13 +91,12 @@ export const updateQuiz = async (userId, id, title, description, questions) => {
 	if (title) updates.title = title;
 	if (description) updates.description = description;
 	if (questions) {
-		if (!Array.isArray(questions))
+		if (!Array.isArray(questions)) {
 			return { ok: false, error: "Questions must be an array", code: 400 };
+		}
 		updates.questions = questions;
 	}
 	const updatedQuiz = await Quiz.findOneAndUpdate({ id }, { $set: updates }, { new: true });
-
-	clearQuizCache(id);
 
 	return { ok: true, quiz: updatedQuiz, code: 200 };
 };

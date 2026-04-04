@@ -3,11 +3,11 @@ import * as services from "./quiz.services.js";
 export const getAllQuizzes = async (request, reply) => {
 	const limit = parseInt(request.query.limit) || 36;
 	const skip = parseInt(request.query.skip) || 0;
-	const searchParam = request.query.search || "";
-	const sortParam = request.query.sort || "newest";
+	const search = request.query.search || "";
+	const sort = request.query.sort || "newest";
 	const authorId = request.query.authorId || "";
 
-	const data = await services.getAllQuizzes(limit, skip, searchParam, sortParam, authorId);
+	const data = await services.getAllQuizzes(authorId, limit, skip, search, sort);
 	reply.code(data.code || (data.ok ? 200 : 400)).send(data);
 };
 

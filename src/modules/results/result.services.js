@@ -1,7 +1,7 @@
 import { Result } from "./index.js";
 import { Quiz } from "../quizzes/index.js";
 
-export const getResults = async (userId, limit, skip, searchParam, sortParam) => {
+export const getResults = async (userId, limit, skip, search, sort) => {
 	if (!userId) {
 		return { ok: false, error: "User ID missing", code: 400 };
 	}
@@ -11,12 +11,12 @@ export const getResults = async (userId, limit, skip, searchParam, sortParam) =>
 	};
 
 	let sortQuery = { createdAt: -1 };
-	if (sortParam === "oldest") sortQuery = { createdAt: 1 };
-	else if (sortParam === "az") sortQuery = { quizTitle: 1, createdAt: -1 };
-	else if (sortParam === "za") sortQuery = { quizTitle: -1, createdAt: -1 };
+	if (sort === "oldest") sortQuery = { createdAt: 1 };
+	else if (sort === "az") sortQuery = { quizTitle: 1, createdAt: -1 };
+	else if (sort === "za") sortQuery = { quizTitle: -1, createdAt: -1 };
 
-	if (searchParam) {
-		const escapedSearch = searchParam.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+	if (search) {
+		const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 		filter.quizTitle = { $regex: escapedSearch, $options: "i" };
 	}
 
