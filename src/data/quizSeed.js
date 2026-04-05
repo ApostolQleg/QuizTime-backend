@@ -1,5 +1,5 @@
-import { Quiz } from "../modules/quizzes/index.js";
-import { defaultQuizzes } from "./defaultQuizzes.js";
+import { Quiz } from "#src/modules/quizzes/index.js";
+import { defaultQuizzes } from "#src/data/defaultQuizzes.js";
 
 export const seedQuizzesIfEmpty = async () => {
 	try {
