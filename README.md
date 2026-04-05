@@ -51,9 +51,12 @@ Frontend project:
 
 ```
 .
+|-- jsconfig.json
 |-- LICENSE
 |-- README.md
 |-- package.json
+|-- test/
+|   `-- api.integration.test.js
 |-- vercel.json
 `-- src/
     |-- app/
@@ -64,6 +67,8 @@ Frontend project:
     |-- data/
     |   |-- defaultQuizzes.js
     |   `-- quizSeed.js
+    |-- errors/
+    |   `-- domain-error.js
     |-- infrastructure/
     |   |-- db/
     |   |   `-- db.js
@@ -73,29 +78,90 @@ Frontend project:
     |       `-- googleClient.js
     |-- modules/
     |   |-- auth/
-    |   |   |-- auth.controller.js
     |   |   |-- auth.routes.js
-    |   |   |-- auth.services.js
     |   |   |-- index.js
     |   |   `-- temp-code.model.js
+    |   |   |-- controllers/
+    |   |   |   |-- auth.js
+    |   |   |   `-- oauth.js
+    |   |   |-- errors/
+    |   |   |   `-- auth.js
+    |   |   |-- repositories/
+    |   |   |   |-- temp-code.js
+    |   |   |   `-- user.js
+    |   |   |-- schemas/
+    |   |   |   |-- auth.js
+    |   |   |   `-- oauth.js
+    |   |   `-- services/
+    |   |       |-- auth.js
+    |   |       |-- google-adapter.js
+    |   |       |-- google.js
+    |   |       |-- normalization.js
+    |   |       |-- permissions.js
+    |   |       |-- persistence.js
+    |   |       |-- security.js
+    |   |       `-- temp-codes.js
     |   |-- quizzes/
     |   |   |-- index.js
-    |   |   |-- quiz.controller.js
     |   |   |-- quiz.model.js
     |   |   |-- quiz.routes.js
-    |   |   `-- quiz.services.js
+    |   |   |-- controllers/
+    |   |   |   `-- quiz.js
+    |   |   |-- errors/
+    |   |   |   `-- quiz.js
+    |   |   |-- repositories/
+    |   |   |   |-- quiz.js
+    |   |   |   `-- user.js
+    |   |   |-- schemas/
+    |   |   |   `-- quiz.js
+    |   |   `-- services/
+    |   |       |-- cache.js
+    |   |       |-- filters.js
+    |   |       |-- normalization.js
+    |   |       |-- permissions.js
+    |   |       |-- persistence.js
+    |   |       `-- quiz.js
     |   |-- results/
     |   |   |-- index.js
-    |   |   |-- result.controller.js
     |   |   |-- result.model.js
     |   |   |-- result.routes.js
-    |   |   `-- result.services.js
+    |   |   |-- controllers/
+    |   |   |   `-- result.js
+    |   |   |-- errors/
+    |   |   |   `-- result.js
+    |   |   |-- repositories/
+    |   |   |   |-- quiz.js
+    |   |   |   `-- result.js
+    |   |   |-- schemas/
+    |   |   |   `-- result.js
+    |   |   `-- services/
+    |   |       |-- cache.js
+    |   |       |-- filters.js
+    |   |       |-- normalization.js
+    |   |       |-- permissions.js
+    |   |       |-- persistence.js
+    |   |       `-- result.js
     |   `-- users/
     |       |-- index.js
-    |       |-- user.controller.js
     |       |-- user.model.js
     |       |-- user.routes.js
-    |       `-- user.services.js
+    |       |-- controllers/
+    |       |   `-- user.js
+    |       |-- errors/
+    |       |   `-- user.js
+    |       |-- repositories/
+    |       |   |-- result.js
+    |       |   `-- user.js
+    |       |-- schemas/
+    |       |   `-- user.js
+    |       `-- services/
+    |           |-- cleanup.js
+    |           |-- nickname.js
+    |           |-- profile.js
+    |           |-- security.js
+    |           `-- user.js
+    |-- plugins/
+    |   `-- error-handler.js
     `-- shared/
         |-- middleware/
         |   `-- checkAuth.js
@@ -107,11 +173,14 @@ Frontend project:
 
 ### Folder Responsibilities
 
-- src/app: Fastify app bootstrap, local server startup, and root router
-- src/modules: Feature modules (routes + services + models + module exports)
-- src/infrastructure: External integrations (DB, Google, email)
-- src/shared: Shared middleware and utility helpers
-- src/data: Built-in seed data and seeding helpers
+- src/app: Fastify bootstrap, HTTP router registration, and local/serverless entrypoints
+- src/modules: Feature modules (auth, quizzes, results, users) with layered internals
+- src/infrastructure: External integrations for database, Google token verification, and email
+- src/plugins: Cross-cutting Fastify plugins (global error handler)
+- src/shared: Reusable middleware and utility helpers
+- src/data: Seed data and startup seeding logic
+- src/errors: Shared domain-level error primitives
+- test: Integration tests (Node test runner + mongodb-memory-server)
 
 ## Requirements
 
