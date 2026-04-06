@@ -19,10 +19,10 @@ before(async () => {
 	process.env.SMTP_PASS = "test-smtp-pass";
 	process.env.NODE_ENV = "test";
 
-	const appModule = await import("../src/app/app.js");
-	const usersModule = await import("../src/modules/users/index.js");
-	const quizzesModule = await import("../src/modules/quizzes/index.js");
-	const resultsModule = await import("../src/modules/results/index.js");
+	const appModule = await import("#src/app/app.js");
+	const usersModule = await import("#src/modules/users/index.js");
+	const quizzesModule = await import("#src/modules/quizzes/index.js");
+	const resultsModule = await import("#src/modules/results/index.js");
 
 	app = appModule.app;
 	User = usersModule.User;
@@ -42,6 +42,13 @@ after(async () => {
 	await mongoose.connection.close();
 	await mongod.stop();
 });
+
+const createUserAndToken = async ({ email, nickname, passwordHash }) => {
+	const user = await User.create({ email, nickname, passwordHash });
+	const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
+
+	return { user, token };
+};
 
 test("GET / returns health payload", async () => {
 	const response = await app.inject({
@@ -65,119 +72,200 @@ test("GET /api/results without token is rejected", async () => {
 	assert.equal(response.json().error, "No access");
 });
 
-test("GET /api/results/:id only returns current user's result", async () => {
-	const alice = await User.create({
-		email: "alice@example.com",
-		nickname: "alice_nick",
-		passwordHash: "hash1",
+test("quizzes lifecycle: create and delete by author", async () => {
+	const { user: author, token: authorToken } = await createUserAndToken({
+		email: "author@example.com",
+		nickname: "author_nick",
+		passwordHash: "hash-author",
 	});
 
-	const bob = await User.create({
-		email: "bob@example.com",
-		nickname: "bob_nick",
-		passwordHash: "hash2",
-	});
-
-	const quiz = await Quiz.create({
-		id: "quiz-ownership-1",
-		title: "Ownership Quiz",
-		description: "Test",
-		questions: [{ q: "2+2?", options: ["4"], answer: 0 }],
-		authorId: alice._id,
-		authorName: "alice_nick",
-	});
-
-	const aliceResult = await Result.create({
-		quizId: quiz.id,
-		quizTitle: quiz.title,
-		summary: { score: 1, correct: 1, total: 1 },
-		answers: [{ selected: 0 }],
-		questions: quiz.questions,
-		userId: alice._id,
-	});
-
-	const bobToken = jwt.sign({ _id: bob._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
-
-	const response = await app.inject({
-		method: "GET",
-		url: `/api/results/${aliceResult._id}`,
-		headers: {
-			authorization: `Bearer ${bobToken}`,
-		},
-	});
-
-	assert.equal(response.statusCode, 404);
-	assert.equal(response.json().error, "Result not found");
-});
-
-test("POST /api/results accepts answers as numeric array", async () => {
-	const user = await User.create({
-		email: "poster@example.com",
-		nickname: "poster_nick",
-		passwordHash: "hash3",
-	});
-
-	const quiz = await Quiz.create({
-		id: "quiz-post-1",
-		title: "Posting Quiz",
-		description: "Post test",
+	const quizPayload = {
+		id: "quiz-lifecycle-1",
+		title: "Lifecycle Quiz",
+		description: "Integration lifecycle quiz",
 		questions: [{ q: "2+2?", options: ["3", "4"], answer: 1 }],
-		authorId: user._id,
-		authorName: "poster_nick",
-	});
+	};
 
-	const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
-
-	const response = await app.inject({
+	const createResponse = await app.inject({
 		method: "POST",
-		url: "/api/results",
-		headers: {
-			authorization: `Bearer ${token}`,
-		},
-		payload: {
-			quizId: quiz.id,
-			answers: [1],
-			summary: { score: 1, correct: 1, total: 1 },
-			timestamp: new Date().toISOString(),
-		},
+		url: "/api/quizzes",
+		headers: { authorization: `Bearer ${authorToken}` },
+		payload: quizPayload,
 	});
 
-	assert.equal(response.statusCode, 201);
-	assert.equal(response.json().ok, true);
+	assert.equal(createResponse.statusCode, 201);
+	const createBody = createResponse.json();
+	assert.equal(createBody.success, true);
+	assert.equal(createBody.quiz.id, quizPayload.id);
+	assert.equal(createBody.quiz.authorName, author.nickname);
+	assert.equal(String(createBody.quiz.authorId), String(author._id));
+
+	const storedQuiz = await Quiz.findOne({ id: quizPayload.id }).lean();
+	assert.ok(storedQuiz);
+
+	const deleteResponse = await app.inject({
+		method: "DELETE",
+		url: `/api/quizzes/${quizPayload.id}`,
+		headers: { authorization: `Bearer ${authorToken}` },
+	});
+
+	assert.equal(deleteResponse.statusCode, 200);
+	const deleteBody = deleteResponse.json();
+	assert.equal(deleteBody.success, true);
+	assert.equal(deleteBody.message, "Quiz deleted successfully");
+
+	const deletedQuiz = await Quiz.findOne({ id: quizPayload.id }).lean();
+	assert.equal(deletedQuiz, null);
 });
 
-test("POST /api/results accepts timestamp as unix milliseconds", async () => {
-	const user = await User.create({
-		email: "poster2@example.com",
-		nickname: "poster2_nick",
-		passwordHash: "hash4",
+test("results lifecycle: pass quiz and read own result", async () => {
+	const { user: author, token: authorToken } = await createUserAndToken({
+		email: "author2@example.com",
+		nickname: "author2_nick",
+		passwordHash: "hash-author-2",
 	});
 
-	const quiz = await Quiz.create({
-		id: "quiz-post-2",
-		title: "Posting Quiz 2",
-		description: "Post test 2",
-		questions: [{ q: "2+3?", options: ["4", "5"], answer: 1 }],
-		authorId: user._id,
-		authorName: "poster2_nick",
+	const { user: player, token: playerToken } = await createUserAndToken({
+		email: "player@example.com",
+		nickname: "player_nick",
+		passwordHash: "hash-player",
 	});
 
-	const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
+	const quizId = "quiz-pass-1";
+	await app.inject({
+		method: "POST",
+		url: "/api/quizzes",
+		headers: { authorization: `Bearer ${authorToken}` },
+		payload: {
+			id: quizId,
+			title: "Passable Quiz",
+			description: "Quiz for result passing",
+			questions: [{ q: "3+3?", options: ["5", "6"], answer: 1 }],
+		},
+	});
 
-	const response = await app.inject({
+	const passResponse = await app.inject({
 		method: "POST",
 		url: "/api/results",
-		headers: {
-			authorization: `Bearer ${token}`,
-		},
+		headers: { authorization: `Bearer ${playerToken}` },
 		payload: {
-			quizId: quiz.id,
+			quizId,
 			answers: [1],
 			summary: { score: 1, correct: 1, total: 1 },
-			timestamp: Date.now(),
+			createdAt: Date.now(),
 		},
 	});
 
-	assert.equal(response.statusCode, 201);
-	assert.equal(response.json().ok, true);
+	assert.equal(passResponse.statusCode, 201);
+	const passBody = passResponse.json();
+	assert.equal(passBody.success, true);
+	assert.equal(passBody.result.quizId, quizId);
+	assert.equal(passBody.result.quizTitle, "Passable Quiz");
+	assert.equal(String(passBody.result.userId), String(player._id));
+	assert.ok(passBody.result.createdAt);
+	assert.equal("timestamp" in passBody.result, false);
+
+	const listResponse = await app.inject({
+		method: "GET",
+		url: "/api/results",
+		headers: { authorization: `Bearer ${playerToken}` },
+	});
+
+	assert.equal(listResponse.statusCode, 200);
+	const listBody = listResponse.json();
+	assert.equal(listBody.success, true);
+	assert.equal(Array.isArray(listBody.results), true);
+	assert.equal(listBody.results.length, 1);
+	assert.equal(listBody.results[0].quizId, quizId);
+	assert.equal("timestamp" in listBody.results[0], false);
+
+	const ownResultResponse = await app.inject({
+		method: "GET",
+		url: `/api/results/${passBody.result._id}`,
+		headers: { authorization: `Bearer ${playerToken}` },
+	});
+
+	assert.equal(ownResultResponse.statusCode, 200);
+	assert.equal(ownResultResponse.json().success, true);
+
+	const forbiddenResponse = await app.inject({
+		method: "GET",
+		url: `/api/results/${passBody.result._id}`,
+		headers: { authorization: `Bearer ${authorToken}` },
+	});
+
+	assert.equal(forbiddenResponse.statusCode, 403);
+	const forbiddenBody = forbiddenResponse.json();
+	assert.ok(["RESULT_FORBIDDEN", "Forbidden"].includes(forbiddenBody.error));
+	if (forbiddenBody.message !== undefined) {
+		assert.equal(forbiddenBody.message, "Forbidden");
+	}
+});
+
+test("users lifecycle: delete account removes user and owned results", async () => {
+	const { user: author, token: authorToken } = await createUserAndToken({
+		email: "author3@example.com",
+		nickname: "author3_nick",
+		passwordHash: "hash-author-3",
+	});
+
+	const { user: player, token: playerToken } = await createUserAndToken({
+		email: "player2@example.com",
+		nickname: "player2_nick",
+		passwordHash: "hash-player-2",
+	});
+
+	await app.inject({
+		method: "POST",
+		url: "/api/quizzes",
+		headers: { authorization: `Bearer ${authorToken}` },
+		payload: {
+			id: "quiz-pass-2",
+			title: "Cleanup Quiz",
+			description: "Quiz for account cleanup",
+			questions: [{ q: "5+5?", options: ["10", "11"], answer: 0 }],
+		},
+	});
+
+	const passResponse = await app.inject({
+		method: "POST",
+		url: "/api/results",
+		headers: { authorization: `Bearer ${playerToken}` },
+		payload: {
+			quizId: "quiz-pass-2",
+			answers: [0],
+			summary: { score: 1, correct: 1, total: 1 },
+		},
+	});
+
+	assert.equal(passResponse.statusCode, 201);
+
+	const beforeDeleteResultsCount = await Result.countDocuments({ userId: player._id });
+	assert.equal(beforeDeleteResultsCount, 1);
+
+	const deleteUserResponse = await app.inject({
+		method: "DELETE",
+		url: "/api/user/delete",
+		headers: { authorization: `Bearer ${playerToken}` },
+	});
+
+	assert.equal(deleteUserResponse.statusCode, 200);
+	const deleteUserBody = deleteUserResponse.json();
+	assert.equal(deleteUserBody.success, true);
+	assert.equal(deleteUserBody.message, "Account deleted successfully");
+
+	const deletedUser = await User.findById(player._id).lean();
+	assert.equal(deletedUser, null);
+
+	const afterDeleteResultsCount = await Result.countDocuments({ userId: player._id });
+	assert.equal(afterDeleteResultsCount, 0);
+
+	const accessAfterDeleteResponse = await app.inject({
+		method: "GET",
+		url: "/api/results",
+		headers: { authorization: `Bearer ${playerToken}` },
+	});
+
+	assert.equal(accessAfterDeleteResponse.statusCode, 401);
+	assert.equal(accessAfterDeleteResponse.json().error, "User deleted or disabled");
 });

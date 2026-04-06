@@ -1,116 +1,22 @@
-import { quizController } from "./index.js";
-import { checkAuth } from "../../shared/middleware/checkAuth.js";
+import { quizController } from "#src/modules/quizzes/index.js";
+import { checkAuth } from "#src/shared/middleware/checkAuth.js";
+import {
+	quizzesSchema,
+	quizByIdSchema,
+	createQuizSchema,
+	updateQuizSchema,
+	deleteQuizSchema,
+} from "#src/modules/quizzes/schemas/quiz.js";
 
 export default async function quizRoutes(fastify) {
-	// public routes
-	fastify.get(
-		"/",
-		{
-			schema: {
-				querystring: {
-					type: "object",
-					additionalProperties: false,
-					properties: {
-						limit: { type: "integer", minimum: 1, maximum: 100 },
-						skip: { type: "integer", minimum: 0 },
-						page: { type: "integer", minimum: 1 },
-						search: { type: "string", maxLength: 120 },
-						sort: { type: "string", enum: ["newest", "oldest", "az", "za"] },
-						authorId: { type: "string", minLength: 1, maxLength: 64 },
-					},
-				},
-			},
-		},
-		quizController.getAllQuizzes,
-	);
+	fastify.get("/", { schema: quizzesSchema }, quizController.getAllQuizzes);
+	fastify.get("/:id", { schema: quizByIdSchema }, quizController.getQuizById);
 
-	fastify.get(
-		"/:id",
-		{
-			schema: {
-				params: {
-					type: "object",
-					required: ["id"],
-					additionalProperties: false,
-					properties: {
-						id: { type: "string", minLength: 1, maxLength: 128 },
-					},
-				},
-			},
-		},
-		quizController.getQuizById,
-	);
-
-	// protected routes
 	fastify.register(async function (protectedRoutes) {
 		protectedRoutes.addHook("preHandler", checkAuth);
 
-		protectedRoutes.post(
-			"/",
-			{
-				schema: {
-					body: {
-						type: "object",
-						required: ["id", "title", "questions"],
-						additionalProperties: false,
-						properties: {
-							id: { type: "string", minLength: 1, maxLength: 128 },
-							title: { type: "string", minLength: 1, maxLength: 160 },
-							description: { type: "string", maxLength: 1000 },
-							questions: { type: "array", minItems: 1, items: { type: "object" } },
-						},
-					},
-				},
-			},
-			quizController.createQuiz,
-		);
-
-		protectedRoutes.put(
-			"/:id",
-			{
-				schema: {
-					params: {
-						type: "object",
-						required: ["id"],
-						additionalProperties: false,
-						properties: {
-							id: { type: "string", minLength: 1, maxLength: 128 },
-						},
-					},
-					body: {
-						type: "object",
-						additionalProperties: false,
-						properties: {
-							title: { type: "string", minLength: 1, maxLength: 160 },
-							description: { type: "string", maxLength: 1000 },
-							questions: { type: "array", minItems: 1, items: { type: "object" } },
-						},
-						anyOf: [
-							{ required: ["title"] },
-							{ required: ["description"] },
-							{ required: ["questions"] },
-						],
-					},
-				},
-			},
-			quizController.updateQuiz,
-		);
-
-		protectedRoutes.delete(
-			"/:id",
-			{
-				schema: {
-					params: {
-						type: "object",
-						required: ["id"],
-						additionalProperties: false,
-						properties: {
-							id: { type: "string", minLength: 1, maxLength: 128 },
-						},
-					},
-				},
-			},
-			quizController.deleteQuiz,
-		);
+		protectedRoutes.post("/", { schema: createQuizSchema }, quizController.createQuiz);
+		protectedRoutes.put("/:id", { schema: updateQuizSchema }, quizController.updateQuiz);
+		protectedRoutes.delete("/:id", { schema: deleteQuizSchema }, quizController.deleteQuiz);
 	});
 }
