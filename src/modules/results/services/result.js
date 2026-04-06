@@ -13,7 +13,7 @@ export const getAllResults = async ({ userId, limit, skip, search, sort }) => {
 	return { results: normalizationService.normalizeResultList(results) };
 };
 
-export const createResult = async ({ userId, quizId, answers, summary, timestamp }) => {
+export const createResult = async ({ userId, quizId, answers, summary, createdAt }) => {
 	permissionService.assertValidSavePayload({ userId, quizId, answers, summary });
 
 	const quiz = await persistenceService.findQuizById(quizId);
@@ -25,7 +25,7 @@ export const createResult = async ({ userId, quizId, answers, summary, timestamp
 		quiz,
 		answers,
 		summary,
-		timestamp,
+		createdAt,
 	});
 
 	const result = await persistenceService.createResult(payload);

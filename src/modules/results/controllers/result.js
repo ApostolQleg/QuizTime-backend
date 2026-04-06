@@ -21,8 +21,8 @@ export const getResultById = async (request, reply) => {
 
 export const createResult = async (request, reply) => {
 	const userId = request.userId;
-	const { quizId, answers, summary, timestamp } = request.body;
+	const { quizId, answers, summary, createdAt } = request.body;
 
-	const data = await resultService.createResult({ userId, quizId, answers, summary, timestamp });
+	const data = await resultService.createResult({ userId, quizId, answers, summary, createdAt });
 	return reply.code(201).send({ success: true, ...data });
 };

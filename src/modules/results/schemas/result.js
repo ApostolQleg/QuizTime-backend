@@ -20,12 +20,12 @@ const resultsQuerySchema = {
 
 const saveResultBodySchema = {
 	type: "object",
-	required: ["quizId", "answers", "summary", "timestamp"],
+	required: ["quizId", "answers", "summary"],
 	additionalProperties: false,
 	properties: {
 		quizId: { type: "string", minLength: 1, maxLength: 128 },
 		answers: { type: "array", minItems: 1 },
-		timestamp: {
+		createdAt: {
 			anyOf: [
 				{ type: "string", format: "date-time" },
 				{ type: "integer", minimum: 0 },

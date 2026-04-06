@@ -9,15 +9,15 @@ const normalizeDateValue = (value) => {
 	return value;
 };
 
-export const normalizeTimestamp = (timestamp) => {
-	if (timestamp == null) return new Date();
-	if (timestamp instanceof Date) return timestamp;
+export const normalizeCreatedAt = (createdAt) => {
+	if (createdAt == null) return undefined;
+	if (createdAt instanceof Date) return createdAt;
 
-	if (typeof timestamp === "string" && /^\d+$/.test(timestamp)) {
-		return new Date(Number(timestamp));
+	if (typeof createdAt === "string" && /^\d+$/.test(createdAt)) {
+		return new Date(Number(createdAt));
 	}
 
-	return new Date(timestamp);
+	return new Date(createdAt);
 };
 
 export const normalizeResultListItem = (result) => {
@@ -26,7 +26,6 @@ export const normalizeResultListItem = (result) => {
 
 	return {
 		...resultData,
-		timestamp: normalizeDateValue(resultData.timestamp),
 		createdAt: normalizeDateValue(resultData.createdAt),
 	};
 };
@@ -41,16 +40,17 @@ export const normalizeResultDetails = (result) => {
 
 	return {
 		...resultData,
-		timestamp: normalizeDateValue(resultData.timestamp),
 		createdAt: normalizeDateValue(resultData.createdAt),
 	};
 };
 
-export const buildSaveResultPayload = ({ userId, quizId, quiz, answers, summary, timestamp }) => {
+export const buildSaveResultPayload = ({ userId, quizId, quiz, answers, summary, createdAt }) => {
+	const normalizedCreatedAt = normalizeCreatedAt(createdAt);
+
 	return {
 		quizId: String(quizId),
 		quizTitle: quiz.title,
-		timestamp: normalizeTimestamp(timestamp),
+		...(normalizedCreatedAt ? { createdAt: normalizedCreatedAt } : {}),
 		summary,
 		answers,
 		questions: quiz.questions,

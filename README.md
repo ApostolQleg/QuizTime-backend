@@ -313,7 +313,7 @@ All result routes are protected.
 
 `POST /api/results` payload:
 
-- `{ quizId, answers, summary, timestamp }`
+- `{ quizId, answers, summary, createdAt? }`
 
 ### User Routes
 
