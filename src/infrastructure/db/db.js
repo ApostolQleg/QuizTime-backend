@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
 import dotenv from "dotenv";
+import mongoose from "mongoose";
 
 dotenv.config();
 
@@ -9,7 +9,6 @@ if (!cached) {
 	cached = global.mongoose = { conn: null, promise: null };
 }
 
-// Database connection logic with caching (optimized)
 export async function connectToDatabase() {
 	if (cached.conn) {
 		return cached.conn;
