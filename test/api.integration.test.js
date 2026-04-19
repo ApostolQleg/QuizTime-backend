@@ -119,7 +119,7 @@ test("quizzes lifecycle: create and delete by author", async () => {
 });
 
 test("results lifecycle: pass quiz and read own result", async () => {
-	const { user: author, token: authorToken } = await createUserAndToken({
+	const { token: authorToken } = await createUserAndToken({
 		email: "author2@example.com",
 		nickname: "author2_nick",
 		passwordHash: "hash-author-2",
@@ -203,7 +203,7 @@ test("results lifecycle: pass quiz and read own result", async () => {
 });
 
 test("users lifecycle: delete account removes user and owned results", async () => {
-	const { user: author, token: authorToken } = await createUserAndToken({
+	const { token: authorToken } = await createUserAndToken({
 		email: "author3@example.com",
 		nickname: "author3_nick",
 		passwordHash: "hash-author-3",

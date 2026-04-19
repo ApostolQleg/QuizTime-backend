@@ -9,7 +9,7 @@ const formatValidationDetails = (validation = []) => {
 };
 
 export default async function errorHandlerPlugin(fastify) {
-	fastify.setErrorHandler(function (error, request, reply) {
+	fastify.setErrorHandler((error, request, reply) => {
 		if (error instanceof DomainError) {
 			return reply.status(error.statusCode).send({
 				success: false,

@@ -12,7 +12,7 @@ export default async function quizRoutes(fastify) {
 	fastify.get("/", { schema: quizzesSchema }, quizController.getAllQuizzes);
 	fastify.get("/:id", { schema: quizByIdSchema }, quizController.getQuizById);
 
-	fastify.register(async function (protectedRoutes) {
+	fastify.register(async (protectedRoutes) => {
 		protectedRoutes.addHook("preHandler", checkAuth);
 
 		protectedRoutes.post("/", { schema: createQuizSchema }, quizController.createQuiz);

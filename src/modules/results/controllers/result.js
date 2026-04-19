@@ -2,8 +2,8 @@ import * as resultService from "#src/modules/results/services/result.js";
 
 export const getAllResults = async (request, reply) => {
 	const userId = request.userId;
-	const limit = parseInt(request.query.limit) || 36;
-	const skip = parseInt(request.query.skip) || 0;
+	const limit = parseInt(request.query.limit, 10) || 36;
+	const skip = parseInt(request.query.skip, 10) || 0;
 	const search = request.query.search || "";
 	const sort = request.query.sort || "newest";
 

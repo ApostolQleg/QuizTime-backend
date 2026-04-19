@@ -1,8 +1,8 @@
+import readline from "node:readline/promises";
 import mongoose from "mongoose";
 import "dotenv/config";
 import { Quiz } from "#src/modules/quizzes/index.js";
 import { Result } from "#src/modules/results/index.js";
-import readline from "readline/promises";
 
 const AUTHOR_ID = process.env.AUTHOR_ID;
 
@@ -128,8 +128,8 @@ if (datatypeInput !== "q" && datatypeInput !== "r") {
 	process.exit(1);
 }
 
-const startnum = parseInt(await rl.question("Enter the starting number: ")) || 0;
-const endnum = parseInt(await rl.question("Enter the ending number: ")) || 0;
+const startnum = parseInt(await rl.question("Enter the starting number: "), 10) || 0;
+const endnum = parseInt(await rl.question("Enter the ending number: "), 10) || 0;
 
 rl.close();
 

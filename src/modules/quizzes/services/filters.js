@@ -1,7 +1,7 @@
 import * as persistenceService from "#src/modules/quizzes/services/persistence.js";
 
 export const filter = async (authorId, limit, skip, search, sort) => {
-	let filter = {};
+	const filter = {};
 	if (authorId) filter.authorId = authorId;
 	if (search) {
 		const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");

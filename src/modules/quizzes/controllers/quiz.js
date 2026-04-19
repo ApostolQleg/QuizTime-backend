@@ -1,8 +1,8 @@
 import * as quizService from "#src/modules/quizzes/services/quiz.js";
 
 export const getAllQuizzes = async (request, reply) => {
-	const limit = parseInt(request.query.limit) || 36;
-	const skip = parseInt(request.query.skip) || 0;
+	const limit = parseInt(request.query.limit, 10) || 36;
+	const skip = parseInt(request.query.skip, 10) || 0;
 	const search = request.query.search || "";
 	const sort = request.query.sort || "newest";
 	const authorId = request.query.authorId || "";

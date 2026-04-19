@@ -19,7 +19,7 @@ export const checkAuth = async (request, reply) => {
 			}
 
 			request.userId = decoded._id;
-		} catch (e) {
+		} catch {
 			return reply.code(403).send({ error: "No access" });
 		}
 	} else {

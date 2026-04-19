@@ -12,7 +12,7 @@ export function* generateNickname() {
 			noun = nouns[Math.floor(Math.random() * nouns.length)];
 		}
 		const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
-		const nickname = adjective + noun + "#" + id;
+		const nickname = `${adjective}${noun}#${id}`;
 		yield nickname;
 	}
 }

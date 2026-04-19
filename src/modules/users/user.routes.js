@@ -10,7 +10,7 @@ import {
 export default async function userRoutes(fastify) {
 	fastify.get("/:id", { schema: getCurrentUserSchema }, userController.getUserById);
 
-	fastify.register(async function (protectedRoutes) {
+	fastify.register(async (protectedRoutes) => {
 		protectedRoutes.addHook("preHandler", checkAuth);
 		protectedRoutes.get("/", userController.getCurrentUser);
 		protectedRoutes.put(
