@@ -1,5 +1,6 @@
 {
 	"compilerOptions": {
+		"types": ["bun"],
 		"baseUrl": ".",
 		"paths": {
 			"#src/*": ["./src/*"]
