@@ -1,6 +1,8 @@
-import bcrypt from "bcrypt";
 import * as userRepository from "#src/modules/users/repositories/user.js";
-import { CurrentPasswordIncorrectError, UserNotFoundError } from "#src/modules/users/errors/user.js";
+import {
+	CurrentPasswordIncorrectError,
+	UserNotFoundError,
+} from "#src/modules/users/errors/user.js";
 
 export const changePassword = async ({ userId, currentPassword, newPassword }) => {
 	const user = await userRepository.findById(userId);
@@ -13,8 +15,7 @@ export const changePassword = async ({ userId, currentPassword, newPassword }) =
 		throw new CurrentPasswordIncorrectError();
 	}
 
-	const salt = await bcrypt.genSalt(10);
-	const passwordHash = await bcrypt.hash(newPassword, salt);
+	const passwordHash = await Bun.password.hash(newPassword);
 	await userRepository.updateById(userId, { passwordHash });
 
 	return { message: "Password changed successfully" };
