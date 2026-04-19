@@ -43,7 +43,7 @@ Frontend project:
 
 ## Tech Stack
 
-- Node.js (ES modules)
+- Bun runtime (ES modules)
 - Fastify
 - MongoDB + Mongoose
 - JWT (`jsonwebtoken`)
@@ -184,17 +184,17 @@ Frontend project:
 - src/shared: Reusable middleware and utility helpers
 - src/data: Seed data and startup seeding logic
 - src/errors: Shared domain-level error primitives
-- test: Integration tests (Node test runner + mongodb-memory-server)
+- test: Integration tests (Bun test runner + mongodb-memory-server)
 
 ## Requirements
 
-- Node.js 18+
+- Bun 1.0+
 - MongoDB database (local or Atlas)
 
 ## Installation
 
 ```bash
-npm install
+bun install
 ```
 
 ## Environment Variables
@@ -224,7 +224,7 @@ Optional helper-script variable:
 ## Running Locally
 
 ```bash
-npm start
+bun run start
 ```
 
 Server starts at:
@@ -359,11 +359,12 @@ Allowed methods:
 
 ## Scripts
 
-| Command              | Description                                     |
-| -------------------- | ----------------------------------------------- |
-| `npm start`          | Start backend (`node src/app/server.js`)        |
-| `npm test`           | Run integration tests (`node --test`)           |
-| `npm run test:watch` | Run tests in watch mode (`node --test --watch`) |
+| Command              | Description                                    |
+| -------------------- | ---------------------------------------------- |
+| `bun run start`      | Start backend (`bun src/app/server.js`)        |
+| `bun run test`       | Run integration tests (`bun --test`)           |
+| `bun run test:watch` | Run tests in watch mode (`bun --test --watch`) |
+| `bun run lint`       | Run Biome lint checks                          |
 
 ## License
 
