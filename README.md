@@ -1,374 +1,327 @@
 # QuizTime Backend
 
-Fastify + MongoDB backend API for QuizTime.
+High-performance REST API for QuizTime built with **Fastify** and **MongoDB**. Handles authentication, quiz management, results storage, and user profiles.
 
-You can visit our website [here](https://quiz-time-with-react.vercel.app/).
-
-[Here](https://github.com/ApostolQleg/QuizTime/) is frontend of our website.
+🌐 **Live Site:** [quiz-time-with-react.vercel.app](https://quiz-time-with-react.vercel.app/)  
+🔗 **Frontend Repository:** [QuizTime-frontend](https://github.com/ApostolQleg/QuizTime-frontend)
 
 ## Table of Contents
 
 - [Overview](#overview)
+- [Key Features](#key-features)
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
-- [Requirements](#requirements)
+- [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Environment Variables](#environment-variables)
 - [Running Locally](#running-locally)
+- [Available Scripts](#available-scripts)
+- [API Modules](#api-modules)
 - [Authentication](#authentication)
-- [API Specification](#api-specification)
-- [Data Notes](#data-notes)
-- [CORS](#cors)
-- [Scripts](#scripts)
+- [Deployment](#deployment)
+- [Database](#database)
+- [Rate Limiting](#rate-limiting)
+- [Error Handling](#error-handling)
+- [Testing](#testing)
 - [License](#license)
 - [Authors](#authors)
 
 ## Overview
 
-REST API for QuizTime built with Fastify and MongoDB.
+QuizTime Backend is a robust REST API that powers the QuizTime platform—a full-featured quiz creation and management system. It provides secure authentication, comprehensive quiz operations, result tracking, and user profile management.
 
-The backend provides:
+## Key Features
 
-- JWT authentication
-- Email verification codes during sign-up
-- Google sign-in and account linking
-- Quiz catalog with filtering/sorting/pagination
-- Quiz CRUD for authenticated authors
-- User profile management
-- Quiz result storage and history
-
-Frontend project:
-
-- https://github.com/ApostolQleg/QuizTime-React
+- **Authentication System**
+    - Email/password registration and login
+    - Email verification codes (5-minute expiration)
+    - JWT-based session management
+    - Google OAuth 2.0 integration with account linking
+- **Quiz Management**
+    - CRUD operations for quizzes
+    - Advanced filtering, sorting, and pagination
+    - Bulk quiz seeding with default data
+- **User Management**
+    - User profiles with nicknames
+    - Avatar color generation
+    - Password management and hashing
+    - Account deletion
+- **Results & Analytics**
+    - Quiz result storage
+    - Historical result tracking
+    - Per-user result retrieval with pagination
+- **Security & Performance**
+    - Rate limiting on all routes
+    - CORS configuration for production/development
+    - Password hashing with bcrypt
+    - Secure JWT tokens
+    - Database connection pooling
 
 ## Tech Stack
 
-- Bun runtime (ES modules)
-- Fastify
-- MongoDB + Mongoose
-- JWT (`jsonwebtoken`)
-- Google token validation (`google-auth-library`)
-- Email sending (`nodemailer`)
-- Password hashing (`bcrypt`)
+- **Runtime:** Bun (ES modules)
+- **Framework:** Fastify 5.x
+- **Database:** MongoDB with Mongoose ODM
+- **Authentication:** JWT (jsonwebtoken), Google Auth Library
+- **Email:** Nodemailer
+- **Security:** bcrypt, rate limiting
+- **Code Quality:** Biome (linting)
+- **Testing:** Bun native testing, mongodb-memory-server
 
 ## Project Structure
 
 ```
-.
-|-- jsconfig.json
-|-- LICENSE
-|-- README.md
-|-- package.json
-|-- test/
-|   `-- api.integration.test.js
-|-- vercel.json
-`-- src/
-    |-- app/
-    |   |-- app.js
-    |   |-- server.js
-    |   `-- http/
-    |       `-- router.js
-    |-- data/
-    |   |-- defaultQuizzes.js
-    |   `-- quizSeed.js
-    |-- errors/
-    |   `-- domain-error.js
-    |-- infrastructure/
-    |   |-- db/
-    |   |   `-- db.js
-    |   |-- email/
-    |   |   `-- email.service.js
-    |   `-- google/
-    |       `-- googleClient.js
-    |-- modules/
-    |   |-- auth/
-    |   |   |-- auth.routes.js
-    |   |   |-- index.js
-    |   |   `-- temp-code.model.js
-    |   |   |-- controllers/
-    |   |   |   |-- auth.js
-    |   |   |   `-- oauth.js
-    |   |   |-- errors/
-    |   |   |   `-- auth.js
-    |   |   |-- repositories/
-    |   |   |   |-- temp-code.js
-    |   |   |   `-- user.js
-    |   |   |-- schemas/
-    |   |   |   |-- auth.js
-    |   |   |   `-- oauth.js
-    |   |   `-- services/
-    |   |       |-- auth.js
-    |   |       |-- google-adapter.js
-    |   |       |-- google.js
-    |   |       |-- normalization.js
-    |   |       |-- permissions.js
-    |   |       |-- persistence.js
-    |   |       |-- security.js
-    |   |       `-- temp-codes.js
-    |   |-- quizzes/
-    |   |   |-- index.js
-    |   |   |-- quiz.model.js
-    |   |   |-- quiz.routes.js
-    |   |   |-- controllers/
-    |   |   |   `-- quiz.js
-    |   |   |-- errors/
-    |   |   |   `-- quiz.js
-    |   |   |-- repositories/
-    |   |   |   |-- quiz.js
-    |   |   |   `-- user.js
-    |   |   |-- schemas/
-    |   |   |   `-- quiz.js
-    |   |   `-- services/
-    |   |       |-- cache.js
-    |   |       |-- filters.js
-    |   |       |-- normalization.js
-    |   |       |-- permissions.js
-    |   |       |-- persistence.js
-    |   |       `-- quiz.js
-    |   |-- results/
-    |   |   |-- index.js
-    |   |   |-- result.model.js
-    |   |   |-- result.routes.js
-    |   |   |-- controllers/
-    |   |   |   `-- result.js
-    |   |   |-- errors/
-    |   |   |   `-- result.js
-    |   |   |-- repositories/
-    |   |   |   |-- quiz.js
-    |   |   |   `-- result.js
-    |   |   |-- schemas/
-    |   |   |   `-- result.js
-    |   |   `-- services/
-    |   |       |-- cache.js
-    |   |       |-- filters.js
-    |   |       |-- normalization.js
-    |   |       |-- permissions.js
-    |   |       |-- persistence.js
-    |   |       `-- result.js
-    |   `-- users/
-    |       |-- index.js
-    |       |-- user.model.js
-    |       |-- user.routes.js
-    |       |-- controllers/
-    |       |   `-- user.js
-    |       |-- errors/
-    |       |   `-- user.js
-    |       |-- repositories/
-    |       |   |-- result.js
-    |       |   `-- user.js
-    |       |-- schemas/
-    |       |   `-- user.js
-    |       `-- services/
-    |           |-- cleanup.js
-    |           |-- nickname.js
-    |           |-- profile.js
-    |           |-- security.js
-    |           `-- user.js
-    |-- plugins/
-    |   `-- error-handler.js
-    `-- shared/
-        |-- middleware/
-        |   `-- checkAuth.js
-        `-- utils/
-            |-- dataUtil.js
-            |-- memoizer.js
-            `-- nicknameGen.js
+src/
+├── app/                          # Application bootstrap
+│   ├── app.js                   # Fastify app setup, plugins, CORS
+│   ├── server.js                # Server entrypoint
+│   └── http/
+│       └── router.js            # Route registration
+├── infrastructure/              # External services
+│   ├── db/
+│   │   └── db.js               # MongoDB connection
+│   ├── email/
+│   │   └── email.service.js    # Email sending via Nodemailer
+│   └── google/
+│       └── googleClient.js     # Google OAuth validation
+├── modules/                     # Feature modules (Domain-driven)
+│   ├── auth/
+│   │   ├── auth.routes.js      # Route definitions
+│   │   ├── controllers/         # Request handlers
+│   │   ├── services/           # Business logic
+│   │   ├── repositories/       # Data access
+│   │   ├── schemas/            # Request validation
+│   │   └── errors/             # Auth-specific errors
+│   ├── users/                  # User management
+│   ├── quizzes/                # Quiz CRUD & operations
+│   └── results/                # Result storage & retrieval
+├── data/
+│   ├── defaultQuizzes.js       # Seed data
+│   └── quizSeed.js             # Seeding logic
+├── errors/
+│   └── domain-error.js         # Base error class
+├── plugins/
+│   └── error-handler.js        # Global error handling
+└── shared/
+    ├── middleware/
+    │   └── checkAuth.js        # JWT verification middleware
+    └── utils/
+        ├── dataUtil.js         # Data transformation helpers
+        ├── memoizer.js         # Result caching
+        └── nicknameGen.js      # Nickname generation
 ```
 
-### Folder Responsibilities
+## Prerequisites
 
-- src/app: Fastify bootstrap, HTTP router registration, and local/serverless entrypoints
-- src/modules: Feature modules (auth, quizzes, results, users) with layered internals
-- src/infrastructure: External integrations for database, Google token verification, and email
-- src/plugins: Cross-cutting Fastify plugins (global error handler)
-- src/shared: Reusable middleware and utility helpers
-- src/data: Seed data and startup seeding logic
-- src/errors: Shared domain-level error primitives
-- test: Integration tests (Bun test runner + mongodb-memory-server)
-
-## Requirements
-
-- Bun 1.0+
-- MongoDB database (local or Atlas)
+- **Node.js/Bun:** Bun runtime installed
+- **MongoDB:** Local or Atlas instance
+- **Gmail Account:** For email verification (or SMTP service)
+- **Google OAuth Credentials:** For Google sign-in
+- **Git:** For version control
 
 ## Installation
 
-```bash
-bun install
-```
+1. **Clone the repository**
+
+    ```bash
+    git clone <repo-url>
+    cd QuizTime-backend
+    ```
+
+2. **Install dependencies**
+
+    ```bash
+    bun install
+    ```
+
+3. **Set up environment variables** (see [Environment Variables](#environment-variables) section)
+
+    ```bash
+    cp .env.example .env  # if available
+    # Then edit .env with your credentials
+    ```
+
+4. **Verify the setup**
+    ```bash
+    bun run lint
+    ```
 
 ## Environment Variables
 
-Create a `.env` file in the project root.
+Create a `.env` file in the project root with the following variables:
 
-Required for normal API operation:
+```env
+# Database (Required)
+MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/quiztime
 
-| Variable           | Required | Description                                                                                                           |
-| ------------------ | -------- | --------------------------------------------------------------------------------------------------------------------- |
-| `PORT`             | No       | Local server port (default: `3000`)                                                                                   |
-| `MONGO_URI`        | Yes      | MongoDB connection string                                                                                             |
-| `JWT_SECRET`       | Yes      | Secret used to sign and verify JWT tokens                                                                             |
-| `GOOGLE_CLIENT_ID` | Yes\*    | Google OAuth client id for `/auth/google`, `/auth/google-extract`, `/auth/link-google`, and Google-based registration |
-| `SMTP_USER`        | Yes\*    | SMTP username (currently used with Gmail service) for `/auth/send-code`                                               |
-| `SMTP_PASS`        | Yes\*    | SMTP password/app-password for `/auth/send-code`                                                                      |
-| `NODE_ENV`         | No       | If set to `production`, local listener is skipped (useful for serverless runtime)                                     |
+# JWT (Required)
+JWT_SECRET=your-super-secret-jwt-key-min-32-chars
 
-Optional helper-script variable:
+# Email Service (Required for registration)
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-app-specific-password
 
-| Variable    | Used by                 | Description                                              |
-| ----------- | ----------------------- | -------------------------------------------------------- |
-| `AUTHOR_ID` | `src/utils/dataUtil.js` | Author/user id used by manual seed/delete utility script |
+# Google OAuth (Required for Google login)
+GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
 
-`*` Required only for features that depend on Google auth or email verification.
+# Optional
+PORT=3000                          # Defaults to 3000
+NODE_ENV=development
+AUTHOR_ID=your-author-id-for-seeds
+```
+
+**Important Notes:**
+
+- **MONGO_URI:** MongoDB connection string from [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
+- **JWT_SECRET:** Generate with `openssl rand -base64 32` (min 32 characters)
+- **SMTP credentials:** Gmail requires App Passwords ([setup guide](https://support.google.com/accounts/answer/185833))
+    - Alternative: Use any SMTP provider (SendGrid, Mailgun, etc.)
+- **GOOGLE_CLIENT_ID:** From [Google Cloud Console](https://console.cloud.google.com/) → OAuth 2.0 Credentials
 
 ## Running Locally
 
 ```bash
+# Development mode
 bun run start
+
+# Watch mode (requires Bun file watcher)
+bun --watch src/app/server.js
 ```
 
-Server starts at:
+The API will be available at `http://localhost:3000`
 
-- `http://localhost:3000` by default
+## Available Scripts
 
-Health endpoint:
+```bash
+bun run start          # Start the server
+bun run test           # Run all tests once
+bun run test:watch     # Run tests in watch mode
+bun run lint           # Lint code with Biome
+```
 
-- `GET /` -> `{ status, time }`
+## API Modules
+
+### Authentication (`/auth`)
+
+- `POST /auth/register` - Register new user
+- `POST /auth/send-code` - Send verification email code
+- `POST /auth/login` - Login with email/password
+- `POST /auth/google` - Login/register with Google OAuth token
+- `POST /auth/google-extract` - Extract data from Google token (before linking)
+- `POST /auth/link-google` - Link existing account with Google (auth required)
+
+### Quizzes (`/api/quizzes`)
+
+- `GET /api/quizzes` - List all quizzes with pagination, sorting, filtering
+    - Query params: `skip`, `limit`, `search`, `sort`, `authorId`
+- `GET /api/quizzes/:id` - Get single quiz by ID
+- `POST /api/quizzes` - Create new quiz (auth required)
+- `PUT /api/quizzes/:id` - Update quiz (auth required, owner only)
+- `DELETE /api/quizzes/:id` - Delete quiz (auth required, owner only)
+
+### Results (`/api/results`)
+
+- `GET /api/results` - List current user's results (auth required)
+    - Query params: `skip`, `limit`, `search`, `sort`
+- `GET /api/results/:id` - Get result details by ID
+- `POST /api/results` - Save quiz attempt result (auth required)
+
+### Users (`/api/user`)
+
+- `GET /api/user/` - Get current user profile (auth required)
+- `GET /api/user/:id` - Get public user profile by ID
+- `PUT /api/user/update` - Update current user profile (auth required)
+- `POST /api/user/password` - Change password (auth required)
+- `GET /api/user/nickname` - Get suggested nicknames (auth required)
+- `DELETE /api/user/delete` - Delete account permanently (auth required)
 
 ## Authentication
 
-Protected endpoints require:
+**JWT Flow:**
 
-`Authorization: Bearer <jwt_token>`
+1. User registers/logs in
+2. Server sends verification code via email
+3. User verifies code, receives JWT token
+4. Token included in `Authorization: Bearer <token>` header
+5. Middleware validates token on protected routes
 
-Token payload contains user id (`_id`) and is signed for 30 days.
+**Middleware:** `checkAuth.js` validates JWT on protected routes
 
-## API Specification
+## Deployment
 
-Base groups:
+### Vercel
 
-- `/auth`
-- `/api/quizzes`
-- `/api/results`
-- `/api/user`
+The project includes `vercel.json` for Vercel deployment:
 
-### Auth Routes
+```bash
+vercel deploy
+```
 
-| Method | Path                   | Auth | Purpose                                              |
-| ------ | ---------------------- | ---- | ---------------------------------------------------- |
-| `POST` | `/auth/register`       | No   | Register local or Google-backed user                 |
-| `POST` | `/auth/login`          | No   | Login with `email` + `password`                      |
-| `POST` | `/auth/google`         | No   | Login existing user by Google token                  |
-| `POST` | `/auth/google-extract` | No   | Validate Google token and return profile for prefill |
-| `POST` | `/auth/send-code`      | No   | Send 6-digit email verification code                 |
-| `POST` | `/auth/link-google`    | Yes  | Attach Google account to logged-in user              |
+**Vercel Configuration:**
 
-Important request notes:
+- Builds from `src/app/app.js`
+- Routes all requests to the Fastify app
+- Set environment variables in Vercel dashboard
 
-- `POST /auth/register` expects `email`, `password`, and either:
-    - `code` from `/auth/send-code`, or
-    - `googleToken`.
-- `POST /auth/login` expects `{ email, password }`.
-- `POST /auth/google`, `/auth/google-extract`, and `/auth/link-google` expect `{ token }`.
-- `POST /auth/send-code` expects `{ email }`.
+### Environment Setup on Vercel
 
-Rate limits are enabled for auth endpoints (stricter for `/auth/login` and `/auth/send-code`).
+Add these environment variables in Vercel project settings:
 
-### Quiz Routes
+- `MONGO_URI`
+- `JWT_SECRET`
+- `SMTP_USER` / `SMTP_PASS`
+- `GOOGLE_CLIENT_ID`
+- `FRONTEND_URL` (production URL)
 
-| Method   | Path               | Auth | Purpose                 |
-| -------- | ------------------ | ---- | ----------------------- |
-| `GET`    | `/api/quizzes`     | No   | List quizzes            |
-| `GET`    | `/api/quizzes/:id` | No   | Get quiz by public `id` |
-| `POST`   | `/api/quizzes`     | Yes  | Create quiz             |
-| `PUT`    | `/api/quizzes/:id` | Yes  | Update own quiz         |
-| `DELETE` | `/api/quizzes/:id` | Yes  | Delete own quiz         |
+## Database
 
-`GET /api/quizzes` query parameters:
+**MongoDB with Mongoose:**
 
-- `limit` (default `10`)
-- `skip` (optional, takes precedence over `page`)
-- `page` (default `1`, used if `skip` is missing)
-- `search` (title contains, case-insensitive)
-- `sort` (`newest`, `oldest`, `az`, `za`)
-- `authorId` (filter quizzes by author)
+- Connection pooling (maxPoolSize: 10)
+- Automatic re-connection on failure
+- Models: User, Quiz, Result, TempCode
+- Indexed fields for performance
 
-Create payload shape:
+**Seeding:**
 
-- `{ id, title, description, questions }`
-- `questions` must be an array.
+- Default quizzes automatically seeded on first run
+- Prevents duplicates with uniqueness checks
 
-### Result Routes
+## Rate Limiting
 
-All result routes are protected.
+- **Global rate limit:** Configurable per route
+- **Purpose:** Prevent abuse and ensure API stability
+- **Implementation:** `@fastify/rate-limit` plugin
 
-| Method | Path               | Auth | Purpose                         |
-| ------ | ------------------ | ---- | ------------------------------- |
-| `GET`  | `/api/results`     | Yes  | List current user results       |
-| `GET`  | `/api/results/:id` | Yes  | Get result document by Mongo id |
-| `POST` | `/api/results`     | Yes  | Save quiz attempt               |
+## Error Handling
 
-`GET /api/results` query parameters:
+**Custom Error Class:** `DomainError`
 
-- `limit` (default `36`)
-- `skip` (default `0`)
-- `search` (quiz title contains)
-- `sort` (`newest`, `oldest`, `az`, `za`)
+```javascript
+// Example
+throw new DomainError("User not found", "NOT_FOUND", 404);
+```
 
-`POST /api/results` payload:
+**Global Error Handler Plugin:** Catches all errors and returns standardized responses
 
-- `{ quizId, answers, summary, createdAt? }`
+## Testing
 
-### User Routes
+```bash
+# Run tests once
+bun run test
 
-| Method   | Path                 | Auth | Purpose                         |
-| -------- | -------------------- | ---- | ------------------------------- |
-| `GET`    | `/api/user/:id`      | No   | Public profile by user id       |
-| `GET`    | `/api/user`          | Yes  | Current user profile            |
-| `PUT`    | `/api/user/update`   | Yes  | Update current user fields      |
-| `POST`   | `/api/user/password` | Yes  | Change password                 |
-| `DELETE` | `/api/user/delete`   | Yes  | Delete account and user results |
-| `GET`    | `/api/user/nickname` | Yes  | Generate nickname suggestions   |
+# Watch mode
+bun run test:watch
+```
 
-`PUT /api/user/update` accepts any of:
+Tests include:
 
-- `nickname`
-- `themeColor`
-- `avatarType`
-
-`POST /api/user/password` expects:
-
-- `{ currentPassword, newPassword }`
-
-## Data Notes
-
-- Initial default quizzes are inserted during app startup when the quizzes collection is empty.
-- Email verification codes are stored in `temp_codes` and expire after 5 minutes (Mongo TTL).
-
-## CORS
-
-Allowed origins in current server config:
-
-- `https://quiz-time-with-react.vercel.app`
-- `http://localhost:5173`
-- `http://127.0.0.1:5173`
-
-Allowed methods:
-
-- `GET`, `POST`, `PUT`, `DELETE`, `OPTIONS`
-
-## Scripts
-
-| Command              | Description                                    |
-| -------------------- | ---------------------------------------------- |
-| `bun run start`      | Start backend (`bun src/app/server.js`)        |
-| `bun run test`       | Run integration tests (`bun --test`)           |
-| `bun run test:watch` | Run tests in watch mode (`bun --test --watch`) |
-| `bun run lint`       | Run Biome lint checks                          |
+- Integration tests in `test/api.integration.test.js`
+- MongoDB Memory Server for isolated testing
 
 ## License
 
-MIT. See [LICENSE](LICENSE) for details.
+MIT - See LICENSE file
 
 ## Authors
 
