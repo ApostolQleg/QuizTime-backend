@@ -26,6 +26,8 @@ const createQuizBodySchema = {
 	properties: {
 		id: { type: "string", minLength: 1, maxLength: 128 },
 		title: { type: "string", minLength: 1, maxLength: 160 },
+		category: { type: "string", minLength: 1, maxLength: 30 },
+		tags: { type: "array", minItems: 1, items: { type: "string" } },
 		description: { type: "string", maxLength: 1000 },
 		questions: { type: "array", minItems: 1, items: { type: "object" } },
 	},

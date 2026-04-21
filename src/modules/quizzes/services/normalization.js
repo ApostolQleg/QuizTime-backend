@@ -17,6 +17,8 @@ export const normalizeQuizListItem = (quiz) => {
 		_id: quiz._id,
 		id: quiz.id,
 		title: quiz.title,
+		category: quiz.category,
+		tags: quiz.tags,
 		description: quiz.description,
 		questionsCount: Array.isArray(quiz.questions) ? quiz.questions.length : 0,
 		...toAuthorDto(quiz.authorId),
@@ -44,6 +46,8 @@ export const normalizeQuizDetails = (quiz) => {
 export const buildCreatePayload = ({
 	id,
 	title,
+	category,
+	tags,
 	description,
 	questions,
 	userId,
@@ -52,6 +56,8 @@ export const buildCreatePayload = ({
 	return {
 		id: String(id),
 		title: title?.trim(),
+		category: category?.trim(),
+		tags: tags,
 		description: description?.trim() || "",
 		questions,
 		authorId: userId,

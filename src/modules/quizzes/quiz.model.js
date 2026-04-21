@@ -4,6 +4,8 @@ const quizSchema = new mongoose.Schema(
 	{
 		title: String,
 		description: String,
+		category: String,
+		tags: Array,
 		id: String,
 		questions: Array,
 		authorId: {

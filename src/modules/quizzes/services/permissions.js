@@ -10,8 +10,8 @@ import {
 	QuizQuestionsRequiredError,
 } from "#src/modules/quizzes/errors/quiz.js";
 
-export const assertValidCreatePayload = ({ id, title, questions }) => {
-	if (!id || !title?.trim()) {
+export const assertValidCreatePayload = ({ id, title, tags, description, questions }) => {
+	if (!id || !title?.trim() || !description?.trim() || !tags.length === 0) {
 		throw new InvalidQuizPayloadError();
 	}
 

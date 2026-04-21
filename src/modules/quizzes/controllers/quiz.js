@@ -26,12 +26,14 @@ export const getQuizById = async (request, reply) => {
 
 export const createQuiz = async (request, reply) => {
 	const userId = request.userId;
-	const { id, title, description, questions } = request.body;
+	const { id, title, category, tags, description, questions } = request.body;
 
 	const data = await quizService.createQuiz({
 		userId,
 		id,
 		title,
+		category,
+		tags,
 		description,
 		questions,
 	});
@@ -41,11 +43,13 @@ export const createQuiz = async (request, reply) => {
 export const updateQuiz = async (request, reply) => {
 	const userId = request.userId;
 	const { id } = request.params;
-	const { title, description, questions } = request.body;
+	const { title, category, tags, description, questions} = request.body;
 
 	const data = await quizService.updateQuiz({
 		userId,
 		id,
+		category,
+		tags,
 		title,
 		description,
 		questions,

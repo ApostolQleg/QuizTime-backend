@@ -45,6 +45,8 @@ export const createQuiz = async ({
 	const payload = normalizationService.buildCreatePayload({
 		id,
 		title,
+		category,
+		tags,
 		description,
 		questions,
 		userId,
