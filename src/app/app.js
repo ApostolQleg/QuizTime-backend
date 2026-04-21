@@ -9,14 +9,12 @@ import router from "#src/app/http/router.js";
 
 dotenv.config();
 
-// Fastify initialization
 export const app = Fastify({
 	logger: true,
 	trustProxy: true,
 	connectionTimeout: 20000,
 });
 
-// CORS registration
 await app.register(cors, {
 	origin: [
 		"https://quiz-time-with-react.vercel.app",
@@ -31,7 +29,6 @@ await app.register(cors, {
 await app.register(rateLimit, { global: false });
 await app.register(errorHandlerPlugin);
 
-// Database connection via plugin
 app.register(async (instance) => {
 	try {
 		await connectToDatabase();

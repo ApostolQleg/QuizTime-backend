@@ -13,5 +13,5 @@ if (process.env.NODE_ENV !== "production") {
 	}
 }
 
-// Export handler for Vercel
+// Handler for Vercel
 export { default } from "#src/app/app.js";
