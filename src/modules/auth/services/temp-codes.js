@@ -1,6 +1,9 @@
-import * as tempCodeRepository from "#src/modules/auth/repositories/temp-code.js";
 import { sendVerificationEmail } from "#src/infrastructure/email/email.service.js";
-import { InvalidVerificationCodeError, VerificationCodeExpiredError } from "#src/modules/auth/errors/auth.js";
+import {
+	InvalidVerificationCodeError,
+	VerificationCodeExpiredError,
+} from "#src/modules/auth/errors/auth.js";
+import * as tempCodeRepository from "#src/modules/auth/repositories/temp-code.js";
 
 const generateVerificationCode = () => {
 	return Math.floor(100000 + Math.random() * 900000).toString();

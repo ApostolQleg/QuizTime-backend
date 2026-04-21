@@ -39,11 +39,18 @@ const updateQuizBodySchema = {
 		description: { type: "string", maxLength: 1000 },
 		questions: { type: "array", minItems: 1, items: { type: "object" } },
 	},
-	anyOf: [{ required: ["title"] }, { required: ["description"] }, { required: ["questions"] }],
+	anyOf: [
+		{ required: ["title"] },
+		{ required: ["description"] },
+		{ required: ["questions"] },
+	],
 };
 
 export const quizByIdSchema = { params: quizIdParams };
 export const quizzesSchema = { querystring: quizzesQuerySchema };
 export const deleteQuizSchema = { params: quizIdParams };
 export const createQuizSchema = { body: createQuizBodySchema };
-export const updateQuizSchema = { params: quizIdParams, body: updateQuizBodySchema };
+export const updateQuizSchema = {
+	params: quizIdParams,
+	body: updateQuizBodySchema,
+};

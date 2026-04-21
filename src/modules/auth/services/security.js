@@ -17,5 +17,7 @@ export const generateOAuthPasswordHash = async () => {
 };
 
 export const signAccessToken = (userId) => {
-	return jwt.sign({ _id: userId }, process.env.JWT_SECRET, { expiresIn: TOKEN_EXPIRES_IN });
+	return jwt.sign({ _id: userId }, process.env.JWT_SECRET, {
+		expiresIn: TOKEN_EXPIRES_IN,
+	});
 };

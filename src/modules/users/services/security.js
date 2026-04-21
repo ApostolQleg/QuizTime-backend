@@ -1,10 +1,14 @@
-import * as userRepository from "#src/modules/users/repositories/user.js";
 import {
 	CurrentPasswordIncorrectError,
 	UserNotFoundError,
 } from "#src/modules/users/errors/user.js";
+import * as userRepository from "#src/modules/users/repositories/user.js";
 
-export const changePassword = async ({ userId, currentPassword, newPassword }) => {
+export const changePassword = async ({
+	userId,
+	currentPassword,
+	newPassword,
+}) => {
 	const user = await userRepository.findById(userId);
 	if (!user) {
 		throw new UserNotFoundError();

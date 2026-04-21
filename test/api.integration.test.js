@@ -1,8 +1,8 @@
-import test, { before, beforeEach, after } from "node:test";
 import assert from "node:assert/strict";
+import test, { after, before, beforeEach } from "node:test";
 import jwt from "jsonwebtoken";
-import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
+import mongoose from "mongoose";
 
 let mongod;
 let app;
@@ -33,7 +33,11 @@ before(async () => {
 });
 
 beforeEach(async () => {
-	await Promise.all([User.deleteMany({}), Quiz.deleteMany({}), Result.deleteMany({})]);
+	await Promise.all([
+		User.deleteMany({}),
+		Quiz.deleteMany({}),
+		Result.deleteMany({}),
+	]);
 });
 
 after(async () => {
@@ -45,7 +49,9 @@ after(async () => {
 
 const createUserAndToken = async ({ email, nickname, passwordHash }) => {
 	const user = await User.create({ email, nickname, passwordHash });
-	const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "30d" });
+	const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+		expiresIn: "30d",
+	});
 
 	return { user, token };
 };
@@ -240,7 +246,9 @@ test("users lifecycle: delete account removes user and owned results", async () 
 
 	assert.equal(passResponse.statusCode, 201);
 
-	const beforeDeleteResultsCount = await Result.countDocuments({ userId: player._id });
+	const beforeDeleteResultsCount = await Result.countDocuments({
+		userId: player._id,
+	});
 	assert.equal(beforeDeleteResultsCount, 1);
 
 	const deleteUserResponse = await app.inject({
@@ -257,7 +265,9 @@ test("users lifecycle: delete account removes user and owned results", async () 
 	const deletedUser = await User.findById(player._id).lean();
 	assert.equal(deletedUser, null);
 
-	const afterDeleteResultsCount = await Result.countDocuments({ userId: player._id });
+	const afterDeleteResultsCount = await Result.countDocuments({
+		userId: player._id,
+	});
 	assert.equal(afterDeleteResultsCount, 0);
 
 	const accessAfterDeleteResponse = await app.inject({
@@ -267,5 +277,8 @@ test("users lifecycle: delete account removes user and owned results", async () 
 	});
 
 	assert.equal(accessAfterDeleteResponse.statusCode, 401);
-	assert.equal(accessAfterDeleteResponse.json().error, "User deleted or disabled");
+	assert.equal(
+		accessAfterDeleteResponse.json().error,
+		"User deleted or disabled",
+	);
 });

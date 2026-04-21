@@ -18,7 +18,11 @@ export const changePassword = async (request, reply) => {
 	const userId = request.userId;
 	const { currentPassword, newPassword } = request.body;
 
-	const data = await userService.changePassword({ userId, currentPassword, newPassword });
+	const data = await userService.changePassword({
+		userId,
+		currentPassword,
+		newPassword,
+	});
 	return reply.send({ success: true, ...data });
 };
 
@@ -26,7 +30,12 @@ export const updateProfile = async (request, reply) => {
 	const userId = request.userId;
 	const { nickname, themeColor, avatarType } = request.body;
 
-	const data = await userService.updateProfile({ userId, nickname, themeColor, avatarType });
+	const data = await userService.updateProfile({
+		userId,
+		nickname,
+		themeColor,
+		avatarType,
+	});
 	return reply.send({ success: true, ...data });
 };
 

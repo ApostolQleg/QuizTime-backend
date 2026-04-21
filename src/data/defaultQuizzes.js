@@ -495,7 +495,11 @@ export const defaultQuizzes = {
 					text: "Як називалася козацька держава?",
 					options: [
 						{ text: "Київська Русь", id: 0, isCorrect: false },
-						{ text: "Військо Запорозьке (Гетьманщина)", id: 1, isCorrect: true },
+						{
+							text: "Військо Запорозьке (Гетьманщина)",
+							id: 1,
+							isCorrect: true,
+						},
 						{ text: "Галицько-Волинське князівство", id: 2, isCorrect: false },
 						{ text: "УНР", id: 3, isCorrect: false },
 					],
@@ -977,7 +981,11 @@ export const defaultQuizzes = {
 					text: "Що таке фотосинтез?",
 					options: [
 						{ text: "Дихання рослин", id: 0, isCorrect: false },
-						{ text: "Утворення органічних речовин на світлі", id: 1, isCorrect: true },
+						{
+							text: "Утворення органічних речовин на світлі",
+							id: 1,
+							isCorrect: true,
+						},
 						{ text: "Розмноження клітин", id: 2, isCorrect: false },
 						{ text: "Вмирання листків", id: 3, isCorrect: false },
 					],
@@ -1456,7 +1464,11 @@ export const defaultQuizzes = {
 					id: 3,
 					text: "Що робить DNS?",
 					options: [
-						{ text: "Перетворює доменні імена в IP-адреси", id: 0, isCorrect: true },
+						{
+							text: "Перетворює доменні імена в IP-адреси",
+							id: 0,
+							isCorrect: true,
+						},
 						{ text: "Захищає від вірусів", id: 1, isCorrect: false },
 						{ text: "Прискорює інтернет", id: 2, isCorrect: false },
 						{ text: "Зберігає файли", id: 3, isCorrect: false },
@@ -1824,7 +1836,11 @@ export const defaultQuizzes = {
 					id: 1,
 					text: "Що таке 'диверсифікація' у інвестиціях?",
 					options: [
-						{ text: "Вкладення всіх грошей в один актив", id: 0, isCorrect: false },
+						{
+							text: "Вкладення всіх грошей в один актив",
+							id: 0,
+							isCorrect: false,
+						},
 						{
 							text: "Розподіл інвестицій між різними активами для зниження ризику",
 							id: 1,
@@ -1835,7 +1851,11 @@ export const defaultQuizzes = {
 							id: 2,
 							isCorrect: false,
 						},
-						{ text: "Інвестування тільки в іноземну валюту", id: 3, isCorrect: false },
+						{
+							text: "Інвестування тільки в іноземну валюту",
+							id: 3,
+							isCorrect: false,
+						},
 					],
 				},
 				{
@@ -1843,7 +1863,11 @@ export const defaultQuizzes = {
 					text: "Що таке 'актив'?",
 					options: [
 						{ text: "Те, що забирає гроші з кишені", id: 0, isCorrect: false },
-						{ text: "Те, що приносить гроші або має вартість", id: 1, isCorrect: true },
+						{
+							text: "Те, що приносить гроші або має вартість",
+							id: 1,
+							isCorrect: true,
+						},
 						{ text: "Борг перед банком", id: 2, isCorrect: false },
 						{ text: "Щомісячні витрати", id: 3, isCorrect: false },
 					],
@@ -1867,7 +1891,11 @@ export const defaultQuizzes = {
 					text: "Яка функція депозиту?",
 					options: [
 						{ text: "Втратити гроші", id: 0, isCorrect: false },
-						{ text: "Зберегти гроші та отримати відсотки", id: 1, isCorrect: true },
+						{
+							text: "Зберегти гроші та отримати відсотки",
+							id: 1,
+							isCorrect: true,
+						},
 						{ text: "Купити товари", id: 2, isCorrect: false },
 						{ text: "Взяти гроші в борг", id: 3, isCorrect: false },
 					],
@@ -1945,7 +1973,11 @@ export const defaultQuizzes = {
 					text: "Що таке 'кешбек'?",
 					options: [
 						{ text: "Комісія банку", id: 0, isCorrect: false },
-						{ text: "Повернення частини витрачених коштів", id: 1, isCorrect: true },
+						{
+							text: "Повернення частини витрачених коштів",
+							id: 1,
+							isCorrect: true,
+						},
 						{ text: "Податок на покупку", id: 2, isCorrect: false },
 						{ text: "Оплата готівкою", id: 3, isCorrect: false },
 					],

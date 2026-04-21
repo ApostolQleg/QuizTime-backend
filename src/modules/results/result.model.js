@@ -12,7 +12,12 @@ const resultSchema = new mongoose.Schema(
 		answers: { type: Array, required: true },
 		questions: { type: Array, required: true },
 
-		userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", index: true, required: true },
+		userId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+			index: true,
+			required: true,
+		},
 		createdAt: { type: Date, default: Date.now, index: true },
 	},
 	{ versionKey: false },

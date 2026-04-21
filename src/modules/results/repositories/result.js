@@ -11,5 +11,10 @@ export const create = async (payload) => {
 };
 
 export const filteredResults = async (limit, skip, filter, sort) => {
-	return Result.find(filter).select("-questions").sort(sort).skip(skip).limit(limit).lean();
+	return Result.find(filter)
+		.select("-questions")
+		.sort(sort)
+		.skip(skip)
+		.limit(limit)
+		.lean();
 };

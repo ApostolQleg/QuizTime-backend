@@ -12,7 +12,12 @@ export const assertUserId = (userId) => {
 	}
 };
 
-export const assertValidSavePayload = ({ userId, quizId, answers, summary }) => {
+export const assertValidSavePayload = ({
+	userId,
+	quizId,
+	answers,
+	summary,
+}) => {
 	assertUserId(userId);
 
 	if (!quizId || !answers || !summary) {

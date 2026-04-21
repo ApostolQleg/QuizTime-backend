@@ -7,7 +7,13 @@ export const getAllResults = async (request, reply) => {
 	const search = request.query.search || "";
 	const sort = request.query.sort || "newest";
 
-	const data = await resultService.getAllResults({ userId, limit, skip, search, sort });
+	const data = await resultService.getAllResults({
+		userId,
+		limit,
+		skip,
+		search,
+		sort,
+	});
 	return reply.send({ success: true, ...data });
 };
 
@@ -23,6 +29,12 @@ export const createResult = async (request, reply) => {
 	const userId = request.userId;
 	const { quizId, answers, summary, createdAt } = request.body;
 
-	const data = await resultService.createResult({ userId, quizId, answers, summary, createdAt });
+	const data = await resultService.createResult({
+		userId,
+		quizId,
+		answers,
+		summary,
+		createdAt,
+	});
 	return reply.code(201).send({ success: true, ...data });
 };

@@ -5,7 +5,9 @@ export const findById = async (userId) => {
 };
 
 export const findPublicById = async (userId) => {
-	return await User.findById(userId).select("nickname avatarUrl themeColor avatarType");
+	return await User.findById(userId).select(
+		"nickname avatarUrl themeColor avatarType",
+	);
 };
 
 export const updateById = async (userId, updates) => {

@@ -13,5 +13,10 @@ export const filter = async (authorId, limit, skip, search, sort) => {
 	else if (sort === "az") sortQuery = { title: 1, createdAt: -1 };
 	else if (sort === "za") sortQuery = { title: -1, createdAt: -1 };
 
-	return await persistenceService.findQuizzes({ limit, skip, filter, sort: sortQuery });
+	return await persistenceService.findQuizzes({
+		limit,
+		skip,
+		filter,
+		sort: sortQuery,
+	});
 };

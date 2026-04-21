@@ -1,7 +1,7 @@
-import { generateNickname } from "#src/shared/utils/nicknameGen.js";
-import * as tempCodeService from "#src/modules/auth/services/temp-codes.js";
 import * as userRepository from "#src/modules/auth/repositories/user.js";
 import * as securityService from "#src/modules/auth/services/security.js";
+import * as tempCodeService from "#src/modules/auth/services/temp-codes.js";
+import { generateNickname } from "#src/shared/utils/nicknameGen.js";
 
 const buildUniqueNickname = async () => {
 	let candidate = generateNickname().next().value;
@@ -27,7 +27,12 @@ export const findUserById = async (userId) => {
 	return userRepository.findById(userId);
 };
 
-export const createLocalUser = async ({ email, passwordHash, avatarUrl, googleId }) => {
+export const createLocalUser = async ({
+	email,
+	passwordHash,
+	avatarUrl,
+	googleId,
+}) => {
 	return userRepository.create({
 		email,
 		nickname: await buildUniqueNickname(),

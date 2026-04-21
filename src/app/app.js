@@ -1,11 +1,11 @@
-import Fastify from "fastify";
 import cors from "@fastify/cors";
 import rateLimit from "@fastify/rate-limit";
 import dotenv from "dotenv";
-import { connectToDatabase } from "#src/infrastructure/db/db.js";
-import { seedQuizzesIfEmpty } from "#src/data/quizSeed.js";
-import errorHandlerPlugin from "#src/plugins/error-handler.js";
+import Fastify from "fastify";
 import router from "#src/app/http/router.js";
+import { seedQuizzesIfEmpty } from "#src/data/quizSeed.js";
+import { connectToDatabase } from "#src/infrastructure/db/db.js";
+import errorHandlerPlugin from "#src/plugins/error-handler.js";
 
 dotenv.config();
 

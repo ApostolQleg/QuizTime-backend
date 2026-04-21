@@ -8,13 +8,29 @@ export const getAllResults = async ({ userId, limit, skip, search, sort }) => {
 
 	const filter = filtersService.buildResultsFilter({ userId, search });
 	const sortQuery = filtersService.buildResultsSort(sort);
-	const results = await persistenceService.findResults({ filter, sort: sortQuery, skip, limit });
+	const results = await persistenceService.findResults({
+		filter,
+		sort: sortQuery,
+		skip,
+		limit,
+	});
 
 	return { results: normalizationService.normalizeResultList(results) };
 };
 
-export const createResult = async ({ userId, quizId, answers, summary, createdAt }) => {
-	permissionService.assertValidSavePayload({ userId, quizId, answers, summary });
+export const createResult = async ({
+	userId,
+	quizId,
+	answers,
+	summary,
+	createdAt,
+}) => {
+	permissionService.assertValidSavePayload({
+		userId,
+		quizId,
+		answers,
+		summary,
+	});
 
 	const quiz = await persistenceService.findQuizById(quizId);
 	permissionService.assertQuizExists(quiz);

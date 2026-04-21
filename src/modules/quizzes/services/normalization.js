@@ -41,7 +41,14 @@ export const normalizeQuizDetails = (quiz) => {
 	};
 };
 
-export const buildCreatePayload = ({ id, title, description, questions, userId, user }) => {
+export const buildCreatePayload = ({
+	id,
+	title,
+	description,
+	questions,
+	userId,
+	user,
+}) => {
 	return {
 		id: String(id),
 		title: title?.trim(),

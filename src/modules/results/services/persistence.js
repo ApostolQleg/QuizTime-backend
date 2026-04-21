@@ -1,5 +1,5 @@
-import * as resultRepository from "#src/modules/results/repositories/result.js";
 import * as quizRepository from "#src/modules/results/repositories/quiz.js";
+import * as resultRepository from "#src/modules/results/repositories/result.js";
 
 export const findResults = async ({ filter, sort, skip, limit }) => {
 	return resultRepository.filteredResults(limit, skip, filter, sort);

@@ -1,14 +1,18 @@
 import { userController } from "#src/modules/users/index.js";
-import { checkAuth } from "#src/shared/middleware/checkAuth.js";
 import {
-	getCurrentUserSchema,
-	updateProfileSchema,
 	changePasswordSchema,
+	getCurrentUserSchema,
 	getNicknameSuggestionsSchema,
+	updateProfileSchema,
 } from "#src/modules/users/schemas/user.js";
+import { checkAuth } from "#src/shared/middleware/checkAuth.js";
 
 export default async function userRoutes(fastify) {
-	fastify.get("/:id", { schema: getCurrentUserSchema }, userController.getUserById);
+	fastify.get(
+		"/:id",
+		{ schema: getCurrentUserSchema },
+		userController.getUserById,
+	);
 
 	fastify.register(async (protectedRoutes) => {
 		protectedRoutes.addHook("preHandler", checkAuth);

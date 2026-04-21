@@ -15,7 +15,11 @@ export const updateProfileBodySchema = {
 		themeColor: { type: "string", maxLength: 32 },
 		avatarType: { type: "string", maxLength: 32 },
 	},
-	anyOf: [{ required: ["nickname"] }, { required: ["themeColor"] }, { required: ["avatarType"] }],
+	anyOf: [
+		{ required: ["nickname"] },
+		{ required: ["themeColor"] },
+		{ required: ["avatarType"] },
+	],
 };
 
 export const changePasswordBodySchema = {
