@@ -44,14 +44,7 @@ export const normalizeResultDetails = (result) => {
 	};
 };
 
-export const buildSaveResultPayload = ({
-	userId,
-	quizId,
-	quiz,
-	answers,
-	summary,
-	createdAt,
-}) => {
+export const buildSaveResultPayload = ({ userId, quizId, quiz, answers, summary, createdAt }) => {
 	const normalizedCreatedAt = normalizeCreatedAt(createdAt);
 
 	return {

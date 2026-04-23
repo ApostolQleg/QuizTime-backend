@@ -50,10 +50,7 @@ export const assertValidPassword = (isValid) => {
 	}
 };
 
-export const assertGoogleAccountCanBeLinked = ({
-	existingGoogleUser,
-	userId,
-}) => {
+export const assertGoogleAccountCanBeLinked = ({ existingGoogleUser, userId }) => {
 	if (existingGoogleUser && String(existingGoogleUser._id) !== String(userId)) {
 		throw new GoogleAccountAlreadyLinkedError();
 	}

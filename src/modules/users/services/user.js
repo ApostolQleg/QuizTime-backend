@@ -11,11 +11,7 @@ export const getPublicUserById = async ({ userId }) => {
 	return profileService.getPublicUserProfile({ userId });
 };
 
-export const changePassword = async ({
-	userId,
-	currentPassword,
-	newPassword,
-}) => {
+export const changePassword = async ({ userId, currentPassword, newPassword }) => {
 	return securityService.changePassword({
 		userId,
 		currentPassword,
@@ -23,12 +19,7 @@ export const changePassword = async ({
 	});
 };
 
-export const updateProfile = async ({
-	userId,
-	nickname,
-	themeColor,
-	avatarType,
-}) => {
+export const updateProfile = async ({ userId, nickname, themeColor, avatarType }) => {
 	return profileService.updateProfile({
 		userId,
 		nickname,

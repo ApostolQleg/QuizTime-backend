@@ -48,11 +48,7 @@ export class InvalidPasswordError extends DomainError {
 
 export class GoogleEmailMismatchError extends DomainError {
 	constructor() {
-		super(
-			"Google email does not match provided email",
-			401,
-			"GOOGLE_EMAIL_MISMATCH",
-		);
+		super("Google email does not match provided email", 401, "GOOGLE_EMAIL_MISMATCH");
 	}
 }
 

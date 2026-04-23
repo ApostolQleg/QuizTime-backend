@@ -27,12 +27,7 @@ export const findUserById = async (userId) => {
 	return userRepository.findById(userId);
 };
 
-export const createLocalUser = async ({
-	email,
-	passwordHash,
-	avatarUrl,
-	googleId,
-}) => {
+export const createLocalUser = async ({ email, passwordHash, avatarUrl, googleId }) => {
 	return userRepository.create({
 		email,
 		nickname: await buildUniqueNickname(),

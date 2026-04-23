@@ -33,11 +33,7 @@ before(async () => {
 });
 
 beforeEach(async () => {
-	await Promise.all([
-		User.deleteMany({}),
-		Quiz.deleteMany({}),
-		Result.deleteMany({}),
-	]);
+	await Promise.all([User.deleteMany({}), Quiz.deleteMany({}), Result.deleteMany({})]);
 });
 
 after(async () => {
@@ -277,8 +273,5 @@ test("users lifecycle: delete account removes user and owned results", async () 
 	});
 
 	assert.equal(accessAfterDeleteResponse.statusCode, 401);
-	assert.equal(
-		accessAfterDeleteResponse.json().error,
-		"User deleted or disabled",
-	);
+	assert.equal(accessAfterDeleteResponse.json().error, "User deleted or disabled");
 });

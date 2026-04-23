@@ -3,20 +3,8 @@ import * as normalizationService from "#src/modules/quizzes/services/normalizati
 import * as permissionService from "#src/modules/quizzes/services/permissions.js";
 import * as persistenceService from "#src/modules/quizzes/services/persistence.js";
 
-export const getAllQuizzes = async ({
-	authorId,
-	limit,
-	skip,
-	search,
-	sort,
-}) => {
-	const quizzes = await filterService.filter(
-		authorId,
-		limit,
-		skip,
-		search,
-		sort,
-	);
+export const getAllQuizzes = async ({ authorId, limit, skip, search, sort }) => {
+	const quizzes = await filterService.filter(authorId, limit, skip, search, sort);
 	return { quizzes: normalizationService.normalizeQuizList(quizzes) };
 };
 
@@ -27,13 +15,7 @@ export const getQuizById = async ({ id }) => {
 	return { quiz: normalizationService.normalizeQuizDetails(quiz) };
 };
 
-export const createQuiz = async ({
-	userId,
-	id,
-	title,
-	description,
-	questions,
-}) => {
+export const createQuiz = async ({ userId, id, title, description, questions }) => {
 	permissionService.assertValidCreatePayload({ id, title, questions });
 
 	const existingQuiz = await persistenceService.findQuizById(id);
@@ -55,13 +37,7 @@ export const createQuiz = async ({
 	return { quiz };
 };
 
-export const updateQuiz = async ({
-	userId,
-	id,
-	title,
-	description,
-	questions,
-}) => {
+export const updateQuiz = async ({ userId, id, title, description, questions }) => {
 	const quiz = await persistenceService.findQuizById(id);
 	permissionService.assertQuizExists(quiz);
 	permissionService.assertCanEditQuiz(quiz, userId);
