@@ -67,9 +67,7 @@ export async function seedMany(datatype, startNum = 0, endNum = 0) {
 			await Result.insertMany(dataToInsert);
 		}
 
-		console.log(
-			`${dataToInsert.length} ${datatype} have been inserted successfully!`,
-		);
+		console.log(`${dataToInsert.length} ${datatype} have been inserted successfully!`);
 
 		await mongoose.disconnect();
 		process.exit(0);
@@ -103,9 +101,7 @@ export async function deleteManyItems(datatype, startNum = 0, endNum = 0) {
 			});
 		}
 
-		console.log(
-			`Successfully deleted ${deleteResult.deletedCount} ${datatype}!`,
-		);
+		console.log(`Successfully deleted ${deleteResult.deletedCount} ${datatype}!`);
 
 		await mongoose.disconnect();
 		process.exit(0);
@@ -120,26 +116,20 @@ const rl = readline.createInterface({
 	output: process.stdout,
 });
 
-const action = await rl.question(
-	"Choose action - Seed or Delete? (Enter 's' or 'd'): ",
-);
+const action = await rl.question("Choose action - Seed or Delete? (Enter 's' or 'd'): ");
 if (action !== "s" && action !== "d") {
 	console.log("Invalid action. Exiting.");
 	process.exit(1);
 }
 
-const datatypeInput = await rl.question(
-	"Which data - Quizzes or Results? (Enter 'q' or 'r'): ",
-);
+const datatypeInput = await rl.question("Which data - Quizzes or Results? (Enter 'q' or 'r'): ");
 if (datatypeInput !== "q" && datatypeInput !== "r") {
 	console.log("Invalid data type. Exiting.");
 	process.exit(1);
 }
 
-const startnum =
-	parseInt(await rl.question("Enter the starting number: "), 10) || 0;
-const endnum =
-	parseInt(await rl.question("Enter the ending number: "), 10) || 0;
+const startnum = parseInt(await rl.question("Enter the starting number: "), 10) || 0;
+const endnum = parseInt(await rl.question("Enter the ending number: "), 10) || 0;
 
 rl.close();
 

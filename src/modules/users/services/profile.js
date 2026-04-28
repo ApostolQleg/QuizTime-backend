@@ -1,7 +1,4 @@
-import {
-	InvalidUserPayloadError,
-	UserNotFoundError,
-} from "#src/modules/users/errors/user.js";
+import { InvalidUserPayloadError, UserNotFoundError } from "#src/modules/users/errors/user.js";
 import * as userRepository from "#src/modules/users/repositories/user.js";
 
 const sanitizeUser = (user) => {
@@ -44,17 +41,8 @@ export const getPublicUserProfile = async ({ userId }) => {
 	};
 };
 
-export const updateProfile = async ({
-	userId,
-	nickname,
-	themeColor,
-	avatarType,
-}) => {
-	if (
-		nickname === undefined &&
-		themeColor === undefined &&
-		avatarType === undefined
-	) {
+export const updateProfile = async ({ userId, nickname, themeColor, avatarType }) => {
+	if (nickname === undefined && themeColor === undefined && avatarType === undefined) {
 		throw new InvalidUserPayloadError();
 	}
 

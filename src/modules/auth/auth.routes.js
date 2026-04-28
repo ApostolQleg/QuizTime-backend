@@ -1,9 +1,5 @@
 import { authController, oauthController } from "#src/modules/auth/index.js";
-import {
-	loginSchema,
-	registerSchema,
-	sendCodeSchema,
-} from "#src/modules/auth/schemas/auth.js";
+import { loginSchema, registerSchema, sendCodeSchema } from "#src/modules/auth/schemas/auth.js";
 import {
 	googleAuthSchema,
 	googleExtractSchema,

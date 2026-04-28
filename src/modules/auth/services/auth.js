@@ -4,13 +4,7 @@ import * as permissionService from "#src/modules/auth/services/permissions.js";
 import * as persistenceService from "#src/modules/auth/services/persistence.js";
 import * as securityService from "#src/modules/auth/services/security.js";
 
-export const register = async ({
-	email,
-	password,
-	avatarUrl,
-	code,
-	googleToken,
-}) => {
+export const register = async ({ email, password, avatarUrl, code, googleToken }) => {
 	permissionService.assertRegisterPayload({ email, password });
 
 	const existingUser = await persistenceService.findUserByEmail(email);
@@ -29,11 +23,10 @@ export const register = async ({
 		await persistenceService.verifyCode({ email, code });
 	}
 
-	const { googleId, finalAvatarUrl } =
-		normalizationService.resolveRegisterIdentity({
-			avatarUrl,
-			googleProfile,
-		});
+	const { googleId, finalAvatarUrl } = normalizationService.resolveRegisterIdentity({
+		avatarUrl,
+		googleProfile,
+	});
 
 	const passwordHash = await securityService.hashPassword(password);
 	const user = await persistenceService.createLocalUser({
@@ -51,10 +44,7 @@ export const login = async ({ email, password }) => {
 	const user = await persistenceService.findUserByEmail(email);
 	permissionService.assertUserExists(user);
 
-	const isValidPassword = await securityService.verifyPassword(
-		password,
-		user.passwordHash,
-	);
+	const isValidPassword = await securityService.verifyPassword(password, user.passwordHash);
 	permissionService.assertValidPassword(isValidPassword);
 
 	const token = securityService.signAccessToken(user._id);
@@ -96,9 +86,7 @@ export const googleAuth = async ({ token }) => {
 
 export const googleExtract = async ({ token }) => {
 	const googleProfile = await googleAdapter.getGoogleProfileOrThrow(token);
-	const existingUser = await persistenceService.findUserByEmail(
-		googleProfile.email,
-	);
+	const existingUser = await persistenceService.findUserByEmail(googleProfile.email);
 	permissionService.assertEmailAvailable(existingUser);
 
 	return normalizationService.buildGoogleExtractPayload(googleProfile);
@@ -107,9 +95,7 @@ export const googleExtract = async ({ token }) => {
 export const linkGoogle = async ({ userId, token }) => {
 	const googleProfile = await googleAdapter.getGoogleProfileOrThrow(token);
 
-	const existingGoogleUser = await persistenceService.findUserByGoogleId(
-		googleProfile.googleId,
-	);
+	const existingGoogleUser = await persistenceService.findUserByGoogleId(googleProfile.googleId);
 	permissionService.assertGoogleAccountCanBeLinked({
 		existingGoogleUser,
 		userId,

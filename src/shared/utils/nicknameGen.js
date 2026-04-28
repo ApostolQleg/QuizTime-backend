@@ -1,33 +1,6 @@
-const adjectives = [
-	"Swift",
-	"Brave",
-	"Clever",
-	"Mighty",
-	"Sly",
-	"Noble",
-	"Fierce",
-	"Gentle",
-];
-const nouns = [
-	"Lion",
-	"Eagle",
-	"Shark",
-	"Wolf",
-	"Panther",
-	"Falcon",
-	"Tiger",
-	"Bear",
-];
-const easterNouns = [
-	"Penis",
-	"Dildo",
-	"Cunt",
-	"Mommy",
-	"Daddy",
-	"Boobs",
-	"Apostol",
-	"Dick",
-];
+const adjectives = ["Swift", "Brave", "Clever", "Mighty", "Sly", "Noble", "Fierce", "Gentle"];
+const nouns = ["Lion", "Eagle", "Shark", "Wolf", "Panther", "Falcon", "Tiger", "Bear"];
+const easterNouns = ["Penis", "Dildo", "Cunt", "Mommy", "Daddy", "Boobs", "Apostol", "Dick"];
 
 export function* generateNickname() {
 	while (true) {

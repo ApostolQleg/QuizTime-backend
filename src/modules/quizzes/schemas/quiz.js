@@ -41,11 +41,7 @@ const updateQuizBodySchema = {
 		description: { type: "string", maxLength: 1000 },
 		questions: { type: "array", minItems: 1, items: { type: "object" } },
 	},
-	anyOf: [
-		{ required: ["title"] },
-		{ required: ["description"] },
-		{ required: ["questions"] },
-	],
+	anyOf: [{ required: ["title"] }, { required: ["description"] }, { required: ["questions"] }],
 };
 
 export const quizByIdSchema = { params: quizIdParams };

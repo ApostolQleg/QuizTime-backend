@@ -21,12 +21,10 @@ export async function connectToDatabase() {
 			family: 4,
 		};
 
-		cached.promise = mongoose
-			.connect(process.env.MONGO_URI, opts)
-			.then((mongoose) => {
-				console.log("✅ New MongoDB connection established");
-				return mongoose;
-			});
+		cached.promise = mongoose.connect(process.env.MONGO_URI, opts).then((mongoose) => {
+			console.log("✅ New MongoDB connection established");
+			return mongoose;
+		});
 	}
 
 	try {
