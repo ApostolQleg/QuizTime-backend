@@ -65,10 +65,12 @@ export const buildCreatePayload = ({
 	};
 };
 
-export const buildQuizUpdates = ({ title, description, questions }) => {
+export const buildQuizUpdates = ({ title, category, tags, description, questions }) => {
 	const updates = {};
 
 	if (typeof title === "string" && title.trim()) updates.title = title.trim();
+	if (typeof category === "string" && category.trim()) updates.category = category.trim();
+	if (Array.isArray(tags)) updates.tags = tags;
 	if (typeof description === "string") updates.description = description.trim();
 	if (questions !== undefined) updates.questions = questions;
 

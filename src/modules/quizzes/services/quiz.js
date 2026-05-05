@@ -39,7 +39,7 @@ export const createQuiz = async ({ userId, id, title, category = "NO_CATEGORY", 
 	return { quiz };
 };
 
-export const updateQuiz = async ({ userId, id, title, description, questions }) => {
+export const updateQuiz = async ({ userId, id, title, category, tags, description, questions }) => {
 	const quiz = await persistenceService.findQuizById(id);
 	permissionService.assertQuizExists(quiz);
 	permissionService.assertCanEditQuiz(quiz, userId);
@@ -47,6 +47,8 @@ export const updateQuiz = async ({ userId, id, title, description, questions }) 
 
 	const updates = normalizationService.buildQuizUpdates({
 		title,
+		category,
+		tags,
 		description,
 		questions,
 	});
