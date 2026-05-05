@@ -107,13 +107,12 @@ src/
     │   └── checkAuth.js        # JWT verification middleware
     └── utils/
         ├── dataUtil.js         # Data transformation helpers
-        ├── memoizer.js         # Result caching
         └── nicknameGen.js      # Nickname generation
 ```
 
 ## Prerequisites
 
-- **Node.js/Bun:** Bun runtime installed
+- **Bun:** Bun runtime installed (project scripts use Bun)
 - **MongoDB:** Local or Atlas instance
 - **Gmail Account:** For email verification (or SMTP service)
 - **Google OAuth Credentials:** For Google sign-in
@@ -136,10 +135,7 @@ src/
 
 3. **Set up environment variables** (see [Environment Variables](#environment-variables) section)
 
-    ```bash
-    cp .env.example .env  # if available
-    # Then edit .env with your credentials
-    ```
+    Create `.env` manually in the project root and add the required values.
 
 4. **Verify the setup**
     ```bash
@@ -184,7 +180,7 @@ AUTHOR_ID=your-author-id-for-seeds
 # Development mode
 bun run start
 
-# Watch mode (requires Bun file watcher)
+# Optional watch mode
 bun --watch src/app/server.js
 ```
 
@@ -262,6 +258,7 @@ vercel deploy
 - Builds from `src/app/app.js`
 - Routes all requests to the Fastify app
 - Set environment variables in Vercel dashboard
+- If frontend origin changes, update allowed CORS origins in `src/app/app.js`
 
 ### Environment Setup on Vercel
 
@@ -269,9 +266,10 @@ Add these environment variables in Vercel project settings:
 
 - `MONGO_URI`
 - `JWT_SECRET`
-- `SMTP_USER` / `SMTP_PASS`
 - `GOOGLE_CLIENT_ID`
-- `FRONTEND_URL` (production URL)
+- `SMTP_USER`
+- `SMTP_PASS`
+- `AUTHOR_ID`
 
 ## Database
 
