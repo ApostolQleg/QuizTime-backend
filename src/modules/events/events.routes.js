@@ -15,6 +15,11 @@ async function* eventsGenerator() {
 
 setInterval(() => emitCreateQuizSSE(10), 500);
 setInterval(() => emitUpdateQuizSSE(20), 2500);
+setInterval(() => emitPingSSE(), 20000);
+
+export function emitPingSSE() {
+	EventSSE.emit("SSE_EVENT", "event: PING\n\n");
+}
 
 export function emitCreateQuizSSE(quizId) {
 	EventSSE.emit("SSE_EVENT", `event: CREATE_QUIZ\ndata: ${quizId}\n\n`);
@@ -31,6 +36,8 @@ export async function eventRoutes(fastify) {
 			"Cache-Control": "no-cache",
 			Connection: "keep-alive",
 		});
+
+		reply.raw.write("event: PING\n\n");
 
 		try {
 			await pipeline(Readable.from(eventsGenerator()), reply.raw);
