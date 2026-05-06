@@ -11,7 +11,7 @@ import {
 } from "#src/modules/quizzes/errors/quiz.js";
 
 export const assertValidCreatePayload = ({ id, title, tags, description, questions }) => {
-	if (!id || !title?.trim() || !description?.trim() || !tags.length === 0) {
+	if (!id || !title?.trim() || !description?.trim() || !Array.isArray(tags) || !tags.length === 0) {
 		throw new InvalidQuizPayloadError();
 	}
 

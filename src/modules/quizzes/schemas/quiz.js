@@ -21,7 +21,7 @@ const quizzesQuerySchema = {
 
 const createQuizBodySchema = {
 	type: "object",
-	required: ["id", "title", "questions"],
+	required: ["id", "title", "category", "questions"],
 	additionalProperties: false,
 	properties: {
 		id: { type: "string", minLength: 1, maxLength: 128 },

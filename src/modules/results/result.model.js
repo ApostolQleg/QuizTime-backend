@@ -5,7 +5,7 @@ const resultSchema = new mongoose.Schema(
 		quizId: { type: String, required: true, index: true },
 		quizTitle: { type: String, required: true },
 		category: { type: String, required: true },
-		tags: { type: [String], required: true },
+		tags: { type: [String] },
 		summary: {
 			score: Number,
 			correct: Number,
