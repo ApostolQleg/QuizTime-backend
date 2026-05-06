@@ -3,6 +3,8 @@ import * as normalizationService from "#src/modules/quizzes/services/normalizati
 import * as permissionService from "#src/modules/quizzes/services/permissions.js";
 import * as persistenceService from "#src/modules/quizzes/services/persistence.js";
 
+import * as sseEvents from "#src/modules/events/index.js";
+
 export const getAllQuizzes = async ({ authorId, limit, skip, search, sort }) => {
 	const quizzes = await filterService.filter(authorId, limit, skip, search, sort);
 	return { quizzes: normalizationService.normalizeQuizList(quizzes) };
@@ -34,6 +36,8 @@ export const createQuiz = async ({ userId, id, title, description, questions }) 
 	});
 
 	const quiz = await persistenceService.createQuiz(payload);
+	sseEvents.emitCreateQuizSSE(id);
+
 	return { quiz };
 };
 
@@ -50,6 +54,8 @@ export const updateQuiz = async ({ userId, id, title, description, questions }) 
 	});
 
 	const updatedQuiz = await persistenceService.updateQuizById(id, updates);
+	sseEvents.emitUpdateQuizSSE(id);
+
 	return { quiz: updatedQuiz };
 };
 
