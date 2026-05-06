@@ -21,11 +21,13 @@ const quizzesQuerySchema = {
 
 const createQuizBodySchema = {
 	type: "object",
-	required: ["id", "title", "questions"],
+	required: ["id", "title", "category", "questions"],
 	additionalProperties: false,
 	properties: {
 		id: { type: "string", minLength: 1, maxLength: 128 },
 		title: { type: "string", minLength: 1, maxLength: 160 },
+		category: { type: "string", minLength: 1, maxLength: 30 },
+		tags: { type: "array", minItems: 1, items: { type: "string" } },
 		description: { type: "string", maxLength: 1000 },
 		questions: { type: "array", minItems: 1, items: { type: "object" } },
 	},
@@ -36,6 +38,8 @@ const updateQuizBodySchema = {
 	additionalProperties: false,
 	properties: {
 		title: { type: "string", minLength: 1, maxLength: 160 },
+		category: { type: "string", minLength: 1, maxLength: 30 },
+		tags: { type: "array", minItems: 1, items: { type: "string" } },
 		description: { type: "string", maxLength: 1000 },
 		questions: { type: "array", minItems: 1, items: { type: "object" } },
 	},
