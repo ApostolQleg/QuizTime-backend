@@ -24,6 +24,6 @@ export const filteredQuizzes = async (limit, skip, filter, sort) => {
 		.sort(sort)
 		.skip(skip)
 		.limit(limit)
-		.select("id title description questions authorId createdAt")
+		.select("id title category tags description questions authorId createdAt")
 		.populate("authorId", "nickname avatarUrl avatarType themeColor");
 };
