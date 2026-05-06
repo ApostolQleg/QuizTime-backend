@@ -11,66 +11,21 @@ export async function seedMany(datatype, startNum = 0, endNum = 0) {
 		await mongoose.connect(process.env.MONGO_URI);
 		console.log("Connected to MongoDB for seeding...");
 
-		const dataToInsert = [];
+		const BATCH_SIZE = 10;
+		let totalInserted = 0;
 
-		for (let i = startNum; i <= endNum; i++) {
-			const num = String(i);
-
+		for await (const batch of generateDataInBatches(datatype, startNum, endNum, BATCH_SIZE)) {
 			if (datatype === "quizzes") {
-				dataToInsert.push({
-					title: num,
-					description: `Generated quiz ${num}`,
-					category: `category ${num}`,
-					tags: ["Test", "Dev"],
-					id: String(Date.now() + i),
-					questions: [
-						{
-							id: 0,
-							text: num,
-							options: [
-								{ id: 0, text: "Yes", isCorrect: true },
-								{ id: 1, text: "No", isCorrect: false },
-							],
-						},
-					],
-					authorId: AUTHOR_ID,
-					createdAt: Date.now() + i,
-				});
-			} else if (datatype === "results") {
-				dataToInsert.push({
-					quizId: new mongoose.Types.ObjectId(),
-					quizTitle: num,
-					category: `category ${num}`,
-					tags: ["Test", "Dev"],
-					summary: {
-						score: 1,
-						correct: 1,
-						total: 1,
-					},
-					answers: [[0]],
-					questions: [
-						{
-							id: 0,
-							text: num,
-							options: [
-								{ id: 0, text: "Yes", isCorrect: true },
-								{ id: 1, text: "No", isCorrect: false },
-							],
-						},
-					],
-					userId: AUTHOR_ID,
-					createdAt: Date.now() + i,
-				});
-			}
+                await Quiz.insertMany(batch);
+            } else if (datatype === "results") {
+                await Result.insertMany(batch);
+            }
+
+			totalInserted += batch.length;
+			console.log(`Inserted ${totalInserted} ${datatype}`);
 		}
 
-		if (datatype === "quizzes") {
-			await Quiz.insertMany(dataToInsert);
-		} else if (datatype === "results") {
-			await Result.insertMany(dataToInsert);
-		}
-
-		console.log(`${dataToInsert.length} ${datatype} have been inserted successfully!`);
+		console.log(`\n${totalInserted} ${datatype} have been inserted!`);
 
 		await mongoose.disconnect();
 		process.exit(0);
@@ -80,7 +35,7 @@ export async function seedMany(datatype, startNum = 0, endNum = 0) {
 	}
 }
 
-async function* generateDataInBatch(datatype, startNum = 0, endNum = 0, batchSize = 100) {
+async function* generateDataInBatches(datatype, startNum = 0, endNum = 0, batchSize = 100) {
 	let batch = [];
 	for (let i = startNum; i <= endNum; i++) {
 		const num = String(i);
