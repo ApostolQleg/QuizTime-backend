@@ -1,9 +1,8 @@
+import * as sseEvents from "#src/modules/events/index.js";
 import * as filterService from "#src/modules/quizzes/services/filters.js";
 import * as normalizationService from "#src/modules/quizzes/services/normalization.js";
 import * as permissionService from "#src/modules/quizzes/services/permissions.js";
 import * as persistenceService from "#src/modules/quizzes/services/persistence.js";
-
-import * as sseEvents from "#src/modules/events/index.js";
 
 export const getAllQuizzes = async ({ authorId, limit, skip, search, sort }) => {
 	const quizzes = await filterService.filter(authorId, limit, skip, search, sort);
