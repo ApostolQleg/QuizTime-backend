@@ -18,4 +18,4 @@ const userStatsSchema = new mongoose.Schema(
 	},
 );
 
-export const UserStats = mongoose.model("UserStats", userStatsSchema);
+export default mongoose.model("UserStats", userStatsSchema, "user_stats");
