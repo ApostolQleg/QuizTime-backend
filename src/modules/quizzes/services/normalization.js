@@ -17,6 +17,8 @@ export const normalizeQuizListItem = (quiz) => {
 		_id: quiz._id,
 		id: quiz.id,
 		title: quiz.title,
+		category: quiz.category,
+		tags: quiz.tags || [],
 		description: quiz.description,
 		questionsCount: Array.isArray(quiz.questions) ? quiz.questions.length : 0,
 		...toAuthorDto(quiz.authorId),
@@ -41,10 +43,21 @@ export const normalizeQuizDetails = (quiz) => {
 	};
 };
 
-export const buildCreatePayload = ({ id, title, description, questions, userId, user }) => {
+export const buildCreatePayload = ({
+	id,
+	title,
+	category,
+	tags,
+	description,
+	questions,
+	userId,
+	user,
+}) => {
 	return {
 		id: String(id),
 		title: title?.trim(),
+		category: category?.trim(),
+		tags: tags || [],
 		description: description?.trim() || "",
 		questions,
 		authorId: userId,
@@ -52,10 +65,12 @@ export const buildCreatePayload = ({ id, title, description, questions, userId, 
 	};
 };
 
-export const buildQuizUpdates = ({ title, description, questions }) => {
+export const buildQuizUpdates = ({ title, category, tags, description, questions }) => {
 	const updates = {};
 
 	if (typeof title === "string" && title.trim()) updates.title = title.trim();
+	if (typeof category === "string" && category.trim()) updates.category = category.trim();
+	if (Array.isArray(tags)) updates.tags = tags;
 	if (typeof description === "string") updates.description = description.trim();
 	if (questions !== undefined) updates.questions = questions;
 
