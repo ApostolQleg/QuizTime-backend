@@ -35,7 +35,7 @@ export const createQuiz = async ({ userId, id, title, description, questions }) 
 	});
 
 	const quiz = await persistenceService.createQuiz(payload);
-	sseEvents.emitCreateQuizSSE(id);
+	sseEvents.emitCreateQuizSSE(quiz);
 
 	return { quiz };
 };
@@ -53,7 +53,7 @@ export const updateQuiz = async ({ userId, id, title, description, questions }) 
 	});
 
 	const updatedQuiz = await persistenceService.updateQuizById(id, updates);
-	sseEvents.emitUpdateQuizSSE(id);
+	sseEvents.emitUpdateQuizSSE(updatedQuiz);
 
 	return { quiz: updatedQuiz };
 };
