@@ -43,7 +43,7 @@ export const createQuiz = async (request, reply) => {
 export const updateQuiz = async (request, reply) => {
 	const userId = request.userId;
 	const { id } = request.params;
-	const { title, category, tags, description, questions} = request.body;
+	const { title, category, tags, description, questions } = request.body;
 
 	const data = await quizService.updateQuiz({
 		userId,
