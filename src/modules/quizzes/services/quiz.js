@@ -16,8 +16,23 @@ export const getQuizById = async ({ id }) => {
 	return { quiz: normalizationService.normalizeQuizDetails(quiz) };
 };
 
-export const createQuiz = async ({ userId, id, title, category = "NO_CATEGORY", tags = ["NO_TAGS"], description, questions }) => {
-	permissionService.assertValidCreatePayload({ id, title, category, tags, description, questions });
+export const createQuiz = async ({
+	userId,
+	id,
+	title,
+	category = "NO_CATEGORY",
+	tags = ["NO_TAGS"],
+	description,
+	questions,
+}) => {
+	permissionService.assertValidCreatePayload({
+		id,
+		title,
+		category,
+		tags,
+		description,
+		questions,
+	});
 
 	const existingQuiz = await persistenceService.findQuizById(id);
 	permissionService.assertQuizNotExists(existingQuiz);
