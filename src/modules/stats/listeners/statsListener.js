@@ -4,8 +4,7 @@ import UserStats from "../userStats.model.js";
 async function handleQuizCompletion(payload) {
 	if (!payload?.userId) {
 		console.warn(
-			`[Event Warning] ${EVENTS.QUIZ_COMPLETED} emitted with invalid payload:`,
-			payload,
+			`[Event: ${EVENTS.QUIZ_COMPLETED}] Received invalid payload. Skipping stats update.`,
 		);
 		return;
 	}
