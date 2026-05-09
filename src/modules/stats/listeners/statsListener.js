@@ -23,3 +23,8 @@ export function subscribeStatsListeners() {
 	eventBus.on(EVENTS.QUIZ_COMPLETED, handleQuizCompletion);
 	console.log("[EventBus] Stats module subscribed to events.");
 }
+
+export function unsubscribeStatsListeners() {
+	eventBus.off(EVENTS.QUIZ_COMPLETED, handleQuizCompletion);
+	console.log("[EventBus] Stats module unsubscribed from events.");
+}
