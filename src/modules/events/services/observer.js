@@ -3,7 +3,8 @@ import { EventEmitter } from "node:events";
 export const EventSSE = new EventEmitter();
 EventSSE.setMaxListeners(0);
 
-setInterval(() => emitPingSSE(), 20000);
+const pingInterval = setInterval(() => emitPingSSE(), 20000);
+pingInterval.unref();
 
 export function emitPingSSE() {
 	EventSSE.emit("SSE_EVENT", "event: PING\n\n");
