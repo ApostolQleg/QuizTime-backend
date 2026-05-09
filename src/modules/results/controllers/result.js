@@ -36,11 +36,13 @@ export const createResult = async (request, reply) => {
 	if (!userId) {
 		return;
 	}
-	const { quizId, answers, summary, createdAt } = request.body;
+	const { quizId, category, tags, answers, summary, createdAt } = request.body;
 
 	const data = await resultService.createResult({
 		userId,
 		quizId,
+		category,
+		tags,
 		answers,
 		summary,
 		createdAt,
