@@ -1,6 +1,6 @@
+import UserStats from "#src/modules/stats/userStats.model.js";
 import { InvalidUserPayloadError, UserNotFoundError } from "../errors/user.error.js";
 import * as userRepository from "../repositories/user.repository.js";
-import UserStats from "#src/modules/stats/userStats.model.js";
 
 const sanitizeUser = (user) => {
 	const { passwordHash, ...userData } = user.toObject();
@@ -13,7 +13,7 @@ export const getCurrentUserProfile = async ({ userId }) => {
 		throw new UserNotFoundError();
 	}
 
-	const stats = await UserStats.findOne({ userId }).lean();
+	const stats = await UserStats.findOne({ userId }, "quizzesPassedCount -_id").lean();
 
 	return {
 		user: {

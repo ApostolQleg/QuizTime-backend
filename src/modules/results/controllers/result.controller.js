@@ -1,5 +1,5 @@
-import * as resultService from "../services/result.service.js";
 import eventBus, { EVENTS } from "#src/shared/events/eventBus.js";
+import * as resultService from "../services/result.service.js";
 
 export const getAllResults = async (request, reply) => {
 	const userId = request.userId;

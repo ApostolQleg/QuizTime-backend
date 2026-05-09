@@ -6,15 +6,15 @@ const userStatsSchema = new mongoose.Schema(
 			type: mongoose.Schema.Types.ObjectId,
 			required: true,
 			unique: true,
-			ref: "User"
+			ref: "User",
 		},
 		quizzesPassedCount: {
 			type: Number,
-			default: 0
+			default: 0,
 		},
 	},
 	{
-		versionKey: false
+		versionKey: false,
 	},
 );
 
