@@ -101,13 +101,8 @@ test("GET /api/events streams ping events", async () => {
 
 	const iterator = responseBody[Symbol.asyncIterator]();
 	const eventPromise = iterator.next();
-	await new Promise((resolve) =>
-		setTimeout(() => {
-			emitPingSSE();
-			resolve();
-		}, 20),
-	);
-
+	emitPingSSE();
+	
 	const { value, done } = await eventPromise;
 	assert.equal(done, false);
 	assert.equal(value, "event: PING\n\n");
