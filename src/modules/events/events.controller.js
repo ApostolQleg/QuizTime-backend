@@ -8,9 +8,15 @@ export const eventController = async (request, reply) => {
 
 	const ac = new AbortController();
 
-	request.raw.on("close", () => {
-		ac.abort();
-	});
+	const abortGenerator = () => {
+		if (!ac.signal.aborted) {
+			ac.abort();
+		}
+	};
+
+	request.raw.on("close", abortGenerator);
+	request.raw.on("aborted", abortGenerator);
+	reply.raw.on("close", abortGenerator);
 
 	return reply.send(Readable.from(eventsGenerator({ signal: ac.signal })));
 };
