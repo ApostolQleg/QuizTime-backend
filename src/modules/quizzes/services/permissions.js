@@ -16,7 +16,7 @@ export const assertValidCreatePayload = ({ id, title, tags, description, questio
 		!title?.trim() ||
 		!description?.trim() ||
 		!Array.isArray(tags) ||
-		!tags.length === 0
+		tags.length === 0
 	) {
 		throw new InvalidQuizPayloadError();
 	}
