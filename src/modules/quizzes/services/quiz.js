@@ -1,3 +1,4 @@
+import * as sseEvents from "#src/modules/events/index.js";
 import * as filterService from "#src/modules/quizzes/services/filters.js";
 import * as normalizationService from "#src/modules/quizzes/services/normalization.js";
 import * as permissionService from "#src/modules/quizzes/services/permissions.js";
@@ -15,8 +16,23 @@ export const getQuizById = async ({ id }) => {
 	return { quiz: normalizationService.normalizeQuizDetails(quiz) };
 };
 
-export const createQuiz = async ({ userId, id, title, category = "NO_CATEGORY", tags = ["NO_TAGS"], description, questions }) => {
-	permissionService.assertValidCreatePayload({ id, title, category, tags, description, questions });
+export const createQuiz = async ({
+	userId,
+	id,
+	title,
+	category = "NO_CATEGORY",
+	tags = ["NO_TAGS"],
+	description,
+	questions,
+}) => {
+	permissionService.assertValidCreatePayload({
+		id,
+		title,
+		category,
+		tags,
+		description,
+		questions,
+	});
 
 	const existingQuiz = await persistenceService.findQuizById(id);
 	permissionService.assertQuizNotExists(existingQuiz);
@@ -36,6 +52,8 @@ export const createQuiz = async ({ userId, id, title, category = "NO_CATEGORY", 
 	});
 
 	const quiz = await persistenceService.createQuiz(payload);
+	sseEvents.emitCreateQuizSSE(quiz);
+
 	return { quiz };
 };
 
@@ -54,6 +72,8 @@ export const updateQuiz = async ({ userId, id, title, category, tags, descriptio
 	});
 
 	const updatedQuiz = await persistenceService.updateQuizById(id, updates);
+	sseEvents.emitUpdateQuizSSE(updatedQuiz);
+
 	return { quiz: updatedQuiz };
 };
 
@@ -63,5 +83,7 @@ export const deleteQuiz = async ({ userId, id }) => {
 	permissionService.assertCanDeleteQuiz(quiz, userId);
 
 	await persistenceService.deleteQuizById(id);
+	sseEvents.emitDeleteQuizSSE(id);
+
 	return { message: "Quiz deleted successfully" };
 };

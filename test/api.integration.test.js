@@ -1,8 +1,11 @@
 import assert from "node:assert/strict";
+import { EventEmitter } from "node:events";
 import test, { after, before, beforeEach } from "node:test";
 import jwt from "jsonwebtoken";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
+import { eventController } from "#src/modules/events/events.controller.js";
+import { emitPingSSE } from "#src/modules/events/index.js";
 
 let mongod;
 let app;
@@ -52,16 +55,13 @@ const createUserAndToken = async ({ email, nickname, passwordHash }) => {
 	return { user, token };
 };
 
-test("GET / returns health payload", async () => {
+test("GET / returns not found", async () => {
 	const response = await app.inject({
 		method: "GET",
 		url: "/",
 	});
 
-	assert.equal(response.statusCode, 200);
-	const body = response.json();
-	assert.equal(typeof body.status, "string");
-	assert.ok(body.status.includes("Server is running"));
+	assert.equal(response.statusCode, 404);
 });
 
 test("GET /api/results without token is rejected", async () => {
@@ -72,6 +72,42 @@ test("GET /api/results without token is rejected", async () => {
 
 	assert.equal(response.statusCode, 403);
 	assert.equal(response.json().error, "No access");
+});
+
+test("GET /api/events streams ping events", async () => {
+	const request = { raw: new EventEmitter() };
+	const headers = {};
+	let responseBody;
+
+	const reply = {
+		type(value) {
+			headers.type = value;
+			return this;
+		},
+		header(name, value) {
+			headers[name] = value;
+			return this;
+		},
+		send(value) {
+			responseBody = value;
+			return value;
+		},
+	};
+
+	await eventController(request, reply);
+	assert.equal(headers.type, "text/event-stream");
+	assert.equal(headers["Cache-Control"], "no-cache");
+	assert.equal(headers.Connection, "keep-alive");
+
+	const iterator = responseBody[Symbol.asyncIterator]();
+	const eventPromise = iterator.next();
+	emitPingSSE();
+	
+	const { value, done } = await eventPromise;
+	assert.equal(done, false);
+	assert.equal(value, "event: PING\n\n");
+
+	request.raw.emit("close");
 });
 
 test("quizzes lifecycle: create and delete by author", async () => {
