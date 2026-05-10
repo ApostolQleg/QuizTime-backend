@@ -2,9 +2,6 @@ import * as resultService from "#src/modules/results/services/result.js";
 
 export const getAllResults = async (request, reply) => {
 	const userId = request.userId;
-	if (!userId) {
-		return;
-	}
 	const limit = parseInt(request.query.limit, 10) || 36;
 	const skip = parseInt(request.query.skip, 10) || 0;
 	const search = request.query.search || "";
@@ -22,9 +19,6 @@ export const getAllResults = async (request, reply) => {
 
 export const getResultById = async (request, reply) => {
 	const userId = request.userId;
-	if (!userId) {
-		return;
-	}
 	const { id } = request.params;
 
 	const data = await resultService.getResultById({ id, userId });
@@ -33,9 +27,6 @@ export const getResultById = async (request, reply) => {
 
 export const createResult = async (request, reply) => {
 	const userId = request.userId;
-	if (!userId) {
-		return;
-	}
 	const { quizId, category, tags, answers, summary, createdAt } = request.body;
 
 	const data = await resultService.createResult({
