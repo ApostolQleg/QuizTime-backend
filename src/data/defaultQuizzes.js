@@ -2200,12 +2200,6 @@ export const defaultQuizzes = {
 					],
 				},
 			],
-			authorId: {
-				$oid: "699897d2e8f44c92c9301483",
-			},
-			createdAt: {
-				$date: "2026-01-04T08:33:43.088Z",
-			},
 		},
 		{
 			title: "Minecraft test",
@@ -2499,12 +2493,6 @@ export const defaultQuizzes = {
 					],
 				},
 			],
-			authorId: {
-				$oid: "69989364017554a860b414af",
-			},
-			createdAt: {
-				$date: "2026-02-04T08:33:43.088Z",
-			},
 		},
 	],
 
