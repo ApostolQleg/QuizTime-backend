@@ -19,5 +19,5 @@ export function emitUpdateQuizSSE(quiz) {
 }
 
 export function emitDeleteQuizSSE(quizId) {
-	EventSSE.emit("SSE_EVENT", `event: DELETE_QUIZ\ndata: ${quizId}\n\n`);
+	EventSSE.emit("SSE_EVENT", `event: DELETE_QUIZ\ndata: ${JSON.stringify(quizId)}\n\n`);
 }

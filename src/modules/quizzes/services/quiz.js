@@ -16,15 +16,7 @@ export const getQuizById = async ({ id }) => {
 	return { quiz: normalizationService.normalizeQuizDetails(quiz) };
 };
 
-export const createQuiz = async ({
-	userId,
-	id,
-	title,
-	category = "NO_CATEGORY",
-	tags = ["NO_TAGS"],
-	description,
-	questions,
-}) => {
+export const createQuiz = async ({ userId, id, title, category, tags, description, questions }) => {
 	permissionService.assertValidCreatePayload({
 		id,
 		title,
@@ -52,7 +44,9 @@ export const createQuiz = async ({
 	});
 
 	const quiz = await persistenceService.createQuiz(payload);
-	sseEvents.emitCreateQuizSSE(quiz);
+
+	const [normalizedQuizForSSE] = normalizationService.normalizeQuizList([quiz]);
+	sseEvents.emitCreateQuizSSE(normalizedQuizForSSE);
 
 	return { quiz };
 };
@@ -72,7 +66,9 @@ export const updateQuiz = async ({ userId, id, title, category, tags, descriptio
 	});
 
 	const updatedQuiz = await persistenceService.updateQuizById(id, updates);
-	sseEvents.emitUpdateQuizSSE(updatedQuiz);
+
+	const [normalizedQuizForSSE] = normalizationService.normalizeQuizList([updatedQuiz]);
+	sseEvents.emitUpdateQuizSSE(normalizedQuizForSSE);
 
 	return { quiz: updatedQuiz };
 };
@@ -83,6 +79,7 @@ export const deleteQuiz = async ({ userId, id }) => {
 	permissionService.assertCanDeleteQuiz(quiz, userId);
 
 	await persistenceService.deleteQuizById(id);
+
 	sseEvents.emitDeleteQuizSSE(id);
 
 	return { message: "Quiz deleted successfully" };
