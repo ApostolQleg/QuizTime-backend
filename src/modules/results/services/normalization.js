@@ -9,6 +9,14 @@ const normalizeDateValue = (value) => {
 	return value;
 };
 
+const normalizeQuizIdValue = (value) => {
+	if (value == null) return null;
+	if (typeof value === "object" && value._id != null) {
+		return String(value._id);
+	}
+	return String(value);
+};
+
 export const normalizeCreatedAt = (createdAt) => {
 	if (createdAt == null) return undefined;
 	if (createdAt instanceof Date) return createdAt;
@@ -23,9 +31,12 @@ export const normalizeCreatedAt = (createdAt) => {
 export const normalizeResultListItem = (result) => {
 	const resultData = toPlainObject(result);
 	if (!resultData) return null;
+	const resultDto = { ...resultData };
+	delete resultDto.id;
 
 	return {
-		...resultData,
+		...resultDto,
+		quizId: normalizeQuizIdValue(resultData.quizId),
 		createdAt: normalizeDateValue(resultData.createdAt),
 	};
 };
@@ -37,9 +48,12 @@ export const normalizeResultList = (results = []) => {
 export const normalizeResultDetails = (result) => {
 	const resultData = toPlainObject(result);
 	if (!resultData) return null;
+	const resultDto = { ...resultData };
+	delete resultDto.id;
 
 	return {
-		...resultData,
+		...resultDto,
+		quizId: normalizeQuizIdValue(resultData.quizId),
 		createdAt: normalizeDateValue(resultData.createdAt),
 	};
 };
@@ -48,7 +62,7 @@ export const buildSaveResultPayload = ({ userId, quizId, quiz, answers, summary,
 	const normalizedCreatedAt = normalizeCreatedAt(createdAt);
 
 	return {
-		quizId: String(quizId),
+		quizId: normalizeQuizIdValue(quizId),
 		quizTitle: quiz.title,
 		...(normalizedCreatedAt ? { createdAt: normalizedCreatedAt } : {}),
 		category: quiz.category,

@@ -4,6 +4,15 @@ import * as normalizationService from "#src/modules/quizzes/services/normalizati
 import * as permissionService from "#src/modules/quizzes/services/permissions.js";
 import * as persistenceService from "#src/modules/quizzes/services/persistence.js";
 
+const attachAuthorToQuiz = (quiz, author) => {
+	const quizData = typeof quiz.toObject === "function" ? quiz.toObject() : { ...quiz };
+
+	return {
+		...quizData,
+		authorId: author,
+	};
+};
+
 export const getAllQuizzes = async ({ authorId, limit, skip, search, sort }) => {
 	const quizzes = await filterService.filter(authorId, limit, skip, search, sort);
 	return { quizzes: normalizationService.normalizeQuizList(quizzes) };
@@ -16,9 +25,8 @@ export const getQuizById = async ({ id }) => {
 	return { quiz: normalizationService.normalizeQuizDetails(quiz) };
 };
 
-export const createQuiz = async ({ userId, id, title, category, tags, description, questions }) => {
+export const createQuiz = async ({ userId, title, category, tags, description, questions }) => {
 	permissionService.assertValidCreatePayload({
-		id,
 		title,
 		category,
 		tags,
@@ -26,29 +34,25 @@ export const createQuiz = async ({ userId, id, title, category, tags, descriptio
 		questions,
 	});
 
-	const existingQuiz = await persistenceService.findQuizById(id);
-	permissionService.assertQuizNotExists(existingQuiz);
-
 	const author = await persistenceService.findAuthorById(userId);
 	permissionService.assertAuthorExists(author);
 
 	const payload = normalizationService.buildCreatePayload({
-		id,
 		title,
 		category,
 		tags,
 		description,
 		questions,
 		userId,
-		user: author,
 	});
 
 	const quiz = await persistenceService.createQuiz(payload);
+	const quizWithAuthor = attachAuthorToQuiz(quiz, author);
 
-	const [normalizedQuizForSSE] = normalizationService.normalizeQuizList([quiz]);
+	const [normalizedQuizForSSE] = normalizationService.normalizeQuizList([quizWithAuthor]);
 	sseEvents.emitCreateQuizSSE(normalizedQuizForSSE);
 
-	return { quiz };
+	return { quiz: normalizationService.normalizeQuizDetails(quizWithAuthor) };
 };
 
 export const updateQuiz = async ({ userId, id, title, category, tags, description, questions }) => {
@@ -66,11 +70,12 @@ export const updateQuiz = async ({ userId, id, title, category, tags, descriptio
 	});
 
 	const updatedQuiz = await persistenceService.updateQuizById(id, updates);
+	const updatedQuizWithAuthor = attachAuthorToQuiz(updatedQuiz, quiz.authorId);
 
-	const [normalizedQuizForSSE] = normalizationService.normalizeQuizList([updatedQuiz]);
+	const [normalizedQuizForSSE] = normalizationService.normalizeQuizList([updatedQuizWithAuthor]);
 	sseEvents.emitUpdateQuizSSE(normalizedQuizForSSE);
 
-	return { quiz: updatedQuiz };
+	return { quiz: normalizationService.normalizeQuizDetails(updatedQuizWithAuthor) };
 };
 
 export const deleteQuiz = async ({ userId, id }) => {

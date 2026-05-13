@@ -4,7 +4,7 @@ export const defaultQuizzes = {
 		{
 			title: "Тест з англійської мови (A1)",
 			description: "Перевір свої базові знання англійських слів і граматики.",
-			id: "0",
+
 			questions: [
 				{
 					id: 0,
@@ -132,7 +132,7 @@ export const defaultQuizzes = {
 		{
 			title: "Тест з англійської мови (A2)",
 			description: "Перевір свої знання часів та структури речень.",
-			id: "1",
+
 			questions: [
 				{
 					id: 0,
@@ -260,7 +260,7 @@ export const defaultQuizzes = {
 		{
 			title: "Тест з англійської мови (B1)",
 			description: "Перевір свої знання Present Perfect та умовних речень.",
-			id: "2",
+
 			questions: [
 				{
 					id: 0,
@@ -388,7 +388,7 @@ export const defaultQuizzes = {
 		{
 			title: "Тест: Історія України (Базовий)",
 			description: "Перевірте знання ключових подій української історії.",
-			id: "3",
+
 			questions: [
 				{
 					id: 0,
@@ -520,7 +520,7 @@ export const defaultQuizzes = {
 		{
 			title: "Тест з Математики (Алгебра)",
 			description: "Перевірка базових знань з алгебри.",
-			id: "4",
+
 			questions: [
 				{
 					id: 0,
@@ -648,7 +648,7 @@ export const defaultQuizzes = {
 		{
 			title: "Тест з Географії (Світ)",
 			description: "Перевір свої знання столиць та континентів.",
-			id: "5",
+
 			questions: [
 				{
 					id: 0,
@@ -776,7 +776,7 @@ export const defaultQuizzes = {
 		{
 			title: "Тест з JavaScript (Основи)",
 			description: "Перевірка знань базового синтаксису JavaScript.",
-			id: "6",
+
 			questions: [
 				{
 					id: 0,
@@ -904,7 +904,7 @@ export const defaultQuizzes = {
 		{
 			title: "Тест з Біології (Клітина)",
 			description: "Основні знання про будову клітини.",
-			id: "7",
+
 			questions: [
 				{
 					id: 0,
@@ -1036,7 +1036,7 @@ export const defaultQuizzes = {
 		{
 			title: "Тест з Української Літератури",
 			description: "Твори та автори класичної української літератури.",
-			id: "8",
+
 			questions: [
 				{
 					id: 0,
@@ -1164,7 +1164,7 @@ export const defaultQuizzes = {
 		{
 			title: "Тест з Фізики (Механіка)",
 			description: "Базові закони Ньютона та кінематика.",
-			id: "9",
+
 			questions: [
 				{
 					id: 0,
@@ -1292,7 +1292,7 @@ export const defaultQuizzes = {
 		{
 			title: "Тест: Основи Кулінарії",
 			description: "Базові знання про приготування їжі.",
-			id: "10",
+
 			questions: [
 				{
 					id: 0,
@@ -1424,7 +1424,7 @@ export const defaultQuizzes = {
 		{
 			title: "Тест з Мереж (Основи)",
 			description: "Перевірка знань про моделі OSI та протоколи.",
-			id: "11",
+
 			questions: [
 				{
 					id: 0,
@@ -1560,7 +1560,7 @@ export const defaultQuizzes = {
 		{
 			title: "Тест на Логіку",
 			description: "Перевірка логічного мислення.",
-			id: "12",
+
 			questions: [
 				{
 					id: 0,
@@ -1688,7 +1688,7 @@ export const defaultQuizzes = {
 		{
 			title: "Тест з Мистецтва",
 			description: "Знання відомих картин та художників.",
-			id: "13",
+
 			questions: [
 				{
 					id: 0,
@@ -1816,7 +1816,7 @@ export const defaultQuizzes = {
 		{
 			title: "Тест з Особистих Фінансів",
 			description: "Базові поняття про гроші та інвестиції.",
-			id: "14",
+
 			questions: [
 				{
 					id: 0,

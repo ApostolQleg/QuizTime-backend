@@ -1,15 +1,18 @@
 import Quiz from "#src/modules/quizzes/quiz.model.js";
 
 export const findById = async (id) => {
-	return await Quiz.findOne({ id });
+	return await Quiz.findById(id).populate({
+		path: "authorId",
+		select: "nickname avatarUrl avatarType themeColor",
+	});
 };
 
 export const updateById = async (id, updates) => {
-	return await Quiz.findOneAndUpdate({ id }, { $set: updates }, { new: true });
+	return await Quiz.findByIdAndUpdate(id, { $set: updates }, { new: true });
 };
 
 export const deleteById = async (id) => {
-	return await Quiz.findOneAndDelete({ id });
+	return await Quiz.findByIdAndDelete(id);
 };
 
 export const create = async (payload) => {
@@ -24,6 +27,9 @@ export const filteredQuizzes = async (limit, skip, filter, sort) => {
 		.sort(sort)
 		.skip(skip)
 		.limit(limit)
-		.select("id title category tags description questions authorId createdAt")
-		.populate("authorId", "nickname avatarUrl avatarType themeColor");
+		.select("_id title category tags questions authorId")
+		.populate({
+			path: "authorId",
+			select: "nickname",
+		});
 };

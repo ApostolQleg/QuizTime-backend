@@ -14,5 +14,5 @@ export const createResult = async (payload) => {
 };
 
 export const findQuizById = async (quizId) => {
-	return quizRepository.findById(String(quizId));
+	return quizRepository.findById(quizId);
 };

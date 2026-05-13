@@ -120,6 +120,8 @@ test("quizzes lifecycle: create and delete by author", async () => {
 	const quizPayload = {
 		id: "quiz-lifecycle-1",
 		title: "Lifecycle Quiz",
+		category: "general",
+		tags: ["lifecycle"],
 		description: "Integration lifecycle quiz",
 		questions: [{ q: "2+2?", options: ["3", "4"], answer: 1 }],
 	};
@@ -177,6 +179,8 @@ test("results lifecycle: pass quiz and read own result", async () => {
 		payload: {
 			id: quizId,
 			title: "Passable Quiz",
+			category: "general",
+			tags: ["results"],
 			description: "Quiz for result passing",
 			questions: [{ q: "3+3?", options: ["5", "6"], answer: 1 }],
 		},
@@ -260,6 +264,8 @@ test("users lifecycle: delete account removes user and owned results", async () 
 		payload: {
 			id: "quiz-pass-2",
 			title: "Cleanup Quiz",
+			category: "general",
+			tags: ["cleanup"],
 			description: "Quiz for account cleanup",
 			questions: [{ q: "5+5?", options: ["10", "11"], answer: 0 }],
 		},

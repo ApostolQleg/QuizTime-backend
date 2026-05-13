@@ -10,20 +10,23 @@ import {
 	QuizQuestionsRequiredError,
 } from "#src/modules/quizzes/errors/quiz.js";
 
-export const assertValidCreatePayload = ({ id, title, tags, description, questions }) => {
-	if (
-		!id ||
-		!title?.trim() ||
-		!description?.trim() ||
-		!Array.isArray(tags) ||
-		tags.length === 0
-	) {
+export const assertValidCreatePayload = ({ title, tags, description, questions }) => {
+	if (!title?.trim() || !description?.trim() || !Array.isArray(tags) || tags.length === 0) {
 		throw new InvalidQuizPayloadError();
 	}
 
 	if (!Array.isArray(questions) || questions.length === 0) {
 		throw new QuizQuestionsRequiredError();
 	}
+};
+
+const getQuizAuthorId = (authorId) => {
+	if (!authorId) return null;
+	if (typeof authorId === "object") {
+		return String(authorId._id ?? authorId);
+	}
+
+	return String(authorId);
 };
 
 export const assertQuizNotExists = (quiz) => {
@@ -45,21 +48,25 @@ export const assertQuizExists = (quiz) => {
 };
 
 export const assertCanEditQuiz = (quiz, userId) => {
-	if (!quiz.authorId) {
+	const quizAuthorId = getQuizAuthorId(quiz.authorId);
+
+	if (!quizAuthorId) {
 		throw new CannotEditSystemQuizError();
 	}
 
-	if (String(quiz.authorId) !== String(userId)) {
+	if (quizAuthorId !== String(userId)) {
 		throw new QuizAuthorMismatchError();
 	}
 };
 
 export const assertCanDeleteQuiz = (quiz, userId) => {
-	if (!quiz.authorId) {
+	const quizAuthorId = getQuizAuthorId(quiz.authorId);
+
+	if (!quizAuthorId) {
 		throw new CannotDeleteSystemQuizError();
 	}
 
-	if (String(quiz.authorId) !== String(userId)) {
+	if (quizAuthorId !== String(userId)) {
 		throw new QuizAuthorMismatchError();
 	}
 };

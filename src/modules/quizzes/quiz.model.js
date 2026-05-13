@@ -6,13 +6,11 @@ const quizSchema = new mongoose.Schema(
 		description: String,
 		category: String,
 		tags: { type: [String] },
-		id: String,
 		questions: Array,
 		authorId: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "User",
 		},
-		authorName: String,
 		createdAt: { type: Date, default: Date.now, index: true },
 	},
 	{ versionKey: false },

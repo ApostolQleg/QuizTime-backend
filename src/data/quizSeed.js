@@ -4,7 +4,7 @@ import { Quiz } from "#src/modules/quizzes/index.js";
 export const seedQuizzesIfEmpty = async () => {
 	try {
 		if (Quiz.collection && typeof Quiz.collection.createIndex === "function") {
-			await Quiz.collection.createIndex({ id: 1 }, { unique: true });
+			await Quiz.collection.dropIndex("id_1").catch(() => undefined);
 		}
 	} catch (error) {
 		if (error.codeName !== "IndexOptionsConflict" && error.code !== 85) {

@@ -2,7 +2,12 @@ import mongoose from "mongoose";
 
 const resultSchema = new mongoose.Schema(
 	{
-		quizId: { type: String, required: true, index: true },
+		quizId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Quiz",
+			required: true,
+			index: true,
+		},
 		quizTitle: { type: String, required: true },
 		category: { type: String, required: true },
 		tags: { type: [String] },

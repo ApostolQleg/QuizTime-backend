@@ -20,7 +20,6 @@ export async function seedMany(datatype, startNum = 0, endNum = 0) {
 				dataToInsert.push({
 					title: num,
 					description: `Generated quiz ${num}`,
-					id: String(Date.now() + i),
 					questions: [
 						{
 							id: 0,
@@ -32,12 +31,11 @@ export async function seedMany(datatype, startNum = 0, endNum = 0) {
 						},
 					],
 					authorId: AUTHOR_ID,
-					authorName: "ApostolOleg",
 					createdAt: Date.now() + i,
 				});
 			} else if (datatype === "results") {
 				dataToInsert.push({
-					quizId: String(Date.now() + i),
+					quizId: new mongoose.Types.ObjectId(),
 					quizTitle: num,
 					summary: {
 						score: 1,
