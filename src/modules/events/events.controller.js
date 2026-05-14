@@ -2,6 +2,9 @@ import { Readable } from "node:stream";
 import { eventsGenerator } from "#src/modules/events/services/eventGenerator.js";
 
 export const eventController = async (request, reply) => {
+	request.raw.socket.setTimeout(0);
+    request.raw.socket.setKeepAlive(true);
+	
 	reply.type("text/event-stream");
 	reply.header("Cache-Control", "no-cache");
 	reply.header("Connection", "keep-alive");
