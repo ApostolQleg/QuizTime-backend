@@ -3,7 +3,7 @@ import { EventEmitter } from "node:events";
 export const EventSSE = new EventEmitter();
 EventSSE.setMaxListeners(0);
 
-const pingInterval = setInterval(() => emitPingSSE(), 20000);
+const pingInterval = setInterval(() => emitPingSSE(), 10000);
 pingInterval.unref();
 
 export function emitPingSSE() {
