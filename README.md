@@ -93,6 +93,7 @@ src/
 │   │   ├── schemas/            # Request validation
 │   │   └── errors/             # Auth-specific errors
 │   ├── users/                  # User management
+│   ├── events/                 # SSE events
 │   ├── quizzes/                # Quiz CRUD & operations
 │   └── results/                # Result storage & retrieval
 ├── data/
@@ -245,24 +246,25 @@ bun run lint           # Lint code with Biome
 
 ## Deployment
 
-### Vercel
+### Render
 
-The project includes `vercel.json` for Vercel deployment:
+The project can be deployed on Render as a Web Service. Deploy from the Render dashboard by connecting your GitHub repository and creating a new Web Service. Recommended settings:
 
-```bash
-vercel deploy
+```text
+- Build Command: bun install
+- Start Command: bun run start
+- Environment: Node (or use Docker/Custom if you require a specific runtime)
 ```
 
-**Vercel Configuration:**
+**Render Configuration:**
 
-- Builds from `src/app/app.js`
-- Routes all requests to the Fastify app
-- Set environment variables in Vercel dashboard
-- If frontend origin changes, update allowed CORS origins in `src/app/app.js`
+- Builds and runs the Fastify app from `src/app/app.js`
+- Set environment variables in the Render dashboard for the service
+- If the frontend origin changes, update allowed CORS origins in `src/app/app.js`
 
-### Environment Setup on Vercel
+### Environment Setup on Render
 
-Add these environment variables in Vercel project settings:
+Add these environment variables in the Render service settings:
 
 - `MONGO_URI`
 - `JWT_SECRET`
