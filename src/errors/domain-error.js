@@ -5,5 +5,9 @@ export class DomainError extends Error {
 		this.statusCode = statusCode;
 		this.errorCode = errorCode;
 		this.details = details;
+		
+		if (Error.captureStackTrace) {
+			Error.captureStackTrace(this, this.constructor);
+		}
 	}
 }
