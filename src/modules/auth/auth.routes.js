@@ -1,11 +1,8 @@
-import { authController, oauthController } from "#src/modules/auth/index.js";
-import { loginSchema, registerSchema, sendCodeSchema } from "#src/modules/auth/schemas/auth.js";
-import {
-	googleAuthSchema,
-	googleExtractSchema,
-	linkGoogleSchema,
-} from "#src/modules/auth/schemas/oauth.js";
 import { checkAuth } from "#src/shared/middleware/checkAuth.js";
+import * as authController from "./controllers/auth.controller.js";
+import * as oauthController from "./controllers/oauth.controller.js";
+import { loginSchema, registerSchema, sendCodeSchema } from "./schemas/auth.schema.js";
+import { googleAuthSchema, googleExtractSchema, linkGoogleSchema } from "./schemas/oauth.schema.js";
 
 export default async function authRoutes(fastify) {
 	fastify.post(

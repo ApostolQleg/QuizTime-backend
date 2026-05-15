@@ -4,7 +4,7 @@ import test, { after, before, beforeEach } from "node:test";
 import jwt from "jsonwebtoken";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
-import { eventController } from "#src/modules/events/events.controller.js";
+import { eventController } from "#src/modules/events/event.controller.js";
 import { emitPingSSE } from "#src/modules/events/index.js";
 
 let mongod;

@@ -1,11 +1,11 @@
-import { userController } from "#src/modules/users/index.js";
+import { checkAuth } from "#src/shared/middleware/checkAuth.js";
+import * as userController from "./controllers/user.controller.js";
 import {
 	changePasswordSchema,
 	getCurrentUserSchema,
 	getNicknameSuggestionsSchema,
 	updateProfileSchema,
-} from "#src/modules/users/schemas/user.js";
-import { checkAuth } from "#src/shared/middleware/checkAuth.js";
+} from "./schemas/user.schema.js";
 
 export default async function userRoutes(fastify) {
 	fastify.get("/:id", { schema: getCurrentUserSchema }, userController.getUserById);

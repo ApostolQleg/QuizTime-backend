@@ -1,0 +1,65 @@
+import * as quizService from "../services/quiz.service.js";
+
+export const getAllQuizzes = async (request, reply) => {
+	const limit = parseInt(request.query.limit, 10) || 36;
+	const skip = parseInt(request.query.skip, 10) || 0;
+	const search = request.query.search || "";
+	const sort = request.query.sort || "newest";
+	const authorId = request.query.authorId || "";
+
+	const data = await quizService.getAllQuizzes({
+		authorId,
+		limit,
+		skip,
+		search,
+		sort,
+	});
+	return reply.send({ success: true, ...data });
+};
+
+export const getQuizById = async (request, reply) => {
+	const { id } = request.params;
+
+	const data = await quizService.getQuizById({ id });
+	return reply.send({ success: true, ...data });
+};
+
+export const createQuiz = async (request, reply) => {
+	const userId = request.userId;
+	const { title, category, tags, description, questions } = request.body;
+
+	const data = await quizService.createQuiz({
+		userId,
+		title,
+		category,
+		tags,
+		description,
+		questions,
+	});
+	return reply.code(201).send({ success: true, ...data });
+};
+
+export const updateQuiz = async (request, reply) => {
+	const userId = request.userId;
+	const { id } = request.params;
+	const { title, category, tags, description, questions } = request.body;
+
+	const data = await quizService.updateQuiz({
+		userId,
+		id,
+		category,
+		tags,
+		title,
+		description,
+		questions,
+	});
+	return reply.send({ success: true, ...data });
+};
+
+export const deleteQuiz = async (request, reply) => {
+	const userId = request.userId;
+	const { id } = request.params;
+
+	const data = await quizService.deleteQuiz({ userId, id });
+	return reply.send({ success: true, ...data });
+};
