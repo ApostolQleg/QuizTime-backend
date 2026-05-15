@@ -7,7 +7,7 @@ const sanitizeUser = (user) => {
 };
 
 export const getCurrentUserProfile = async ({ userId }) => {
-	const user = await userRepository.findById(userId);
+	const user = await userRepository.findUserById(userId);
 	if (!user) {
 		throw new UserNotFoundError();
 	}
@@ -26,7 +26,7 @@ export const getCurrentUserProfile = async ({ userId }) => {
 };
 
 export const getPublicUserProfile = async ({ userId }) => {
-	const user = await userRepository.findPublicById(userId);
+	const user = await userRepository.findPublicUserById(userId);
 	if (!user) {
 		throw new UserNotFoundError();
 	}
@@ -51,7 +51,7 @@ export const updateProfile = async ({ userId, nickname, themeColor, avatarType }
 	if (themeColor !== undefined) updates.themeColor = themeColor;
 	if (avatarType !== undefined) updates.avatarType = avatarType;
 
-	const user = await userRepository.updateById(userId, updates);
+	const user = await userRepository.updateUserById(userId, updates);
 	if (!user) {
 		throw new UserNotFoundError();
 	}

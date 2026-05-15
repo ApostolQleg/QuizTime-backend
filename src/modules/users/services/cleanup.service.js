@@ -3,7 +3,7 @@ import * as resultRepository from "../repositories/result.repository.js";
 import * as userRepository from "../repositories/user.repository.js";
 
 export const deleteAccount = async ({ userId }) => {
-	const user = await userRepository.deleteById(userId);
+	const user = await userRepository.deleteUserById(userId);
 	if (!user) {
 		throw new UserNotFoundError();
 	}

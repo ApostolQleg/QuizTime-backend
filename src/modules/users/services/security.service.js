@@ -2,7 +2,7 @@ import { CurrentPasswordIncorrectError, UserNotFoundError } from "../errors/user
 import * as userRepository from "../repositories/user.repository.js";
 
 export const changePassword = async ({ userId, currentPassword, newPassword }) => {
-	const user = await userRepository.findById(userId);
+	const user = await userRepository.findUserById(userId);
 	if (!user) {
 		throw new UserNotFoundError();
 	}
@@ -13,7 +13,7 @@ export const changePassword = async ({ userId, currentPassword, newPassword }) =
 	}
 
 	const passwordHash = await Bun.password.hash(newPassword);
-	await userRepository.updateById(userId, { passwordHash });
+	await userRepository.updateUserById(userId, { passwordHash });
 
 	return { message: "Password changed successfully" };
 };

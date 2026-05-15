@@ -10,13 +10,13 @@ const generateVerificationCode = () => {
 };
 
 export const findByEmail = async (email) => {
-	return tempCodeRepository.findByEmail(email);
+	return tempCodeRepository.findTempCodeByEmail(email);
 };
 
 export const issueForEmail = async (email) => {
 	const code = generateVerificationCode();
 
-	await tempCodeRepository.upsertByEmail(email, code);
+	await tempCodeRepository.upsertTempCodeByEmail(email, code);
 
 	await sendVerificationEmail(email, code);
 
@@ -34,5 +34,5 @@ export const verifyCode = async (email, code) => {
 		throw new InvalidVerificationCodeError();
 	}
 
-	await tempCodeRepository.deleteByEmail(email);
+	await tempCodeRepository.deleteTempCodeByEmail(email);
 };

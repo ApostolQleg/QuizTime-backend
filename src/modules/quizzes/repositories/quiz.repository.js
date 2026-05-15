@@ -1,27 +1,27 @@
 import Quiz from "../quiz.model.js";
 
-export const findById = async (id) => {
+export const findQuizById = async (id) => {
 	return await Quiz.findById(id).populate({
 		path: "authorId",
 		select: "nickname avatarUrl avatarType themeColor",
 	});
 };
 
-export const updateById = async (id, updates) => {
+export const updateQuizById = async (id, updates) => {
 	return await Quiz.findByIdAndUpdate(id, { $set: updates }, { new: true });
 };
 
-export const deleteById = async (id) => {
+export const deleteQuizById = async (id) => {
 	return await Quiz.findByIdAndDelete(id);
 };
 
-export const create = async (payload) => {
+export const createQuiz = async (payload) => {
 	const quiz = new Quiz(payload);
 	await quiz.save();
 	return quiz;
 };
 
-export const filteredQuizzes = async (limit, skip, filter, sort) => {
+export const findQuizzes = async ({ limit, skip, filter, sort }) => {
 	return await Quiz.find(filter)
 		.collation({ locale: "uk", strength: 2 })
 		.sort(sort)

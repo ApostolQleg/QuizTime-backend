@@ -1,6 +1,6 @@
 import * as persistenceService from "./persistence.service.js";
 
-export const filter = async (authorId, limit, skip, search, sort) => {
+export const filter = async ({ authorId, limit, skip, search, sort }) => {
 	const filter = {};
 	if (authorId) filter.authorId = authorId;
 	if (search) {

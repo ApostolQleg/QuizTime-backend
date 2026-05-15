@@ -5,30 +5,30 @@ import * as tempCodeService from "./temp-codes.service.js";
 
 const buildUniqueNickname = async () => {
 	let candidate = generateNickname().next().value;
-	let exists = await userRepository.existsByNickname(candidate);
+	let exists = await userRepository.existsUserByNickname(candidate);
 
 	while (exists) {
 		candidate = generateNickname().next().value;
-		exists = await userRepository.existsByNickname(candidate);
+		exists = await userRepository.existsUserByNickname(candidate);
 	}
 
 	return candidate;
 };
 
 export const findUserByEmail = async (email) => {
-	return userRepository.findByEmail(email);
+	return userRepository.findUserByEmail(email);
 };
 
 export const findUserByGoogleId = async (googleId) => {
-	return userRepository.findByGoogleId(googleId);
+	return userRepository.findUserByGoogleId(googleId);
 };
 
 export const findUserById = async (userId) => {
-	return userRepository.findById(userId);
+	return userRepository.findUserById(userId);
 };
 
 export const createLocalUser = async ({ email, passwordHash, avatarUrl, googleId }) => {
-	return userRepository.create({
+	return userRepository.createUser({
 		email,
 		nickname: await buildUniqueNickname(),
 		passwordHash,
@@ -38,7 +38,7 @@ export const createLocalUser = async ({ email, passwordHash, avatarUrl, googleId
 };
 
 export const createGoogleUser = async ({ email, picture, googleId }) => {
-	return userRepository.create({
+	return userRepository.createUser({
 		email,
 		nickname: await buildUniqueNickname(),
 		passwordHash: await securityService.generateOAuthPasswordHash(),
@@ -68,7 +68,7 @@ export const ensureGoogleFields = async ({ user, googleId, picture }) => {
 	}
 
 	if (hasChanges) {
-		await userRepository.save(user);
+		await userRepository.saveUser(user);
 	}
 
 	return user;
@@ -82,7 +82,7 @@ export const linkGoogleAccount = async ({ user, googleId, picture }) => {
 		user.avatarType = "google";
 	}
 
-	await userRepository.save(user);
+	await userRepository.saveUser(user);
 	return user;
 };
 

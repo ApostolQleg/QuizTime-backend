@@ -3,11 +3,11 @@ import * as userRepository from "../repositories/user.repository.js";
 
 export const generateUniqueNickname = async () => {
 	let candidate = generateNickname().next().value;
-	let exists = await userRepository.existsByNickname(candidate);
+	let exists = await userRepository.existsUserByNickname(candidate);
 
 	while (exists) {
 		candidate = generateNickname().next().value;
-		exists = await userRepository.existsByNickname(candidate);
+		exists = await userRepository.existsUserByNickname(candidate);
 	}
 
 	return candidate;
@@ -24,7 +24,7 @@ export const buildNicknameArray = async () => {
 	let isUnique = false;
 	while (!isUnique) {
 		const lastNickname = iterator.next().value;
-		const isTaken = await userRepository.existsByNickname(lastNickname);
+		const isTaken = await userRepository.existsUserByNickname(lastNickname);
 		nicknames.push(lastNickname);
 
 		if (!isTaken) {

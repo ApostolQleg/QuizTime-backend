@@ -1,10 +1,10 @@
 import TempCode from "../temp-code.model.js";
 
-export const findByEmail = async (email) => {
+export const findTempCodeByEmail = async (email) => {
 	return TempCode.findOne({ email });
 };
 
-export const upsertByEmail = async (email, code) => {
+export const upsertTempCodeByEmail = async (email, code) => {
 	return TempCode.findOneAndUpdate(
 		{ email },
 		{ code, createdAt: new Date() },
@@ -12,6 +12,6 @@ export const upsertByEmail = async (email, code) => {
 	);
 };
 
-export const deleteByEmail = async (email) => {
+export const deleteTempCodeByEmail = async (email) => {
 	return TempCode.deleteOne({ email });
 };

@@ -14,7 +14,7 @@ const attachAuthorToQuiz = (quiz, author) => {
 };
 
 export const getAllQuizzes = async ({ authorId, limit, skip, search, sort }) => {
-	const quizzes = await filterService.filter(authorId, limit, skip, search, sort);
+	const quizzes = await filterService.filter({ authorId, limit, skip, search, sort });
 	return { quizzes: normalizationService.normalizeQuizList(quizzes) };
 };
 

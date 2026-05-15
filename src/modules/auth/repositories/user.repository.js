@@ -1,28 +1,28 @@
 import { User } from "#src/modules/users/index.js";
 
-export const findByEmail = async (email) => {
+export const findUserByEmail = async (email) => {
 	return User.findOne({ email });
 };
 
-export const findByGoogleId = async (googleId) => {
+export const findUserByGoogleId = async (googleId) => {
 	return User.findOne({ googleId });
 };
 
-export const findById = async (userId) => {
+export const findUserById = async (userId) => {
 	return User.findById(userId);
 };
 
-export const existsByNickname = async (nickname) => {
+export const existsUserByNickname = async (nickname) => {
 	return Boolean(await User.exists({ nickname }));
 };
 
-export const create = async (payload) => {
+export const createUser = async (payload) => {
 	const user = new User(payload);
 	await user.save();
 	return user;
 };
 
-export const save = async (user) => {
+export const saveUser = async (user) => {
 	await user.save();
 	return user;
 };
