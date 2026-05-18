@@ -11,7 +11,7 @@ export async function seedMany(datatype, startNum = 0, endNum = 0) {
 		await mongoose.connect(process.env.MONGO_URI);
 		console.log("Connected to MongoDB for seeding...");
 
-		const BATCH_SIZE = 10;
+		const BATCH_SIZE = 100;
 		let totalInserted = 0;
 
 		for await (const batch of generateDataInBatches(datatype, startNum, endNum, BATCH_SIZE)) {
@@ -66,7 +66,7 @@ async function* generateDataInBatches(datatype, startNum = 0, endNum = 0, batchS
 			item = {
 				quizId: newId,
 				quizTitle: num,
-				category: `Other`,
+				category: "Other",
 				tags: ["Test", "Dev"],
 				summary: {
 					score: 1,
@@ -87,15 +87,18 @@ async function* generateDataInBatches(datatype, startNum = 0, endNum = 0, batchS
 				userId: AUTHOR_ID,
 				createdAt: Date.now() + i,
 			};
+		} else {
+			console.log("Invalid action. Exiting.");
+			process.exit(1);
 		}
 		batch.push(item);
 
-		if (batch.length === batchSize && !batch.some((item) => item === undefined)) {
+		if (batch.length === batchSize && !batch.some((e) => e === undefined)) {
 			yield batch;
 			batch = [];
 		}
 	}
-	if (batch.length > 0 && !batch.some((item) => item === undefined)) {
+	if (batch.length > 0 && !batch.some((e) => e === undefined)) {
 		yield batch;
 	}
 }
