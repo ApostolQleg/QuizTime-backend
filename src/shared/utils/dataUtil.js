@@ -11,67 +11,95 @@ export async function seedMany(datatype, startNum = 0, endNum = 0) {
 		await mongoose.connect(process.env.MONGO_URI);
 		console.log("Connected to MongoDB for seeding...");
 
-		const dataToInsert = [];
+		const BATCH_SIZE = 100;
+		let totalInserted = 0;
 
-		for (let i = startNum; i <= endNum; i++) {
-			const num = String(i);
-
+		for await (const batch of generateDataInBatches(datatype, startNum, endNum, BATCH_SIZE)) {
 			if (datatype === "quizzes") {
-				dataToInsert.push({
-					title: num,
-					description: `Generated quiz ${num}`,
-					questions: [
-						{
-							id: 0,
-							text: num,
-							options: [
-								{ id: 0, text: "Yes", isCorrect: true },
-								{ id: 1, text: "No", isCorrect: false },
-							],
-						},
-					],
-					authorId: AUTHOR_ID,
-					createdAt: Date.now() + i,
-				});
+				await Quiz.insertMany(batch);
 			} else if (datatype === "results") {
-				dataToInsert.push({
-					quizId: new mongoose.Types.ObjectId(),
-					quizTitle: num,
-					summary: {
-						score: 1,
-						correct: 1,
-						total: 1,
-					},
-					answers: [[0]],
-					questions: [
-						{
-							id: 0,
-							text: num,
-							options: [
-								{ id: 0, text: "Yes", isCorrect: true },
-								{ id: 1, text: "No", isCorrect: false },
-							],
-						},
-					],
-					userId: AUTHOR_ID,
-					createdAt: Date.now() + i,
-				});
+				await Result.insertMany(batch);
 			}
+
+			totalInserted += batch.length;
+			console.log(`Inserted ${totalInserted} ${datatype}`);
 		}
 
-		if (datatype === "quizzes") {
-			await Quiz.insertMany(dataToInsert);
-		} else if (datatype === "results") {
-			await Result.insertMany(dataToInsert);
-		}
-
-		console.log(`${dataToInsert.length} ${datatype} have been inserted successfully!`);
+		console.log(`\n${totalInserted} ${datatype} have been inserted!`);
 
 		await mongoose.disconnect();
 		process.exit(0);
 	} catch (error) {
 		console.error("Seeding error:", error);
 		process.exit(1);
+	}
+}
+
+async function* generateDataInBatches(datatype, startNum = 0, endNum = 0, batchSize = 100) {
+	let batch = [];
+	for (let i = startNum; i <= endNum; i++) {
+		const num = String(i);
+		let item;
+		const newId = new mongoose.Types.ObjectId();
+
+		if (datatype === "quizzes") {
+			item = {
+				_id: newId,
+				title: num,
+				description: `Generated quiz ${num}`,
+				category: `category ${num}`,
+				tags: ["Test", "Dev"],
+				questions: [
+					{
+						id: 0,
+						text: num,
+						options: [
+							{ id: 0, text: "Yes", isCorrect: true },
+							{ id: 1, text: "No", isCorrect: false },
+						],
+					},
+				],
+				authorId: AUTHOR_ID,
+				createdAt: Date.now() + i,
+			};
+		} else if (datatype === "results") {
+			item = {
+				quizId: newId,
+				quizTitle: num,
+				category: "Other",
+				tags: ["Test", "Dev"],
+				summary: {
+					score: 1,
+					correct: 1,
+					total: 1,
+				},
+				answers: [[0]],
+				questions: [
+					{
+						id: 0,
+						text: num,
+						options: [
+							{ id: 0, text: "Yes", isCorrect: true },
+							{ id: 1, text: "No", isCorrect: false },
+						],
+					},
+				],
+				userId: AUTHOR_ID,
+				createdAt: Date.now() + i,
+			};
+		} else {
+			console.log("Invalid action. Exiting.");
+			process.exit(1);
+		}
+		batch.push(item);
+
+		if (batch.length === batchSize && !batch.some((e) => e === undefined)) {
+			yield batch;
+			batch = [];
+		}
+	}
+	if (batch.length > 0 && !batch.some((e) => e === undefined)) {
+		yield batch;
 	}
 }
 
