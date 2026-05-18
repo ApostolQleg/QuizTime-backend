@@ -2,7 +2,7 @@
 
 High-performance REST API for QuizTime built with **Fastify** and **MongoDB**. Handles authentication, quiz management, results storage, and user profiles.
 
-🌐 **Live Site:** [quiz-time-with-react.vercel.app](https://quiz-time-with-react.vercel.app/)  
+🌐 **Live Site:** [quiztime-backend-os6v.onrender.com](https://quiztime-backend-os6v.onrender.com)  
 🔗 **Frontend Repository:** [QuizTime-frontend](https://github.com/ApostolQleg/QuizTime-frontend)
 
 ## Table of Contents
