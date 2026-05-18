@@ -10,7 +10,8 @@
 		"test": "bun --test",
 		"test:watch": "bun --test --watch",
 		"start": "bun src/app/server.js",
-		"lint": "biome lint"
+		"lint": "biome lint",
+		"seed": "bun src/shared/utils/dataUtil.js"
 	},
 	"keywords": [],
 	"author": "ApostolQleg, dimpennn",

@@ -16,10 +16,10 @@ export async function seedMany(datatype, startNum = 0, endNum = 0) {
 
 		for await (const batch of generateDataInBatches(datatype, startNum, endNum, BATCH_SIZE)) {
 			if (datatype === "quizzes") {
-                await Quiz.insertMany(batch);
-            } else if (datatype === "results") {
-                await Result.insertMany(batch);
-            }
+				await Quiz.insertMany(batch);
+			} else if (datatype === "results") {
+				await Result.insertMany(batch);
+			}
 
 			totalInserted += batch.length;
 			console.log(`Inserted ${totalInserted} ${datatype}`);
@@ -40,14 +40,15 @@ async function* generateDataInBatches(datatype, startNum = 0, endNum = 0, batchS
 	for (let i = startNum; i <= endNum; i++) {
 		const num = String(i);
 		let item;
+		const newId = new mongoose.Types.ObjectId();
 
 		if (datatype === "quizzes") {
 			item = {
+				_id: newId,
 				title: num,
 				description: `Generated quiz ${num}`,
 				category: `category ${num}`,
 				tags: ["Test", "Dev"],
-				id: String(Date.now() + i),
 				questions: [
 					{
 						id: 0,
@@ -59,14 +60,13 @@ async function* generateDataInBatches(datatype, startNum = 0, endNum = 0, batchS
 					},
 				],
 				authorId: AUTHOR_ID,
-				authorName: "ApostolOleg",
 				createdAt: Date.now() + i,
 			};
 		} else if (datatype === "results") {
 			item = {
-				quizId: String(Date.now() + i),
+				quizId: newId,
 				quizTitle: num,
-				category: `category ${num}`,
+				category: `Other`,
 				tags: ["Test", "Dev"],
 				summary: {
 					score: 1,
@@ -90,12 +90,12 @@ async function* generateDataInBatches(datatype, startNum = 0, endNum = 0, batchS
 		}
 		batch.push(item);
 
-		if (batch.length === batchSize) {
+		if (batch.length === batchSize && !batch.some((item) => item === undefined)) {
 			yield batch;
 			batch = [];
 		}
 	}
-	if (batch.length > 0) {
+	if (batch.length > 0 && !batch.some((item) => item === undefined)) {
 		yield batch;
 	}
 }
