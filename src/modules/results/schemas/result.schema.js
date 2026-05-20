@@ -27,12 +27,6 @@ const saveResultBodySchema = {
 		category: { type: "string", minLength: 1, maxLength: 30 },
 		tags: { type: "array", minItems: 1, items: { type: "string" } },
 		answers: { type: "array", minItems: 1 },
-		createdAt: {
-			anyOf: [
-				{ type: "string", format: "date-time" },
-				{ type: "integer", minimum: 0 },
-			],
-		},
 		summary: {
 			type: "object",
 			required: ["score", "correct", "total"],

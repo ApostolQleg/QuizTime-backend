@@ -25,7 +25,6 @@ export const createResult = async ({
 	tags,
 	answers,
 	summary,
-	createdAt,
 }) => {
 	permissionService.assertValidSavePayload({
 		userId,
@@ -47,7 +46,6 @@ export const createResult = async ({
 		tags,
 		answers,
 		summary,
-		createdAt,
 	});
 
 	const result = await persistenceService.createResult(payload);

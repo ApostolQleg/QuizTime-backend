@@ -10,9 +10,8 @@ export const buildResultsFilter = ({ userId, search = "" }) => {
 };
 
 export const buildResultsSort = (sort = "newest") => {
-	if (sort === "oldest") return { createdAt: 1 };
-	if (sort === "az") return { quizTitle: 1, createdAt: -1 };
-	if (sort === "za") return { quizTitle: -1, createdAt: -1 };
-
-	return { createdAt: -1 };
+	if (sort === "oldest") return { _id: 1 };
+	if (sort === "az") return { quizTitle: 1, _id: -1 };
+	if (sort === "za") return { quizTitle: -1, _id: -1 };
+	return { _id: -1 };
 };

@@ -25,7 +25,6 @@ const resultSchema = new mongoose.Schema(
 			index: true,
 			required: true,
 		},
-		createdAt: { type: Date, default: Date.now, index: true },
 	},
 	{ versionKey: false },
 );
