@@ -4,7 +4,8 @@ export const defaultQuizzes = {
 		{
 			title: "Тест з англійської мови (A1)",
 			description: "Перевір свої базові знання англійських слів і граматики.",
-
+			category: "Other",
+			tags: ["Default", "Easy", "Educational", "Trivia"],
 			questions: [
 				{
 					id: 0,
@@ -132,7 +133,8 @@ export const defaultQuizzes = {
 		{
 			title: "Тест з англійської мови (A2)",
 			description: "Перевір свої знання часів та структури речень.",
-
+			category: "Other",
+			tags: ["Default", "Medium", "Educational"],
 			questions: [
 				{
 					id: 0,
@@ -260,7 +262,8 @@ export const defaultQuizzes = {
 		{
 			title: "Тест з англійської мови (B1)",
 			description: "Перевір свої знання Present Perfect та умовних речень.",
-
+			category: "Other",
+			tags: ["Default", "Hard", "Educational", "Challenge"],
 			questions: [
 				{
 					id: 0,
@@ -388,7 +391,8 @@ export const defaultQuizzes = {
 		{
 			title: "Тест: Історія України (Базовий)",
 			description: "Перевірте знання ключових подій української історії.",
-
+			category: "History",
+			tags: ["Default", "Easy", "Educational", "Trivia"],
 			questions: [
 				{
 					id: 0,
@@ -495,11 +499,7 @@ export const defaultQuizzes = {
 					text: "Як називалася козацька держава?",
 					options: [
 						{ text: "Київська Русь", id: 0, isCorrect: false },
-						{
-							text: "Військо Запорозьке (Гетьманщина)",
-							id: 1,
-							isCorrect: true,
-						},
+						{ text: "Військо Запорозьке (Гетьманщина)", id: 1, isCorrect: true },
 						{ text: "Галицько-Волинське князівство", id: 2, isCorrect: false },
 						{ text: "УНР", id: 3, isCorrect: false },
 					],
@@ -520,7 +520,8 @@ export const defaultQuizzes = {
 		{
 			title: "Тест з Математики (Алгебра)",
 			description: "Перевірка базових знань з алгебри.",
-
+			category: "Science",
+			tags: ["Default", "Medium", "Math", "Logic"],
 			questions: [
 				{
 					id: 0,
@@ -648,7 +649,8 @@ export const defaultQuizzes = {
 		{
 			title: "Тест з Географії (Світ)",
 			description: "Перевір свої знання столиць та континентів.",
-
+			category: "Science",
+			tags: ["Default", "Easy", "Educational", "Trivia"],
 			questions: [
 				{
 					id: 0,
@@ -776,7 +778,8 @@ export const defaultQuizzes = {
 		{
 			title: "Тест з JavaScript (Основи)",
 			description: "Перевірка знань базового синтаксису JavaScript.",
-
+			category: "Programming",
+			tags: ["Default", "Easy", "Dev", "Educational"],
 			questions: [
 				{
 					id: 0,
@@ -830,7 +833,7 @@ export const defaultQuizzes = {
 				},
 				{
 					id: 5,
-					text: "Яке значення є хибним (falsy)?",
+					text: "Яке значение є хибним (falsy)?",
 					options: [
 						{ text: "1", id: 0, isCorrect: false },
 						{ text: "'hello'", id: 1, isCorrect: false },
@@ -904,7 +907,8 @@ export const defaultQuizzes = {
 		{
 			title: "Тест з Біології (Клітина)",
 			description: "Основні знання про будову клітини.",
-
+			category: "Science",
+			tags: ["Default", "Medium", "Educational"],
 			questions: [
 				{
 					id: 0,
@@ -928,7 +932,7 @@ export const defaultQuizzes = {
 				},
 				{
 					id: 2,
-					text: "Що зберігає генетичну інформацію?",
+					text: "Що зберігає генетичную інформацію?",
 					options: [
 						{ text: "АТФ", id: 0, isCorrect: false },
 						{ text: "ДНК", id: 1, isCorrect: true },
@@ -1036,7 +1040,8 @@ export const defaultQuizzes = {
 		{
 			title: "Тест з Української Літератури",
 			description: "Твори та автори класичної української літератури.",
-
+			category: "Literature",
+			tags: ["Default", "Medium", "Educational"],
 			questions: [
 				{
 					id: 0,
@@ -1164,7 +1169,8 @@ export const defaultQuizzes = {
 		{
 			title: "Тест з Фізики (Механіка)",
 			description: "Базові закони Ньютона та кінематика.",
-
+			category: "Science",
+			tags: ["Default", "Medium", "Educational", "Challenge"],
 			questions: [
 				{
 					id: 0,
@@ -1292,7 +1298,8 @@ export const defaultQuizzes = {
 		{
 			title: "Тест: Основи Кулінарії",
 			description: "Базові знання про приготування їжі.",
-
+			category: "Other",
+			tags: ["Default", "Easy", "Fun", "Trivia"],
 			questions: [
 				{
 					id: 0,
@@ -1424,7 +1431,8 @@ export const defaultQuizzes = {
 		{
 			title: "Тест з Мереж (Основи)",
 			description: "Перевірка знань про моделі OSI та протоколи.",
-
+			category: "Programming",
+			tags: ["Default", "Medium", "Dev", "Interview"],
 			questions: [
 				{
 					id: 0,
@@ -1560,7 +1568,8 @@ export const defaultQuizzes = {
 		{
 			title: "Тест на Логіку",
 			description: "Перевірка логічного мислення.",
-
+			category: "Science",
+			tags: ["Default", "Challenge", "Logic", "Math"],
 			questions: [
 				{
 					id: 0,
@@ -1688,7 +1697,8 @@ export const defaultQuizzes = {
 		{
 			title: "Тест з Мистецтва",
 			description: "Знання відомих картин та художників.",
-
+			category: "Other",
+			tags: ["Default", "Easy", "Fun", "Trivia"],
 			questions: [
 				{
 					id: 0,
@@ -1816,7 +1826,8 @@ export const defaultQuizzes = {
 		{
 			title: "Тест з Особистих Фінансів",
 			description: "Базові поняття про гроші та інвестиції.",
-
+			category: "Other",
+			tags: ["Default", "Medium", "Educational"],
 			questions: [
 				{
 					id: 0,
@@ -1955,7 +1966,7 @@ export const defaultQuizzes = {
 						{ text: "Усі зароблені гроші", id: 0, isCorrect: false },
 						{ text: "Доходи мінус витрати і податки", id: 1, isCorrect: true },
 						{ text: "Гроші до сплати податків", id: 2, isCorrect: false },
-						{ text: "Зарплата персоналу", id: 3, isCorrect: false },
+						{ text: "Зарплата персонала", id: 3, isCorrect: false },
 					],
 				},
 				{
@@ -1984,62 +1995,41 @@ export const defaultQuizzes = {
 				},
 			],
 		},
+		// --- ТЕСТ 16: Розвиток мовлення ---
 		{
 			title: "Тест про розвиток мовлення ",
 			description:
-				"Цей тест допоможе дізнатися про розвиток  мовлення дитини, порушення мовлення а також про роботу логопеда 📖♥️",
+				"Цей тест допоможе дізнатися про розвиток мовлення дитини, порушення мовлення а також про роботу логопеда 📖♥️",
+			category: "Other",
+			tags: ["Default", "Medium", "Educational"],
 			questions: [
 				{
 					id: 0,
 					text: "Чим відрізняється агукання від лепету?",
 					options: [
-						{
-							id: 0,
-							text: "Нічим, це синоніми",
-							isCorrect: false,
-						},
+						{ id: 0, text: "Нічим, це синоніми", isCorrect: false },
 						{
 							id: 1,
 							text: "Агукання не є свідомим процесом, а лепет більш схожий на звуки рідної мови ",
 							isCorrect: true,
 						},
-						{
-							id: 2,
-							text: "Лепет передує агуканню",
-							isCorrect: false,
-						},
+						{ id: 2, text: "Лепет передує агуканню", isCorrect: false },
 					],
 				},
 				{
 					id: 1,
 					text: "За нормативними показниками в 1 рік дитина має говорити :",
 					options: [
-						{
-							id: 0,
-							text: "До 5 слів",
-							isCorrect: false,
-						},
-						{
-							id: 1,
-							text: "До 10 слів ",
-							isCorrect: true,
-						},
-						{
-							id: 2,
-							text: "До 15 слів ",
-							isCorrect: false,
-						},
+						{ id: 0, text: "До 5 слів", isCorrect: false },
+						{ id: 1, text: "До 10 слів ", isCorrect: true },
+						{ id: 2, text: "До 15 слів ", isCorrect: false },
 					],
 				},
 				{
 					id: 2,
 					text: "Чим може бути шкідливе/ небезпечне позбавлення дитини нормального спілкування з дорослими в дошкільному віці?",
 					options: [
-						{
-							id: 0,
-							text: "Нічим, це міф",
-							isCorrect: false,
-						},
+						{ id: 0, text: "Нічим, це міф", isCorrect: false },
 						{
 							id: 1,
 							text: "Дитина має більше спілкувалися з однолітками ",
@@ -2056,79 +2046,35 @@ export const defaultQuizzes = {
 					id: 3,
 					text: "В якому віці за нормативними показниками дитина має правильно вимовляти всі звуки рідної мови?",
 					options: [
-						{
-							id: 0,
-							text: "У 4-5 років",
-							isCorrect: true,
-						},
-						{
-							id: 1,
-							text: "У 5-6 років ",
-							isCorrect: false,
-						},
-						{
-							id: 2,
-							text: "У 3-4 роки ",
-							isCorrect: false,
-						},
+						{ id: 0, text: "У 4-5 років", isCorrect: true },
+						{ id: 1, text: "У 5-6 років ", isCorrect: false },
+						{ id: 2, text: "У 3-4 роки ", isCorrect: false },
 					],
 				},
 				{
 					id: 4,
 					text: "Чи можуть виникнути мовленні порушення у дитини ще у переднатальному періоді ( внутрішньоутробному)?",
 					options: [
-						{
-							id: 0,
-							text: "Так",
-							isCorrect: true,
-						},
-						{
-							id: 1,
-							text: "Ні ",
-							isCorrect: false,
-						},
-						{
-							id: 2,
-							text: "Категорично ні",
-							isCorrect: false,
-						},
+						{ id: 0, text: "Так", isCorrect: true },
+						{ id: 1, text: "Ні ", isCorrect: false },
+						{ id: 2, text: "Категорично ні", isCorrect: false },
 					],
 				},
 				{
 					id: 5,
 					text: "Дислексія - це",
 					options: [
-						{
-							id: 0,
-							text: "Порушення письма",
-							isCorrect: false,
-						},
-						{
-							id: 1,
-							text: "Порушення темпу та ритму мовлення ",
-							isCorrect: false,
-						},
-						{
-							id: 2,
-							text: "Порушення читання ",
-							isCorrect: true,
-						},
+						{ id: 0, text: "Порушення письма", isCorrect: false },
+						{ id: 1, text: "Порушення темпу та ритму мовлення ", isCorrect: false },
+						{ id: 2, text: "Порушення читання ", isCorrect: true },
 					],
 				},
 				{
 					id: 6,
 					text: "Найтиповіша ознака ринолалії:",
 					options: [
-						{
-							id: 0,
-							text: "Пропускання шиплячих звуків у словах ",
-							isCorrect: false,
-						},
-						{
-							id: 1,
-							text: "Гугнявий відтінок голосу ",
-							isCorrect: true,
-						},
+						{ id: 0, text: "Пропускання шиплячих звуків у словах ", isCorrect: false },
+						{ id: 1, text: "Гугнявий відтінок голосу ", isCorrect: true },
 						{
 							id: 2,
 							text: "Напруження м'язів язика та піднебіння під час розмови ",
@@ -2140,11 +2086,7 @@ export const defaultQuizzes = {
 					id: 7,
 					text: "Логопедія - це",
 					options: [
-						{
-							id: 0,
-							text: "Наука про мовлення ",
-							isCorrect: false,
-						},
+						{ id: 0, text: "Наука про мовлення ", isCorrect: false },
 						{
 							id: 1,
 							text: "Розділ мовознавства який вивчає мовлення ",
@@ -2161,341 +2103,146 @@ export const defaultQuizzes = {
 					id: 8,
 					text: "Комплексна оцінка розвитку дитини проводиться:",
 					options: [
-						{
-							id: 0,
-							text: "В Інклюзивно ресурсних центрах",
-							isCorrect: true,
-						},
-						{
-							id: 1,
-							text: "В закладах освіти ",
-							isCorrect: false,
-						},
-						{
-							id: 2,
-							text: "Такого не існує ",
-							isCorrect: false,
-						},
+						{ id: 0, text: "В Інклюзивно ресурсних центрах", isCorrect: true },
+						{ id: 1, text: "В закладах освіти ", isCorrect: false },
+						{ id: 2, text: "Такого не існує ", isCorrect: false },
 					],
 				},
 				{
 					id: 9,
 					text: "Онтогенез - це",
 					options: [
-						{
-							id: 0,
-							text: "Індивідуальний розвиток ",
-							isCorrect: true,
-						},
-						{
-							id: 1,
-							text: "Загальний розвиток ",
-							isCorrect: false,
-						},
-						{
-							id: 2,
-							text: "Порушення розвитку ",
-							isCorrect: false,
-						},
+						{ id: 0, text: "Індивідуальний розвиток ", isCorrect: true },
+						{ id: 1, text: "Загальний розвиток ", isCorrect: false },
+						{ id: 2, text: "Порушення розвитку ", isCorrect: false },
 					],
 				},
 			],
 		},
+		// --- ТЕСТ 17: Minecraft ---
 		{
 			title: "Minecraft test",
 			description: "Тест з гри Minecraft ",
+			category: "Gaming",
+			tags: ["Default", "Easy", "Fun", "Trivia"],
 			questions: [
 				{
 					id: 0,
 					text: "Чи потрібна лопата для крафту човна в нових версіях?",
 					options: [
-						{
-							id: 0,
-							text: "Так",
-							isCorrect: false,
-						},
-						{
-							id: 1,
-							text: "Ні",
-							isCorrect: true,
-						},
+						{ id: 0, text: "Так", isCorrect: false },
+						{ id: 1, text: "Ні", isCorrect: true },
 					],
 				},
 				{
 					id: 1,
 					text: "Яка висота спавну алмазної руди?",
 					options: [
-						{
-							id: 0,
-							text: "16",
-							isCorrect: false,
-						},
-						{
-							id: 1,
-							text: "0",
-							isCorrect: false,
-						},
-						{
-							id: 3,
-							text: "-54",
-							isCorrect: true,
-						},
-						{
-							id: 4,
-							text: "54",
-							isCorrect: false,
-						},
+						{ id: 0, text: "16", isCorrect: false },
+						{ id: 1, text: "0", isCorrect: false },
+						{ id: 3, text: "-54", isCorrect: true },
+						{ id: 4, text: "54", isCorrect: false },
 					],
 				},
 				{
 					id: 2,
 					text: 'Чи існує вбудована міні-карта в базові "ванільні" версії?',
 					options: [
-						{
-							id: 0,
-							text: "Так",
-							isCorrect: false,
-						},
-						{
-							id: 1,
-							text: "Ні",
-							isCorrect: true,
-						},
+						{ id: 0, text: "Так", isCorrect: false },
+						{ id: 1, text: "Ні", isCorrect: true },
 					],
 				},
 				{
 					id: 3,
 					text: "Чи можливий крафт мідної броні?",
 					options: [
-						{
-							id: 0,
-							text: "Так",
-							isCorrect: false,
-						},
-						{
-							id: 1,
-							text: "Ні",
-							isCorrect: false,
-						},
-						{
-							id: 2,
-							text: "Так, але лише в нових версіях",
-							isCorrect: true,
-						},
+						{ id: 0, text: "Так", isCorrect: false },
+						{ id: 1, text: "Ні", isCorrect: false },
+						{ id: 2, text: "Так, але лише в нових версіях", isCorrect: true },
 					],
 				},
 				{
 					id: 4,
 					text: "З чого зроблений голем?",
 					options: [
-						{
-							id: 0,
-							text: "Із заліза",
-							isCorrect: true,
-						},
-						{
-							id: 1,
-							text: "З кварцу",
-							isCorrect: false,
-						},
-						{
-							id: 2,
-							text: "З діамантів",
-							isCorrect: false,
-						},
-						{
-							id: 3,
-							text: "З шерсті",
-							isCorrect: false,
-						},
+						{ id: 0, text: "Із заліза", isCorrect: true },
+						{ id: 1, text: "З кварцу", isCorrect: false },
+						{ id: 2, text: "З діамантів", isCorrect: false },
+						{ id: 3, text: "З шерсті", isCorrect: false },
 					],
 				},
 				{
 					id: 5,
 					text: "Як можна швидко отримати злиток з руди?",
 					options: [
-						{
-							id: 0,
-							text: "Через піч",
-							isCorrect: false,
-						},
-						{
-							id: 1,
-							text: "Через коптильню",
-							isCorrect: false,
-						},
-						{
-							id: 2,
-							text: "Через плавильню ",
-							isCorrect: true,
-						},
-						{
-							id: 3,
-							text: "Через вогонь",
-							isCorrect: false,
-						},
+						{ id: 0, text: "Через піч", isCorrect: false },
+						{ id: 1, text: "Через коптильню", isCorrect: false },
+						{ id: 2, text: "Через плавильню ", isCorrect: true },
+						{ id: 3, text: "Через вогонь", isCorrect: false },
 					],
 				},
 				{
 					id: 6,
 					text: "Що пов'язує книгу та торт?",
 					options: [
-						{
-							id: 0,
-							text: "Книга крафтиться вже з рецептом торта",
-							isCorrect: false,
-						},
-						{
-							id: 1,
-							text: "Потрібна тростина для крафту",
-							isCorrect: true,
-						},
-						{
-							id: 2,
-							text: "Нічого",
-							isCorrect: false,
-						},
-						{
-							id: 3,
-							text: "Можна зловити вудкою",
-							isCorrect: false,
-						},
+						{ id: 0, text: "Книга крафтиться вже з рецептом торта", isCorrect: false },
+						{ id: 1, text: "Потрібна тростина для крафту", isCorrect: true },
+						{ id: 2, text: "Нічого", isCorrect: false },
+						{ id: 3, text: "Можна зловити вудкою", isCorrect: false },
 					],
 				},
 				{
 					id: 7,
 					text: "Головна валюта жителів?",
 					options: [
-						{
-							id: 0,
-							text: "Діаманти",
-							isCorrect: false,
-						},
-						{
-							id: 1,
-							text: "Незеритові злитки ",
-							isCorrect: false,
-						},
-						{
-							id: 2,
-							text: "Залізні злитки",
-							isCorrect: false,
-						},
-						{
-							id: 3,
-							text: "Смарагди",
-							isCorrect: true,
-						},
+						{ id: 0, text: "Діаманти", isCorrect: false },
+						{ id: 1, text: "Незеритові злитки ", isCorrect: false },
+						{ id: 2, text: "Залізні злитки", isCorrect: false },
+						{ id: 3, text: "Смарагди", isCorrect: true },
 					],
 				},
 				{
 					id: 8,
 					text: "Який ефект накладають підводні стражі?",
 					options: [
-						{
-							id: 0,
-							text: "Втома",
-							isCorrect: true,
-						},
-						{
-							id: 1,
-							text: "Запаморочення",
-							isCorrect: false,
-						},
-						{
-							id: 2,
-							text: "Темнота",
-							isCorrect: false,
-						},
-						{
-							id: 3,
-							text: "Отруєнні",
-							isCorrect: false,
-						},
+						{ id: 0, text: "Втома", isCorrect: true },
+						{ id: 1, text: "Запаморочення", isCorrect: false },
+						{ id: 2, text: "Темнота", isCorrect: false },
+						{ id: 3, text: "Отруєнні", isCorrect: false },
 					],
 				},
 				{
 					id: 9,
 					text: "Як можна позбавитися ефекту втоми?",
 					options: [
-						{
-							id: 0,
-							text: "Випити води ",
-							isCorrect: false,
-						},
-						{
-							id: 1,
-							text: "З'їсти зачароване яблуко",
-							isCorrect: false,
-						},
-						{
-							id: 2,
-							text: "Зламати блок",
-							isCorrect: false,
-						},
-						{
-							id: 3,
-							text: "Випити молока",
-							isCorrect: true,
-						},
+						{ id: 0, text: "Випити води ", isCorrect: false },
+						{ id: 1, text: "З'їсти зачароване яблуко", isCorrect: false },
+						{ id: 2, text: "Зламати блок", isCorrect: false },
+						{ id: 3, text: "Випити молока", isCorrect: true },
 					],
 				},
 				{
 					id: 10,
 					text: "Який моб найчастіше спавниться в біомі сакури? ",
 					options: [
-						{
-							id: 0,
-							text: "Кріпер",
-							isCorrect: true,
-						},
-						{
-							id: 1,
-							text: "Ендермен",
-							isCorrect: false,
-						},
-						{
-							id: 2,
-							text: "Зомбі",
-							isCorrect: false,
-						},
-						{
-							id: 3,
-							text: "Пігліни",
-							isCorrect: false,
-						},
+						{ id: 0, text: "Кріпер", isCorrect: true },
+						{ id: 1, text: "Ендермен", isCorrect: false },
+						{ id: 2, text: "Зомбі", isCorrect: false },
+						{ id: 3, text: "Пігліни", isCorrect: false },
 					],
 				},
 				{
 					id: 11,
 					text: "Де можна знайти стародавнє місто Вардена?",
 					options: [
-						{
-							id: 0,
-							text: "В незері під бастіоном ",
-							isCorrect: false,
-						},
-						{
-							id: 1,
-							text: 'Біом "Засніжені піки"',
-							isCorrect: true,
-						},
-						{
-							id: 2,
-							text: "В Краю",
-							isCorrect: false,
-						},
-						{
-							id: 3,
-							text: "На дні океану",
-							isCorrect: false,
-						},
+						{ id: 0, text: "В незері під бастіоном ", isCorrect: false },
+						{ id: 1, text: 'Біом "Засніжені піки"', isCorrect: true },
+						{ id: 2, text: "В Краю", isCorrect: false },
+						{ id: 3, text: "На дні океану", isCorrect: false },
 					],
 				},
 			],
 		},
 	],
-
-	// --- Секція результатів ---
 	results: [],
 };
