@@ -93,8 +93,9 @@ export const deleteQuiz = async ({ userId, id }) => {
 	permissionService.assertCanDeleteQuiz(quiz, userId);
 
 	await persistenceService.deleteQuizById(id);
+	await persistenceService.deleteResultsByQuizId(id);
 
 	sseEvents.emitDeleteQuizSSE(id);
 
-	return { message: "Quiz deleted successfully" };
+	return { message: "Quiz and associated results deleted successfully" };
 };

@@ -76,9 +76,25 @@ export async function deleteManyItems(datatype, startNum = 0, endNum = 0) {
 		let deleteResult;
 
 		if (datatype === "quizzes") {
+			const quizzesToDelete = await Quiz.find(
+				{
+					title: { $in: targetValues },
+					authorId: AUTHOR_ID,
+				},
+				"_id",
+			);
+
+			const quizIds = quizzesToDelete.map((q) => q._id);
+
+			const cascadedDelete = await Result.deleteMany({
+				quizId: { $in: quizIds },
+			});
+			console.log(
+				`Cascaded: Deleted ${cascadedDelete.deletedCount} results associated with these quizzes.`,
+			);
+
 			deleteResult = await Quiz.deleteMany({
-				title: { $in: targetValues },
-				authorId: AUTHOR_ID,
+				_id: { $in: quizIds },
 			});
 		} else if (datatype === "results") {
 			const quizzes = await Quiz.find({ title: { $in: targetValues } }, "_id");
@@ -91,6 +107,7 @@ export async function deleteManyItems(datatype, startNum = 0, endNum = 0) {
 		}
 
 		console.log(`Successfully deleted ${deleteResult.deletedCount} ${datatype}!`);
+
 		await mongoose.disconnect();
 		process.exit(0);
 	} catch (error) {
