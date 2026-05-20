@@ -4,11 +4,6 @@ const toPlainObject = (value) => {
 	return { ...value };
 };
 
-const normalizeDateValue = (value) => {
-	if (value instanceof Date) return value.toISOString();
-	return value;
-};
-
 const normalizeQuizIdValue = (value) => {
 	if (value == null) return null;
 	if (typeof value === "object" && value._id != null) {
