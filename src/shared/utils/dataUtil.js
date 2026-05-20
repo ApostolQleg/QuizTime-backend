@@ -40,7 +40,7 @@ export async function seedMany(datatype, startNum = 0, endNum = 0) {
 			const existingQuizzes = await Quiz.find({ title: { $in: targetValues } }, "_id title");
 
 			if (existingQuizzes.length === 0) {
-				console.log("⚠️ No matching quizzes found. Please seed quizzes first!");
+				console.log("No matching quizzes found. Please seed quizzes first!");
 				await mongoose.disconnect();
 				process.exit(1);
 			}
