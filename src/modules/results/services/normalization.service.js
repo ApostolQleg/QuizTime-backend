@@ -3,23 +3,21 @@ const toPlainObject = (value) => {
 	return typeof value.toObject === "function" ? value.toObject() : { ...value };
 };
 
-const normalizeId = (value) => {
-	if (value == null) return null;
-	return typeof value === "object" && value._id != null ? String(value._id) : String(value);
-};
-
 export const normalizeResultListItem = (result) => {
 	const data = toPlainObject(result);
 	if (!data) return null;
 
+	const isPopulated = data.quizId && typeof data.quizId === "object";
+	const quiz = isPopulated ? data.quizId : {};
+
 	return {
 		_id: data._id,
-		quizId: normalizeId(data.quizId),
-		quizTitle: data.quizTitle,
-		category: data.category,
-		tags: data.tags || [],
+		quizId: isPopulated ? String(quiz._id) : String(data.quizId),
+		quizTitle: quiz.title || data.quizTitle || "Untitled Quiz",
+		category: quiz.category || data.category || "Other",
+		tags: quiz.tags || data.tags || [],
 		summary: data.summary || {},
-		userId: normalizeId(data.userId),
+		userId: data.userId ? String(data.userId) : null,
 	};
 };
 
@@ -27,16 +25,19 @@ export const normalizeResultDetails = (result) => {
 	const data = toPlainObject(result);
 	if (!data) return null;
 
+	const isPopulated = data.quizId && typeof data.quizId === "object";
+	const quiz = isPopulated ? data.quizId : {};
+
 	return {
 		_id: data._id,
-		quizId: normalizeId(data.quizId),
-		quizTitle: data.quizTitle,
-		category: data.category,
-		tags: data.tags || [],
+		quizId: isPopulated ? String(quiz._id) : String(data.quizId),
+		quizTitle: quiz.title || data.quizTitle || "Untitled Quiz",
+		category: quiz.category || data.category || "Other",
+		tags: quiz.tags || data.tags || [],
 		summary: data.summary || {},
 		answers: data.answers || [],
-		questions: data.questions || [],
-		userId: normalizeId(data.userId),
+		questions: quiz.questions || data.questions || [],
+		userId: data.userId ? String(data.userId) : null,
 	};
 };
 
@@ -44,13 +45,9 @@ export const normalizeResultList = (results = []) => {
 	return results.map(normalizeResultListItem).filter(Boolean);
 };
 
-export const buildSaveResultPayload = ({ userId, quizId, quiz, answers, summary }) => ({
-	quizId: normalizeId(quizId),
-	quizTitle: quiz.title,
-	category: quiz.category,
-	tags: quiz.tags || [],
+export const buildSaveResultPayload = ({ userId, quizId, summary, answers }) => ({
+	quizId,
 	summary,
 	answers,
-	questions: quiz.questions,
 	userId,
 });
