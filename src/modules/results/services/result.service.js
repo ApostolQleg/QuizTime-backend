@@ -18,14 +18,7 @@ export const getAllResults = async ({ userId, limit, skip, search, sort }) => {
 	return { results: normalizationService.normalizeResultList(results) };
 };
 
-export const createResult = async ({
-	userId,
-	quizId,
-	category,
-	tags,
-	answers,
-	summary,
-}) => {
+export const createResult = async ({ userId, quizId, category, tags, answers, summary }) => {
 	permissionService.assertValidSavePayload({
 		userId,
 		quizId,
