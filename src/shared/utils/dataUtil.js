@@ -31,7 +31,6 @@ export async function seedMany(datatype, startNum = 0, endNum = 0) {
 						},
 					],
 					authorId: AUTHOR_ID,
-					createdAt: Date.now() + i,
 				});
 			} else if (datatype === "results") {
 				dataToInsert.push({
@@ -54,7 +53,6 @@ export async function seedMany(datatype, startNum = 0, endNum = 0) {
 						},
 					],
 					userId: AUTHOR_ID,
-					createdAt: Date.now() + i,
 				});
 			}
 		}
