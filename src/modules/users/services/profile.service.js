@@ -1,3 +1,4 @@
+import UserStats from "#src/modules/stats/userStats.model.js";
 import { InvalidUserPayloadError, UserNotFoundError } from "../errors/user.error.js";
 import * as userRepository from "../repositories/user.repository.js";
 
@@ -12,6 +13,8 @@ export const getCurrentUserProfile = async ({ userId }) => {
 		throw new UserNotFoundError();
 	}
 
+	const stats = await UserStats.findOne({ userId }, "quizzesPassedCount -_id").lean();
+
 	return {
 		user: {
 			_id: user._id,
@@ -21,6 +24,7 @@ export const getCurrentUserProfile = async ({ userId }) => {
 			themeColor: user.themeColor,
 			avatarType: user.avatarType,
 			googleId: user.googleId,
+			stats: stats || { quizzesPassedCount: 0 },
 		},
 	};
 };
