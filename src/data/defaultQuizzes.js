@@ -833,7 +833,7 @@ export const defaultQuizzes = {
 				},
 				{
 					id: 5,
-					text: "Яке значение є хибним (falsy)?",
+					text: "Яке значення є хибним (falsy)?",
 					options: [
 						{ text: "1", id: 0, isCorrect: false },
 						{ text: "'hello'", id: 1, isCorrect: false },
@@ -932,7 +932,7 @@ export const defaultQuizzes = {
 				},
 				{
 					id: 2,
-					text: "Що зберігає генетичную інформацію?",
+					text: "Що зберігає генетичну інформацію?",
 					options: [
 						{ text: "АТФ", id: 0, isCorrect: false },
 						{ text: "ДНК", id: 1, isCorrect: true },
@@ -1966,7 +1966,7 @@ export const defaultQuizzes = {
 						{ text: "Усі зароблені гроші", id: 0, isCorrect: false },
 						{ text: "Доходи мінус витрати і податки", id: 1, isCorrect: true },
 						{ text: "Гроші до сплати податків", id: 2, isCorrect: false },
-						{ text: "Зарплата персонала", id: 3, isCorrect: false },
+						{ text: "Зарплата персоналу", id: 3, isCorrect: false },
 					],
 				},
 				{
@@ -1997,7 +1997,7 @@ export const defaultQuizzes = {
 		},
 		// --- ТЕСТ 16: Розвиток мовлення ---
 		{
-			title: "Тест про розвиток мовлення ",
+			title: "Тест про розвиток мовлення",
 			description:
 				"Цей тест допоможе дізнатися про розвиток мовлення дитини, порушення мовлення а також про роботу логопеда 📖♥️",
 			category: "Other",
@@ -2010,7 +2010,7 @@ export const defaultQuizzes = {
 						{ id: 0, text: "Нічим, це синоніми", isCorrect: false },
 						{
 							id: 1,
-							text: "Агукання не є свідомим процесом, а лепет більш схожий на звуки рідної мови ",
+							text: "Агукання не є свідомим процесом, а лепет більш схожий на звуки рідної мови",
 							isCorrect: true,
 						},
 						{ id: 2, text: "Лепет передує агуканню", isCorrect: false },
@@ -2018,11 +2018,11 @@ export const defaultQuizzes = {
 				},
 				{
 					id: 1,
-					text: "За нормативними показниками в 1 рік дитина має говорити :",
+					text: "За нормативними показниками в 1 рік дитина має говорити:",
 					options: [
 						{ id: 0, text: "До 5 слів", isCorrect: false },
-						{ id: 1, text: "До 10 слів ", isCorrect: true },
-						{ id: 2, text: "До 15 слів ", isCorrect: false },
+						{ id: 1, text: "До 10 слів", isCorrect: true },
+						{ id: 2, text: "До 15 слів", isCorrect: false },
 					],
 				},
 				{
@@ -2032,7 +2032,7 @@ export const defaultQuizzes = {
 						{ id: 0, text: "Нічим, це міф", isCorrect: false },
 						{
 							id: 1,
-							text: "Дитина має більше спілкувалися з однолітками ",
+							text: "Дитина має більше спілкуватися з однолітками",
 							isCorrect: false,
 						},
 						{
@@ -2047,16 +2047,16 @@ export const defaultQuizzes = {
 					text: "В якому віці за нормативними показниками дитина має правильно вимовляти всі звуки рідної мови?",
 					options: [
 						{ id: 0, text: "У 4-5 років", isCorrect: true },
-						{ id: 1, text: "У 5-6 років ", isCorrect: false },
-						{ id: 2, text: "У 3-4 роки ", isCorrect: false },
+						{ id: 1, text: "У 5-6 років", isCorrect: false },
+						{ id: 2, text: "У 3-4 роки", isCorrect: false },
 					],
 				},
 				{
 					id: 4,
-					text: "Чи можуть виникнути мовленні порушення у дитини ще у переднатальному періоді ( внутрішньоутробному)?",
+					text: "Чи можуть виникнути мовленнєві порушення у дитини ще у пренатальному періоді (внутрішньоутробному)?",
 					options: [
 						{ id: 0, text: "Так", isCorrect: true },
-						{ id: 1, text: "Ні ", isCorrect: false },
+						{ id: 1, text: "Ні", isCorrect: false },
 						{ id: 2, text: "Категорично ні", isCorrect: false },
 					],
 				},
@@ -2065,19 +2065,19 @@ export const defaultQuizzes = {
 					text: "Дислексія - це",
 					options: [
 						{ id: 0, text: "Порушення письма", isCorrect: false },
-						{ id: 1, text: "Порушення темпу та ритму мовлення ", isCorrect: false },
-						{ id: 2, text: "Порушення читання ", isCorrect: true },
+						{ id: 1, text: "Порушення темпу та ритму мовлення", isCorrect: false },
+						{ id: 2, text: "Порушення читання", isCorrect: true },
 					],
 				},
 				{
 					id: 6,
 					text: "Найтиповіша ознака ринолалії:",
 					options: [
-						{ id: 0, text: "Пропускання шиплячих звуків у словах ", isCorrect: false },
-						{ id: 1, text: "Гугнявий відтінок голосу ", isCorrect: true },
+						{ id: 0, text: "Пропускання шиплячих звуків у словах", isCorrect: false },
+						{ id: 1, text: "Гугнявий відтінок голосу", isCorrect: true },
 						{
 							id: 2,
-							text: "Напруження м'язів язика та піднебіння під час розмови ",
+							text: "Напруження м'язів язика та піднебіння пiд час розмови",
 							isCorrect: false,
 						},
 					],
@@ -2086,10 +2086,10 @@ export const defaultQuizzes = {
 					id: 7,
 					text: "Логопедія - це",
 					options: [
-						{ id: 0, text: "Наука про мовлення ", isCorrect: false },
+						{ id: 0, text: "Наука про мовлення", isCorrect: false },
 						{
 							id: 1,
-							text: "Розділ мовознавства який вивчає мовлення ",
+							text: "Розділ мовознавства який вивчає мовлення",
 							isCorrect: false,
 						},
 						{
@@ -2104,17 +2104,17 @@ export const defaultQuizzes = {
 					text: "Комплексна оцінка розвитку дитини проводиться:",
 					options: [
 						{ id: 0, text: "В Інклюзивно ресурсних центрах", isCorrect: true },
-						{ id: 1, text: "В закладах освіти ", isCorrect: false },
-						{ id: 2, text: "Такого не існує ", isCorrect: false },
+						{ id: 1, text: "В закладах освіти", isCorrect: false },
+						{ id: 2, text: "Такого не існує", isCorrect: false },
 					],
 				},
 				{
 					id: 9,
 					text: "Онтогенез - це",
 					options: [
-						{ id: 0, text: "Індивідуальний розвиток ", isCorrect: true },
-						{ id: 1, text: "Загальний розвиток ", isCorrect: false },
-						{ id: 2, text: "Порушення розвитку ", isCorrect: false },
+						{ id: 0, text: "Індивідуальний розвиток", isCorrect: true },
+						{ id: 1, text: "Загальний розвиток", isCorrect: false },
+						{ id: 2, text: "Порушення розвитку", isCorrect: false },
 					],
 				},
 			],
@@ -2122,7 +2122,7 @@ export const defaultQuizzes = {
 		// --- ТЕСТ 17: Minecraft ---
 		{
 			title: "Minecraft test",
-			description: "Тест з гри Minecraft ",
+			description: "Тест з гри Minecraft",
 			category: "Gaming",
 			tags: ["Default", "Easy", "Fun", "Trivia"],
 			questions: [
@@ -2177,7 +2177,7 @@ export const defaultQuizzes = {
 					options: [
 						{ id: 0, text: "Через піч", isCorrect: false },
 						{ id: 1, text: "Через коптильню", isCorrect: false },
-						{ id: 2, text: "Через плавильню ", isCorrect: true },
+						{ id: 2, text: "Через плавильню", isCorrect: true },
 						{ id: 3, text: "Через вогонь", isCorrect: false },
 					],
 				},
@@ -2196,7 +2196,7 @@ export const defaultQuizzes = {
 					text: "Головна валюта жителів?",
 					options: [
 						{ id: 0, text: "Діаманти", isCorrect: false },
-						{ id: 1, text: "Незеритові злитки ", isCorrect: false },
+						{ id: 1, text: "Незеритові злитки", isCorrect: false },
 						{ id: 2, text: "Залізні злитки", isCorrect: false },
 						{ id: 3, text: "Смарагди", isCorrect: true },
 					],
@@ -2215,7 +2215,7 @@ export const defaultQuizzes = {
 					id: 9,
 					text: "Як можна позбавитися ефекту втоми?",
 					options: [
-						{ id: 0, text: "Випити води ", isCorrect: false },
+						{ id: 0, text: "Випити води", isCorrect: false },
 						{ id: 1, text: "З'їсти зачароване яблуко", isCorrect: false },
 						{ id: 2, text: "Зламати блок", isCorrect: false },
 						{ id: 3, text: "Випити молока", isCorrect: true },
@@ -2223,7 +2223,7 @@ export const defaultQuizzes = {
 				},
 				{
 					id: 10,
-					text: "Який моб найчастіше спавниться в біомі сакури? ",
+					text: "Який моб найчастіше спавниться в біомі сакури?",
 					options: [
 						{ id: 0, text: "Кріпер", isCorrect: true },
 						{ id: 1, text: "Ендермен", isCorrect: false },
@@ -2235,7 +2235,7 @@ export const defaultQuizzes = {
 					id: 11,
 					text: "Де можна знайти стародавнє місто Вардена?",
 					options: [
-						{ id: 0, text: "В незері під бастіоном ", isCorrect: false },
+						{ id: 0, text: "В незері під бастіоном", isCorrect: false },
 						{ id: 1, text: 'Біом "Засніжені піки"', isCorrect: true },
 						{ id: 2, text: "В Краю", isCorrect: false },
 						{ id: 3, text: "На дні океану", isCorrect: false },
