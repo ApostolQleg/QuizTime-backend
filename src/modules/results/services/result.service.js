@@ -5,9 +5,26 @@ import * as persistenceService from "./persistence.service.js";
 
 export const getAllResults = async ({ userId, limit, skip, search, sort }) => {
 	permissionService.assertUserId(userId);
+
 	const filterStages = filtersService.buildResultsFilter({ userId, search });
 	const sortStage = filtersService.buildResultsSort(sort);
-	const pipeline = [...filterStages, sortStage, { $skip: skip }, { $limit: limit }];
+
+	const pipeline = [
+		...filterStages,
+		sortStage,
+		{ $skip: skip },
+		{ $limit: limit },
+		{
+			$project: {
+				_id: 1,
+				quizId: 1,
+				summary: 1,
+				userId: 1,
+				quizInfo: 1,
+			},
+		},
+	];
+
 	const results = await persistenceService.findResultsByPipeline(pipeline);
 	return { results: normalizationService.normalizeResultList(results) };
 };

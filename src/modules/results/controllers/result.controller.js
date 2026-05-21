@@ -27,13 +27,11 @@ export const getResultById = async (request, reply) => {
 
 export const createResult = async (request, reply) => {
 	const userId = request.userId;
-	const { quizId, category, tags, answers, summary } = request.body;
+	const { quizId, answers, summary } = request.body;
 
 	const data = await resultService.createResult({
 		userId,
 		quizId,
-		category,
-		tags,
 		answers,
 		summary,
 	});

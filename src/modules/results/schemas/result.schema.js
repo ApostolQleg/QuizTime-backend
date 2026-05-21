@@ -24,8 +24,6 @@ const saveResultBodySchema = {
 	additionalProperties: false,
 	properties: {
 		quizId: { type: "string", minLength: 1, maxLength: 128 },
-		category: { type: "string", minLength: 1, maxLength: 30 },
-		tags: { type: "array", minItems: 1, items: { type: "string" } },
 		answers: { type: "array", minItems: 1 },
 		summary: {
 			type: "object",
