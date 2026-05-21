@@ -14,7 +14,16 @@ const attachAuthorToQuiz = (quiz, author) => {
 };
 
 export const getAllQuizzes = async ({ authorId, limit, skip, search, sort }) => {
-	const quizzes = await filterService.filter({ authorId, limit, skip, search, sort });
+	const filter = filterService.buildQuizzesFilter({ authorId, search });
+	const sortQuery = filterService.buildQuizzesSort(sort);
+
+	const quizzes = await persistenceService.findQuizzes({
+		filter,
+		sort: sortQuery,
+		skip,
+		limit,
+	});
+
 	return { quizzes: normalizationService.normalizeQuizList(quizzes) };
 };
 
@@ -83,9 +92,10 @@ export const deleteQuiz = async ({ userId, id }) => {
 	permissionService.assertQuizExists(quiz);
 	permissionService.assertCanDeleteQuiz(quiz, userId);
 
+	await persistenceService.deleteResultsByQuizId(id);
 	await persistenceService.deleteQuizById(id);
 
 	sseEvents.emitDeleteQuizSSE(id);
 
-	return { message: "Quiz deleted successfully" };
+	return { message: "Quiz and associated results deleted successfully" };
 };

@@ -14,6 +14,23 @@ export async function seedMany(datatype, startNum = 0, endNum = 0) {
 		const BATCH_SIZE = 100;
 		let totalInserted = 0;
 
+		if (datatype === "results") {
+			const targetValues = [];
+			for (let i = startNum; i <= endNum; i++) targetValues.push(String(i));
+
+			const matchingQuizzesCount = await Quiz.countDocuments({
+				title: { $in: targetValues },
+				authorId: AUTHOR_ID,
+			});
+			if (matchingQuizzesCount === 0) {
+				console.log(
+					"No matching quizzes found for your AUTHOR_ID. Please seed quizzes first!",
+				);
+				await mongoose.disconnect();
+				process.exit(1);
+			}
+		}
+
 		for await (const batch of generateDataInBatches(datatype, startNum, endNum, BATCH_SIZE)) {
 			if (datatype === "quizzes") {
 				await Quiz.insertMany(batch);
@@ -25,7 +42,7 @@ export async function seedMany(datatype, startNum = 0, endNum = 0) {
 			console.log(`Inserted ${totalInserted} ${datatype}`);
 		}
 
-		console.log(`\n${totalInserted} ${datatype} have been inserted!`);
+		console.log(`\n${totalInserted} ${datatype} have been inserted successfully!`);
 
 		await mongoose.disconnect();
 		process.exit(0);
@@ -37,18 +54,15 @@ export async function seedMany(datatype, startNum = 0, endNum = 0) {
 
 async function* generateDataInBatches(datatype, startNum = 0, endNum = 0, batchSize = 100) {
 	let batch = [];
-	for (let i = startNum; i <= endNum; i++) {
-		const num = String(i);
-		let item;
-		const newId = new mongoose.Types.ObjectId();
 
-		if (datatype === "quizzes") {
-			item = {
-				_id: newId,
+	if (datatype === "quizzes") {
+		for (let i = startNum; i <= endNum; i++) {
+			const num = String(i);
+			batch.push({
 				title: num,
 				description: `Generated quiz ${num}`,
-				category: `category ${num}`,
-				tags: ["Test", "Dev"],
+				category: "Other",
+				tags: ["Default", "Test"],
 				questions: [
 					{
 						id: 0,
@@ -60,45 +74,41 @@ async function* generateDataInBatches(datatype, startNum = 0, endNum = 0, batchS
 					},
 				],
 				authorId: AUTHOR_ID,
-				createdAt: Date.now() + i,
-			};
-		} else if (datatype === "results") {
-			item = {
-				quizId: newId,
-				quizTitle: num,
-				category: "Other",
-				tags: ["Test", "Dev"],
-				summary: {
-					score: 1,
-					correct: 1,
-					total: 1,
-				},
-				answers: [[0]],
-				questions: [
-					{
-						id: 0,
-						text: num,
-						options: [
-							{ id: 0, text: "Yes", isCorrect: true },
-							{ id: 1, text: "No", isCorrect: false },
-						],
-					},
-				],
-				userId: AUTHOR_ID,
-				createdAt: Date.now() + i,
-			};
-		} else {
-			console.log("Invalid action. Exiting.");
-			process.exit(1);
-		}
-		batch.push(item);
+			});
 
-		if (batch.length === batchSize && !batch.some((e) => e === undefined)) {
-			yield batch;
-			batch = [];
+			if (batch.length === batchSize) {
+				yield batch;
+				batch = [];
+			}
+		}
+	} else if (datatype === "results") {
+		const targetValues = [];
+		for (let i = startNum; i <= endNum; i++) targetValues.push(String(i));
+
+		const existingQuizzes = await Quiz.find(
+			{
+				title: { $in: targetValues },
+				authorId: AUTHOR_ID,
+			},
+			"_id",
+		);
+
+		for (const quiz of existingQuizzes) {
+			batch.push({
+				quizId: quiz._id,
+				summary: { score: 1, correct: 1, total: 1 },
+				answers: [[0]],
+				userId: AUTHOR_ID,
+			});
+
+			if (batch.length === batchSize) {
+				yield batch;
+				batch = [];
+			}
 		}
 	}
-	if (batch.length > 0 && !batch.some((e) => e === undefined)) {
+
+	if (batch.length > 0) {
 		yield batch;
 	}
 }
@@ -109,20 +119,43 @@ export async function deleteManyItems(datatype, startNum = 0, endNum = 0) {
 		console.log("Connected to MongoDB for targeted deletion...");
 
 		const targetValues = [];
-		for (let i = startNum; i <= endNum; i++) {
-			targetValues.push(String(i));
-		}
+		for (let i = startNum; i <= endNum; i++) targetValues.push(String(i));
 
 		let deleteResult;
 
 		if (datatype === "quizzes") {
+			const quizzesToDelete = await Quiz.find(
+				{
+					title: { $in: targetValues },
+					authorId: AUTHOR_ID,
+				},
+				"_id",
+			);
+
+			const quizIds = quizzesToDelete.map((q) => q._id);
+
+			const cascadedDelete = await Result.deleteMany({
+				quizId: { $in: quizIds },
+			});
+			console.log(
+				`Cascaded: Deleted ${cascadedDelete.deletedCount} results associated with these quizzes.`,
+			);
+
 			deleteResult = await Quiz.deleteMany({
-				title: { $in: targetValues },
-				authorId: AUTHOR_ID,
+				_id: { $in: quizIds },
 			});
 		} else if (datatype === "results") {
+			const quizzes = await Quiz.find(
+				{
+					title: { $in: targetValues },
+					authorId: AUTHOR_ID,
+				},
+				"_id",
+			);
+			const quizIds = quizzes.map((q) => q._id);
+
 			deleteResult = await Result.deleteMany({
-				quizTitle: { $in: targetValues },
+				quizId: { $in: quizIds },
 				userId: AUTHOR_ID,
 			});
 		}
@@ -137,10 +170,7 @@ export async function deleteManyItems(datatype, startNum = 0, endNum = 0) {
 	}
 }
 
-const rl = readline.createInterface({
-	input: process.stdin,
-	output: process.stdout,
-});
+const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
 const action = await rl.question("Choose action - Seed or Delete? (Enter 's' or 'd'): ");
 if (action !== "s" && action !== "d") {

@@ -1,3 +1,4 @@
+import { Result } from "#src/modules/results/index.js";
 import * as quizRepository from "../repositories/quiz.repository.js";
 import * as userRepository from "../repositories/user.repository.js";
 
@@ -19,6 +20,10 @@ export const updateQuizById = async (id, updates) => {
 
 export const deleteQuizById = async (id) => {
 	return quizRepository.deleteQuizById(id);
+};
+
+export const deleteResultsByQuizId = async (quizId) => {
+	return Result.deleteMany({ quizId });
 };
 
 export const findAuthorById = async (userId) => {

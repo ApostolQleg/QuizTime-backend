@@ -1,62 +1,64 @@
 import mongoose from "mongoose";
 
-const normalizeId = (value) => {
-	if (value == null) return null;
-	if (typeof value === "object" && value._id != null) {
-		return String(value._id);
-	}
-	return String(value);
+const toPlainObject = (value) => {
+	if (!value) return null;
+	return typeof value.toObject === "function" ? value.toObject() : { ...value };
 };
 
-const toAuthorDto = (author) => {
-	if (author == null) {
-		return { authorId: null };
+const normalizeId = (value) => {
+	if (value == null) return null;
+	return typeof value === "object" && value._id != null ? String(value._id) : String(value);
+};
+
+const flattenAuthor = (authorValue) => {
+	if (authorValue == null) return { authorId: null };
+
+	if (typeof authorValue === "string" || authorValue instanceof mongoose.Types.ObjectId) {
+		return { authorId: authorValue.toString() };
 	}
 
-	if (typeof author === "string" || author instanceof mongoose.Types.ObjectId) {
-		return { authorId: author.toString() };
-	}
-
-	if (typeof author === "object") {
-		const authorDto = {
+	if (typeof authorValue === "object") {
+		const author = toPlainObject(authorValue);
+		return {
 			authorId: normalizeId(author),
+			...(author.nickname !== undefined && { authorName: author.nickname }),
+			...(author.avatarUrl !== undefined && { authorAvatarUrl: author.avatarUrl }),
+			...(author.avatarType !== undefined && { authorAvatarType: author.avatarType }),
+			...(author.themeColor !== undefined && { authorThemeColor: author.themeColor }),
 		};
-
-		if (author.nickname !== undefined) authorDto.authorName = author.nickname;
-		if (author.avatarUrl !== undefined) authorDto.authorAvatarUrl = author.avatarUrl;
-		if (author.avatarType !== undefined) authorDto.authorAvatarType = author.avatarType;
-		if (author.themeColor !== undefined) authorDto.authorThemeColor = author.themeColor;
-
-		return authorDto;
 	}
 
-	return { authorId: String(author) };
+	return { authorId: String(authorValue) };
 };
 
 export const normalizeQuizListItem = (quiz) => {
-	if (!quiz) return null;
+	const data = toPlainObject(quiz);
+	if (!data) return null;
 
-	const quizData = typeof quiz.toObject === "function" ? quiz.toObject() : quiz;
-	const authorValue = quizData.authorId;
-	let authorId = null;
-	let authorName = null;
-
-	if (typeof authorValue === "string" || authorValue instanceof mongoose.Types.ObjectId) {
-		authorId = authorValue.toString();
-	} else if (authorValue && typeof authorValue === "object") {
-		authorId = authorValue._id ?? authorValue.id ?? null;
-		authorId = authorId == null ? null : String(authorId);
-		authorName = authorValue.nickname ?? null;
-	}
+	const authorData = flattenAuthor(data.authorId);
 
 	return {
-		_id: quizData._id,
-		title: quizData.title,
-		category: quizData.category,
-		tags: quizData.tags || [],
-		questionsCount: Array.isArray(quizData.questions) ? quizData.questions.length : 0,
-		authorId,
-		authorName,
+		_id: data._id,
+		title: data.title,
+		category: data.category,
+		tags: data.tags || [],
+		questionsCount: Array.isArray(data.questions) ? data.questions.length : 0,
+		authorId: authorData.authorId,
+		authorName: authorData.authorName || null,
+	};
+};
+
+export const normalizeQuizDetails = (quiz) => {
+	const data = toPlainObject(quiz);
+	if (!data) return null;
+
+	const quizDto = { ...data };
+	delete quizDto.id;
+	delete quizDto.authorId;
+
+	return {
+		...quizDto,
+		...flattenAuthor(data.authorId),
 	};
 };
 
@@ -64,38 +66,21 @@ export const normalizeQuizList = (quizzes = []) => {
 	return quizzes.map(normalizeQuizListItem).filter(Boolean);
 };
 
-export const normalizeQuizDetails = (quiz) => {
-	if (!quiz) return null;
-
-	const quizData = typeof quiz.toObject === "function" ? quiz.toObject() : quiz;
-	const quizDto = { ...quizData };
-	delete quizDto.id;
-
-	return {
-		...quizDto,
-		...toAuthorDto(quizData.authorId),
-	};
-};
-
-export const buildCreatePayload = ({ title, category, tags, description, questions, userId }) => {
-	return {
-		title: title?.trim(),
-		category: category?.trim(),
-		tags: tags || [],
-		description: description?.trim() || "",
-		questions,
-		authorId: userId,
-	};
-};
+export const buildCreatePayload = ({ title, category, tags, description, questions, userId }) => ({
+	title: title?.trim(),
+	category: category?.trim(),
+	tags: tags || [],
+	description: description?.trim() || "",
+	questions,
+	authorId: userId,
+});
 
 export const buildQuizUpdates = ({ title, category, tags, description, questions }) => {
 	const updates = {};
-
 	if (typeof title === "string" && title.trim()) updates.title = title.trim();
 	if (typeof category === "string" && category.trim()) updates.category = category.trim();
 	if (Array.isArray(tags)) updates.tags = tags;
 	if (typeof description === "string") updates.description = description.trim();
 	if (questions !== undefined) updates.questions = questions;
-
 	return updates;
 };

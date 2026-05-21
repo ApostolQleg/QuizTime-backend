@@ -6,32 +6,37 @@ import * as persistenceService from "./persistence.service.js";
 export const getAllResults = async ({ userId, limit, skip, search, sort }) => {
 	permissionService.assertUserId(userId);
 
-	const filter = filtersService.buildResultsFilter({ userId, search });
-	const sortQuery = filtersService.buildResultsSort(sort);
-	const results = await persistenceService.findResults({
-		filter,
-		sort: sortQuery,
-		skip,
-		limit,
-	});
+	const deferLookup = !search && sort !== "az" && sort !== "za";
+	const filterStages = filtersService.buildResultsFilter({ userId, search, deferLookup });
+	const sortStage = filtersService.buildResultsSort(sort);
 
+	const lateLookupStages = deferLookup ? filtersService.getResultsLookupStages() : [];
+
+	const pipeline = [
+		...filterStages,
+		sortStage,
+		{ $skip: skip },
+		{ $limit: limit },
+		...lateLookupStages,
+		{
+			$project: {
+				_id: 1,
+				quizId: 1,
+				summary: 1,
+				userId: 1,
+				quizInfo: 1,
+			},
+		},
+	];
+
+	const results = await persistenceService.findResultsByPipeline(pipeline);
 	return { results: normalizationService.normalizeResultList(results) };
 };
 
-export const createResult = async ({
-	userId,
-	quizId,
-	category,
-	tags,
-	answers,
-	summary,
-	createdAt,
-}) => {
+export const createResult = async ({ userId, quizId, answers, summary }) => {
 	permissionService.assertValidSavePayload({
 		userId,
 		quizId,
-		category,
-		tags,
 		answers,
 		summary,
 	});
@@ -42,12 +47,8 @@ export const createResult = async ({
 	const payload = normalizationService.buildSaveResultPayload({
 		userId,
 		quizId,
-		quiz,
-		category,
-		tags,
 		answers,
 		summary,
-		createdAt,
 	});
 
 	const result = await persistenceService.createResult(payload);

@@ -1,43 +1,49 @@
 const toPlainObject = (value) => {
 	if (!value) return null;
-	if (typeof value.toObject === "function") return value.toObject();
-	return { ...value };
-};
-
-const normalizeDateValue = (value) => {
-	if (value instanceof Date) return value.toISOString();
-	return value;
-};
-
-const normalizeQuizIdValue = (value) => {
-	if (value == null) return null;
-	if (typeof value === "object" && value._id != null) {
-		return String(value._id);
-	}
-	return String(value);
-};
-
-export const normalizeCreatedAt = (createdAt) => {
-	if (createdAt == null) return undefined;
-	if (createdAt instanceof Date) return createdAt;
-
-	if (typeof createdAt === "string" && /^\d+$/.test(createdAt)) {
-		return new Date(Number(createdAt));
-	}
-
-	return new Date(createdAt);
+	return typeof value.toObject === "function" ? value.toObject() : { ...value };
 };
 
 export const normalizeResultListItem = (result) => {
-	const resultData = toPlainObject(result);
-	if (!resultData) return null;
-	const resultDto = { ...resultData };
-	delete resultDto.id;
+	const data = toPlainObject(result);
+	if (!data) return null;
+
+	const quiz =
+		data.quizInfo ||
+		(data.quizId && typeof data.quizId === "object" && data.quizId._id != null
+			? data.quizId
+			: null);
 
 	return {
-		...resultDto,
-		quizId: normalizeQuizIdValue(resultData.quizId),
-		createdAt: normalizeDateValue(resultData.createdAt),
+		_id: data._id,
+		quizId: quiz ? String(quiz._id) : data.quizId ? String(data.quizId) : null,
+		quizTitle: quiz?.title || data.quizTitle || "Untitled Quiz",
+		category: quiz?.category || data.category || "Other",
+		tags: quiz?.tags || data.tags || [],
+		summary: data.summary || {},
+		userId: data.userId ? String(data.userId) : null,
+	};
+};
+
+export const normalizeResultDetails = (result) => {
+	const data = toPlainObject(result);
+	if (!data) return null;
+
+	const quiz =
+		data.quizInfo ||
+		(data.quizId && typeof data.quizId === "object" && data.quizId._id != null
+			? data.quizId
+			: null);
+
+	return {
+		_id: data._id,
+		quizId: quiz ? String(quiz._id) : data.quizId ? String(data.quizId) : null,
+		quizTitle: quiz?.title || data.quizTitle || "Untitled Quiz",
+		category: quiz?.category || data.category || "Other",
+		tags: quiz?.tags || data.tags || [],
+		summary: data.summary || {},
+		answers: data.answers || [],
+		questions: quiz?.questions || data.questions || [],
+		userId: data.userId ? String(data.userId) : null,
 	};
 };
 
@@ -45,31 +51,9 @@ export const normalizeResultList = (results = []) => {
 	return results.map(normalizeResultListItem).filter(Boolean);
 };
 
-export const normalizeResultDetails = (result) => {
-	const resultData = toPlainObject(result);
-	if (!resultData) return null;
-	const resultDto = { ...resultData };
-	delete resultDto.id;
-
-	return {
-		...resultDto,
-		quizId: normalizeQuizIdValue(resultData.quizId),
-		createdAt: normalizeDateValue(resultData.createdAt),
-	};
-};
-
-export const buildSaveResultPayload = ({ userId, quizId, quiz, answers, summary, createdAt }) => {
-	const normalizedCreatedAt = normalizeCreatedAt(createdAt);
-
-	return {
-		quizId: normalizeQuizIdValue(quizId),
-		quizTitle: quiz.title,
-		...(normalizedCreatedAt ? { createdAt: normalizedCreatedAt } : {}),
-		category: quiz.category,
-		tags: quiz.tags || [],
-		summary,
-		answers,
-		questions: quiz.questions,
-		userId,
-	};
-};
+export const buildSaveResultPayload = ({ userId, quizId, summary, answers }) => ({
+	quizId,
+	summary,
+	answers,
+	userId,
+});

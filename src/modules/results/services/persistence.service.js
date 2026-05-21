@@ -16,3 +16,7 @@ export const createResult = async (payload) => {
 export const findQuizById = async (quizId) => {
 	return quizRepository.findById(quizId);
 };
+
+export const findResultsByPipeline = async (pipeline) => {
+	return resultRepository.findResultsByPipeline(pipeline);
+};

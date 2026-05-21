@@ -23,16 +23,8 @@ const saveResultBodySchema = {
 	required: ["quizId", "answers", "summary"],
 	additionalProperties: false,
 	properties: {
-		quizId: { type: "string", minLength: 1, maxLength: 128 },
-		category: { type: "string", minLength: 1, maxLength: 30 },
-		tags: { type: "array", minItems: 1, items: { type: "string" } },
+		quizId: { type: "string", pattern: "^[a-fA-F0-9]{24}$" },
 		answers: { type: "array", minItems: 1 },
-		createdAt: {
-			anyOf: [
-				{ type: "string", format: "date-time" },
-				{ type: "integer", minimum: 0 },
-			],
-		},
 		summary: {
 			type: "object",
 			required: ["score", "correct", "total"],
