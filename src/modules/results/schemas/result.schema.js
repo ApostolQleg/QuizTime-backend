@@ -23,7 +23,7 @@ const saveResultBodySchema = {
 	required: ["quizId", "answers", "summary"],
 	additionalProperties: false,
 	properties: {
-		quizId: { type: "string", minLength: 1, maxLength: 128 },
+		quizId: { type: "string", pattern: "^[a-fA-F0-9]{24}$" },
 		answers: { type: "array", minItems: 1 },
 		summary: {
 			type: "object",

@@ -1,14 +1,17 @@
 import Result from "../result.model.js";
 
 export const findResultById = async (id) => {
-	return Result.findById(id).populate("quizId").lean();
+	return Result.findById(id).populate("quizId", "title category tags questions").lean();
 };
 
 export const createResult = async (payload) => {
 	const result = new Result(payload);
 	await result.save();
 
-	return await result.populate("quizId");
+	return await result.populate({
+		path: "quizId",
+		select: "title category tags questions",
+	});
 };
 
 export const findResults = async ({ limit, skip, filter, sort }) => {
@@ -18,7 +21,7 @@ export const findResults = async ({ limit, skip, filter, sort }) => {
 		.limit(limit)
 		.populate({
 			path: "quizId",
-			select: "-questions",
+			select: "title category tags",
 		})
 		.lean();
 };
