@@ -22,3 +22,7 @@ export const findResults = async ({ limit, skip, filter, sort }) => {
 		})
 		.lean();
 };
+
+export const findResultsByPipeline = async (pipeline) => {
+	return Result.aggregate(pipeline);
+};

@@ -5,25 +5,17 @@ import * as persistenceService from "./persistence.service.js";
 
 export const getAllResults = async ({ userId, limit, skip, search, sort }) => {
 	permissionService.assertUserId(userId);
-
-	const filter = filtersService.buildResultsFilter({ userId, search });
-	const sortQuery = filtersService.buildResultsSort(sort);
-	const results = await persistenceService.findResults({
-		filter,
-		sort: sortQuery,
-		skip,
-		limit,
-	});
-
+	const filterStages = filtersService.buildResultsFilter({ userId, search });
+	const sortStage = filtersService.buildResultsSort(sort);
+	const pipeline = [...filterStages, sortStage, { $skip: skip }, { $limit: limit }];
+	const results = await persistenceService.findResultsByPipeline(pipeline);
 	return { results: normalizationService.normalizeResultList(results) };
 };
 
-export const createResult = async ({ userId, quizId, category, tags, answers, summary }) => {
+export const createResult = async ({ userId, quizId, answers, summary }) => {
 	permissionService.assertValidSavePayload({
 		userId,
 		quizId,
-		category,
-		tags,
 		answers,
 		summary,
 	});
@@ -34,9 +26,6 @@ export const createResult = async ({ userId, quizId, category, tags, answers, su
 	const payload = normalizationService.buildSaveResultPayload({
 		userId,
 		quizId,
-		quiz,
-		category,
-		tags,
 		answers,
 		summary,
 	});

@@ -8,7 +8,7 @@ export const normalizeResultListItem = (result) => {
 	if (!data) return null;
 
 	const isPopulated = data.quizId && typeof data.quizId === "object";
-	const quiz = isPopulated ? data.quizId : {};
+	const quiz = data.quizInfo || (typeof data.quizId === "object" ? data.quizId : {});
 
 	return {
 		_id: data._id,

@@ -1,17 +1,37 @@
+import mongoose from "mongoose";
+
 export const buildResultsFilter = ({ userId, search = "" }) => {
-	const filter = { userId };
+	const pipeline = [
+		{ $match: { userId: new mongoose.Types.ObjectId(userId) } },
+		{
+			$lookup: {
+				from: "quizzes",
+				localField: "quizId",
+				foreignField: "_id",
+				as: "quizInfo",
+			},
+		},
+		{
+			$unwind: { path: "$quizInfo", preserveNullAndEmptyArrays: true },
+		},
+	];
 
 	if (search) {
 		const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-		filter.quizTitle = { $regex: escapedSearch, $options: "i" };
+		pipeline.push({
+			$match: {
+				"quizInfo.title": { $regex: escapedSearch, $options: "i" },
+			},
+		});
 	}
 
-	return filter;
+	return pipeline;
 };
 
 export const buildResultsSort = (sort = "newest") => {
-	if (sort === "oldest") return { _id: 1 };
-	if (sort === "az") return { quizTitle: 1, _id: -1 };
-	if (sort === "za") return { quizTitle: -1, _id: -1 };
-	return { _id: -1 };
+	let sortOrder = { _id: -1 };
+	if (sort === "oldest") sortOrder = { _id: 1 };
+	if (sort === "az") sortOrder = { "quizInfo.title": 1, _id: -1 };
+	if (sort === "za") sortOrder = { "quizInfo.title": -1, _id: -1 };
+	return { $sort: sortOrder };
 };
