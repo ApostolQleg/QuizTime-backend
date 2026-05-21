@@ -6,14 +6,18 @@ import * as persistenceService from "./persistence.service.js";
 export const getAllResults = async ({ userId, limit, skip, search, sort }) => {
 	permissionService.assertUserId(userId);
 
-	const filterStages = filtersService.buildResultsFilter({ userId, search });
+	const deferLookup = !search && sort !== "az" && sort !== "za";
+	const filterStages = filtersService.buildResultsFilter({ userId, search, deferLookup });
 	const sortStage = filtersService.buildResultsSort(sort);
+
+	const lateLookupStages = deferLookup ? filtersService.getResultsLookupStages() : [];
 
 	const pipeline = [
 		...filterStages,
 		sortStage,
 		{ $skip: skip },
 		{ $limit: limit },
+		...lateLookupStages,
 		{
 			$project: {
 				_id: 1,
