@@ -20,9 +20,12 @@ export async function seedMany(datatype, startNum = 0, endNum = 0) {
 
 			const matchingQuizzesCount = await Quiz.countDocuments({
 				title: { $in: targetValues },
+				authorId: AUTHOR_ID,
 			});
 			if (matchingQuizzesCount === 0) {
-				console.log("No matching quizzes found. Please seed quizzes first!");
+				console.log(
+					"No matching quizzes found for your AUTHOR_ID. Please seed quizzes first!",
+				);
 				await mongoose.disconnect();
 				process.exit(1);
 			}
@@ -51,8 +54,6 @@ export async function seedMany(datatype, startNum = 0, endNum = 0) {
 
 async function* generateDataInBatches(datatype, startNum = 0, endNum = 0, batchSize = 100) {
 	let batch = [];
-	const targetValues = [];
-	for (let i = startNum; i <= endNum; i++) targetValues.push(String(i));
 
 	if (datatype === "quizzes") {
 		for (let i = startNum; i <= endNum; i++) {
@@ -81,7 +82,16 @@ async function* generateDataInBatches(datatype, startNum = 0, endNum = 0, batchS
 			}
 		}
 	} else if (datatype === "results") {
-		const existingQuizzes = await Quiz.find({ title: { $in: targetValues } }, "_id");
+		const targetValues = [];
+		for (let i = startNum; i <= endNum; i++) targetValues.push(String(i));
+
+		const existingQuizzes = await Quiz.find(
+			{
+				title: { $in: targetValues },
+				authorId: AUTHOR_ID,
+			},
+			"_id",
+		);
 
 		for (const quiz of existingQuizzes) {
 			batch.push({
@@ -135,7 +145,13 @@ export async function deleteManyItems(datatype, startNum = 0, endNum = 0) {
 				_id: { $in: quizIds },
 			});
 		} else if (datatype === "results") {
-			const quizzes = await Quiz.find({ title: { $in: targetValues } }, "_id");
+			const quizzes = await Quiz.find(
+				{
+					title: { $in: targetValues },
+					authorId: AUTHOR_ID,
+				},
+				"_id",
+			);
 			const quizIds = quizzes.map((q) => q._id);
 
 			deleteResult = await Result.deleteMany({
