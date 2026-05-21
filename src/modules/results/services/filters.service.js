@@ -6,8 +6,11 @@ export const buildResultsFilter = ({ userId, search = "" }) => {
 		{
 			$lookup: {
 				from: "quizzes",
-				localField: "quizId",
-				foreignField: "_id",
+				let: { currentQuizId: "$quizId" },
+				pipeline: [
+					{ $match: { $expr: { $eq: ["$_id", "$$currentQuizId"] } } },
+					{ $project: { title: 1, category: 1, tags: 1 } },
+				],
 				as: "quizInfo",
 			},
 		},
