@@ -28,7 +28,11 @@ await app.register(cors, {
 	credentials: true,
 });
 
-await app.register(rateLimit, { global: false });
+await app.register(rateLimit, {
+	global: true,
+	max: 120,
+	timeWindow: "1 minute",
+});
 await app.register(errorHandlerPlugin);
 
 app.register(async (instance) => {

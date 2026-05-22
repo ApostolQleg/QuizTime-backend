@@ -5,7 +5,19 @@ import { resultByIdSchema, resultsSchema, saveResultSchema } from "./schemas/res
 export default async function resultRoutes(fastify) {
 	fastify.addHook("preHandler", checkAuth);
 
-	fastify.get("/", { schema: resultsSchema }, resultController.getAllResults);
-	fastify.get("/:id", { schema: resultByIdSchema }, resultController.getResultById);
-	fastify.post("/", { schema: saveResultSchema }, resultController.createResult);
+	fastify.get(
+		"/",
+		{ schema: resultsSchema, config: { rateLimit: { max: 60, timeWindow: "1 minute" } } },
+		resultController.getAllResults,
+	);
+	fastify.get(
+		"/:id",
+		{ schema: resultByIdSchema, config: { rateLimit: { max: 60, timeWindow: "1 minute" } } },
+		resultController.getResultById,
+	);
+	fastify.post(
+		"/",
+		{ schema: saveResultSchema, config: { rateLimit: { max: 25, timeWindow: "1 minute" } } },
+		resultController.createResult,
+	);
 }
