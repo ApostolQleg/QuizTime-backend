@@ -6,7 +6,7 @@ import {
 	quizByIdSchema,
 	quizzesSchema,
 	updateQuizSchema,
-} from "./schemas/quiz.js";
+} from "./schemas/quiz.shema.js";
 
 export default async function quizRoutes(fastify) {
 	fastify.get("/", { schema: quizzesSchema }, quizController.getAllQuizzes);

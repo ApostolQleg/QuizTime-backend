@@ -8,7 +8,7 @@ import {
 	QuizAuthorNotFoundError,
 	QuizNotFoundError,
 	QuizQuestionsRequiredError,
-} from "../errors/quiz.js";
+} from "../errors/quiz.error.js";
 
 export const assertValidCreatePayload = ({ title, tags, description, questions }) => {
 	if (!title?.trim() || !description?.trim() || !Array.isArray(tags) || tags.length === 0) {

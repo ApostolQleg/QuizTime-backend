@@ -1,3 +1,9 @@
+const REGEX = {
+	SAFE_STRING: "^[^\\x00-\\x1F\\x7F\\u0300-\\u036F]+$",
+	NICKNAME: "^[a-zA-Zа-яА-ЯіІїЇєЄґҐ0-9_\\-\\s]+$",
+	SYSTEM_NAME: "^[a-zA-Z0-9#_\\-]+$",
+};
+
 export const userByIdParamsSchema = {
 	type: "object",
 	required: ["id"],
@@ -10,12 +16,25 @@ export const userByIdParamsSchema = {
 export const updateProfileBodySchema = {
 	type: "object",
 	additionalProperties: false,
+	minProperties: 1,
 	properties: {
-		nickname: { type: "string", minLength: 2, maxLength: 64 },
-		themeColor: { type: "string", maxLength: 32 },
-		avatarType: { type: "string", maxLength: 32 },
+		nickname: {
+			type: "string",
+			minLength: 2,
+			maxLength: 64,
+			pattern: REGEX.NICKNAME,
+		},
+		themeColor: {
+			type: "string",
+			maxLength: 32,
+			pattern: REGEX.SYSTEM_NAME,
+		},
+		avatarType: {
+			type: "string",
+			maxLength: 32,
+			pattern: REGEX.SYSTEM_NAME,
+		},
 	},
-	anyOf: [{ required: ["nickname"] }, { required: ["themeColor"] }, { required: ["avatarType"] }],
 };
 
 export const changePasswordBodySchema = {
@@ -23,8 +42,18 @@ export const changePasswordBodySchema = {
 	required: ["currentPassword", "newPassword"],
 	additionalProperties: false,
 	properties: {
-		currentPassword: { type: "string", minLength: 1, maxLength: 128 },
-		newPassword: { type: "string", minLength: 6, maxLength: 128 },
+		currentPassword: {
+			type: "string",
+			minLength: 1,
+			maxLength: 128,
+			pattern: REGEX.SAFE_STRING,
+		},
+		newPassword: {
+			type: "string",
+			minLength: 6,
+			maxLength: 128,
+			pattern: REGEX.SAFE_STRING,
+		},
 	},
 };
 

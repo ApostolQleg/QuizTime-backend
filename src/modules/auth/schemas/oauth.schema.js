@@ -3,7 +3,7 @@ const tokenBody = {
 	required: ["token"],
 	additionalProperties: false,
 	properties: {
-		token: { type: "string", minLength: 16 },
+		token: { type: "string", minLength: 16, maxLength: 4096 },
 	},
 };
 
