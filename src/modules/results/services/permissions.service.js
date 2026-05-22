@@ -34,6 +34,56 @@ export const assertQuizExists = (quiz) => {
 	}
 };
 
+export const assertAnswersMatchQuiz = ({ quiz, answers, summary }) => {
+	if (!Array.isArray(quiz.questions) || quiz.questions.length === 0) {
+		throw new ResultValidationError("Quiz has no questions");
+	}
+
+	if (answers.length !== quiz.questions.length) {
+		throw new ResultValidationError("Answers count must match quiz questions count");
+	}
+
+	if (summary?.total !== quiz.questions.length) {
+		throw new ResultValidationError("Summary total must match quiz questions count");
+	}
+
+	for (const [questionIndex, selectedOptionIds] of answers.entries()) {
+		if (!Array.isArray(selectedOptionIds)) {
+			throw new ResultValidationError(
+				`Answers for question ${questionIndex} must be an array`,
+			);
+		}
+
+		const question = quiz.questions[questionIndex];
+		const optionIds = new Set((question?.options || []).map((option) => option?.id));
+
+		if (optionIds.size === 0) {
+			throw new ResultValidationError(`Quiz question ${questionIndex} has no options`);
+		}
+
+		if (selectedOptionIds.length > optionIds.size) {
+			throw new ResultValidationError(
+				`Too many selected answers for question ${questionIndex}`,
+			);
+		}
+
+		const uniqueSelected = new Set(selectedOptionIds);
+		if (uniqueSelected.size !== selectedOptionIds.length) {
+			throw new ResultValidationError(
+				`Duplicate selected answers for question ${questionIndex}`,
+			);
+		}
+
+		for (const selectedOptionId of selectedOptionIds) {
+			if (!optionIds.has(selectedOptionId)) {
+				throw new ResultValidationError(
+					`Invalid selected option for question ${questionIndex}`,
+				);
+			}
+		}
+	}
+};
+
 export const assertResultExists = (result) => {
 	if (!result) {
 		throw new ResultNotFoundError();

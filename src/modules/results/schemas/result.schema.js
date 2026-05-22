@@ -33,10 +33,10 @@ const saveResultBodySchema = {
 		answers: {
 			type: "array",
 			minItems: 1,
-			maxItems: 100,
+			maxItems: 1000,
 			items: {
 				type: "array",
-				maxItems: 10,
+				maxItems: 1000,
 				items: { type: "integer", minimum: 0, maximum: 1000 },
 			},
 		},

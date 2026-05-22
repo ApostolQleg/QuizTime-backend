@@ -43,6 +43,7 @@ export const createResult = async ({ userId, quizId, answers, summary }) => {
 
 	const quiz = await persistenceService.findQuizById(quizId);
 	permissionService.assertQuizExists(quiz);
+	permissionService.assertAnswersMatchQuiz({ quiz, answers, summary });
 
 	const payload = normalizationService.buildSaveResultPayload({
 		userId,
