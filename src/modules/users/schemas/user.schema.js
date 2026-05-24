@@ -27,12 +27,10 @@ export const updateProfileBodySchema = {
 		themeColor: {
 			type: "string",
 			maxLength: 32,
-			pattern: REGEX.SYSTEM_NAME,
 		},
 		avatarType: {
 			type: "string",
 			maxLength: 32,
-			pattern: REGEX.SYSTEM_NAME,
 		},
 	},
 };
