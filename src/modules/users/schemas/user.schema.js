@@ -1,6 +1,6 @@
 const REGEX = {
 	SAFE_STRING: "^[^\\x00-\\x1F\\x7F\\u0300-\\u036F]+$",
-	NICKNAME: "^[a-zA-Zа-яА-ЯіІїЇєЄґҐ0-9_\\-\\s]+$",
+	NICKNAME: "^[a-zA-Zа-яА-ЯіІїЇєЄґҐ0-9_\s#.-]+$",
 	SYSTEM_NAME: "^[a-zA-Z0-9#_\\-]+$",
 };
 
