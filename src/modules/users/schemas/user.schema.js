@@ -1,7 +1,8 @@
 const REGEX = {
 	SAFE_STRING: "^[^\\x00-\\x1F\\x7F\\u0300-\\u036F]+$",
-	NICKNAME: "^[a-zA-Zа-яА-ЯіІїЇєЄґҐ0-9_\s#.-]+$",
+	NICKNAME: "^[a-zA-Zа-яА-ЯіІїЇєЄґҐ0-9_\\s#.\\-]+$",
 	SYSTEM_NAME: "^[a-zA-Z0-9#_\\-]+$",
+	COLOR: "^(hsl|hsla|rgb|rgba)\\([0-9.,\\s%]+\\)||^#[0-9a-fA-F]{3,8}$",
 };
 
 export const userByIdParamsSchema = {
@@ -27,10 +28,11 @@ export const updateProfileBodySchema = {
 		themeColor: {
 			type: "string",
 			maxLength: 32,
+			pattern: REGEX.COLOR,
 		},
 		avatarType: {
 			type: "string",
-			maxLength: 32,
+			enum: ["google", "generated"],
 		},
 	},
 };
@@ -60,5 +62,8 @@ export const updateProfileSchema = { body: updateProfileBodySchema };
 export const changePasswordSchema = { body: changePasswordBodySchema };
 
 export const getNicknameSuggestionsSchema = {
-	querystring: { type: "object", additionalProperties: false },
+	querystring: {
+		type: "object",
+		additionalProperties: false,
+	},
 };
