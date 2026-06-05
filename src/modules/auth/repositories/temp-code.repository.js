@@ -8,7 +8,7 @@ export const upsertTempCodeByEmail = async (email, code) => {
 	return TempCode.findOneAndUpdate(
 		{ email },
 		{ code, createdAt: new Date() },
-		{ upsert: true, new: true, setDefaultsOnInsert: true },
+		{ upsert: true, returnDocument: "after", setDefaultsOnInsert: true },
 	);
 };
 
