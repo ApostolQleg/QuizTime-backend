@@ -26,10 +26,7 @@ export const registerSchema = {
 				pattern: REGEX.JWT_TOKEN,
 			},
 		},
-		oneOf: [
-			{ required: ["password", "code"] },
-			{ required: ["googleToken"] },
-		],
+		oneOf: [{ required: ["password", "code"] }, { required: ["googleToken"] }],
 	},
 };
 
