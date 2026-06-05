@@ -12,7 +12,7 @@ const authFields = {
 export const registerSchema = {
 	body: {
 		type: "object",
-		required: ["email", "password"],
+		required: ["email"],
 		additionalProperties: false,
 		properties: {
 			email: authFields.email,
@@ -26,7 +26,10 @@ export const registerSchema = {
 				pattern: REGEX.JWT_TOKEN,
 			},
 		},
-		oneOf: [{ required: ["code"] }, { required: ["googleToken"] }],
+		oneOf: [
+			{ required: ["password", "code"] },
+			{ required: ["googleToken"] },
+		],
 	},
 };
 
