@@ -1,4 +1,4 @@
-import { idParamsSchema, REGEX } from "#/shared/schemas/common.schema.js";
+import { idParamsSchema, REGEX } from "#src/shared/schemas/common.schema.js";
 
 export const updateProfileBodySchema = {
 	type: "object",

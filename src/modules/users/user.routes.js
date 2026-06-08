@@ -1,4 +1,4 @@
-import { checkAuth } from "#src/shared/middleware/checkAuth.js";
+import { checkAuth } from "#src/shared/schemas/common.schema.js";
 import * as userController from "./controllers/user.controller.js";
 import {
 	changePasswordSchema,

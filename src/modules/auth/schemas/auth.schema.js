@@ -1,4 +1,4 @@
-import { emailSchema, oauthTokenSchema, REGEX } from "#/shared/schemas/common.schema.js";
+import { emailSchema, oauthTokenSchema, REGEX } from "#src/shared/schemas/common.schema.js";
 
 const authFields = {
 	email: emailSchema,

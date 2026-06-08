@@ -3,7 +3,7 @@ import {
 	idParamsSchema,
 	objectIdSchema,
 	REGEX,
-} from "#/shared/schemas/common.schema.js";
+} from "#src/shared/schemas/common.schema.js";
 
 const quizzesQuerySchema = {
 	type: "object",
