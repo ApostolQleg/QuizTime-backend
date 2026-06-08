@@ -1,26 +1,10 @@
-const SAFE_TEXT_PATTERN = "^[^\\x00-\\x1F\\x7F\\u0300-\\u036F]+$";
-
-const resultIdParams = {
-	type: "object",
-	required: ["id"],
-	additionalProperties: false,
-	properties: {
-		id: { type: "string", pattern: "^[a-fA-F0-9]{24}$" },
-	},
-};
+import { baseListQueryProperties, idParamsSchema, objectIdSchema } from "./common.schema.js";
 
 const resultsQuerySchema = {
 	type: "object",
 	additionalProperties: false,
 	properties: {
-		limit: { type: "integer", minimum: 1, maximum: 100 },
-		skip: { type: "integer", minimum: 0, maximum: 10000 },
-		search: {
-			type: "string",
-			maxLength: 120,
-			pattern: SAFE_TEXT_PATTERN,
-		},
-		sort: { type: "string", enum: ["newest", "oldest", "az", "za"] },
+		...baseListQueryProperties,
 	},
 };
 
@@ -29,7 +13,7 @@ const saveResultBodySchema = {
 	required: ["quizId", "answers", "summary"],
 	additionalProperties: false,
 	properties: {
-		quizId: { type: "string", pattern: "^[a-fA-F0-9]{24}$" },
+		quizId: objectIdSchema,
 		answers: {
 			type: "array",
 			minItems: 1,
@@ -54,5 +38,5 @@ const saveResultBodySchema = {
 };
 
 export const resultsSchema = { querystring: resultsQuerySchema };
-export const resultByIdSchema = { params: resultIdParams };
+export const resultByIdSchema = { params: idParamsSchema };
 export const saveResultSchema = { body: saveResultBodySchema };

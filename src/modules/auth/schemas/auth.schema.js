@@ -1,12 +1,8 @@
-const REGEX = {
-	SAFE_STRING: "^[^\\x00-\\x1F\\x7F\\u0300-\\u036F]+$",
-	STRICT_CODE: "^[a-zA-Z0-9]+$",
-	JWT_TOKEN: "^[a-zA-Z0-9\\-_\\.]+$",
-};
+import { emailSchema, oauthTokenSchema, REGEX } from "./common.schema.js";
 
 const authFields = {
-	email: { type: "string", format: "email", maxLength: 254 },
-	password: { type: "string", minLength: 6, maxLength: 128, pattern: REGEX.SAFE_STRING },
+	email: emailSchema,
+	password: { type: "string", minLength: 6, maxLength: 128, pattern: REGEX.UNIVERSAL_TEXT },
 };
 
 export const registerSchema = {
@@ -17,12 +13,10 @@ export const registerSchema = {
 		properties: {
 			email: authFields.email,
 			password: authFields.password,
-			avatarUrl: { type: "string", maxLength: 512, pattern: REGEX.SAFE_STRING },
+			avatarUrl: { type: "string", maxLength: 512, pattern: REGEX.UNIVERSAL_TEXT },
 			code: { type: "string", minLength: 6, maxLength: 6, pattern: REGEX.STRICT_CODE },
 			googleToken: {
-				type: "string",
-				minLength: 16,
-				maxLength: 4096,
+				...oauthTokenSchema,
 				pattern: REGEX.JWT_TOKEN,
 			},
 		},
@@ -37,7 +31,12 @@ export const loginSchema = {
 		additionalProperties: false,
 		properties: {
 			email: authFields.email,
-			password: { type: "string", minLength: 1, maxLength: 128, pattern: REGEX.SAFE_STRING },
+			password: {
+				type: "string",
+				minLength: 1,
+				maxLength: 128,
+				pattern: REGEX.UNIVERSAL_TEXT,
+			},
 		},
 	},
 };

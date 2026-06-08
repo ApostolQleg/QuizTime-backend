@@ -1,20 +1,14 @@
+import { oauthTokenSchema } from "./common.schema.js";
+
 const tokenBody = {
 	type: "object",
 	required: ["token"],
 	additionalProperties: false,
 	properties: {
-		token: { type: "string", minLength: 16, maxLength: 4096 },
+		token: oauthTokenSchema,
 	},
 };
 
-export const googleAuthSchema = {
-	body: tokenBody,
-};
-
-export const googleExtractSchema = {
-	body: tokenBody,
-};
-
-export const linkGoogleSchema = {
-	body: tokenBody,
-};
+export const googleAuthSchema = { body: tokenBody };
+export const googleExtractSchema = { body: tokenBody };
+export const linkGoogleSchema = { body: tokenBody };

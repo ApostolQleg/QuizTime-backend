@@ -1,18 +1,4 @@
-const REGEX = {
-	SAFE_STRING: "^[^\\x00-\\x1F\\x7F\\u0300-\\u036F]+$",
-	NICKNAME: "^[a-zA-Zа-яА-ЯіІїЇєЄґҐ0-9_\\s#.\\-]+$",
-	SYSTEM_NAME: "^[a-zA-Z0-9#_\\-]+$",
-	COLOR: "^(hsl|hsla|rgb|rgba)\\([0-9.,\\s%]+\\)||^#[0-9a-fA-F]{3,8}$",
-};
-
-export const userByIdParamsSchema = {
-	type: "object",
-	required: ["id"],
-	additionalProperties: false,
-	properties: {
-		id: { type: "string", pattern: "^[a-fA-F0-9]{24}$" },
-	},
-};
+import { idParamsSchema, REGEX } from "./common.schema.js";
 
 export const updateProfileBodySchema = {
 	type: "object",
@@ -23,7 +9,7 @@ export const updateProfileBodySchema = {
 			type: "string",
 			minLength: 2,
 			maxLength: 64,
-			pattern: REGEX.NICKNAME,
+			pattern: REGEX.UNIVERSAL_TEXT,
 		},
 		themeColor: {
 			type: "string",
@@ -46,18 +32,18 @@ export const changePasswordBodySchema = {
 			type: "string",
 			minLength: 1,
 			maxLength: 128,
-			pattern: REGEX.SAFE_STRING,
+			pattern: REGEX.UNIVERSAL_TEXT,
 		},
 		newPassword: {
 			type: "string",
 			minLength: 6,
 			maxLength: 128,
-			pattern: REGEX.SAFE_STRING,
+			pattern: REGEX.UNIVERSAL_TEXT,
 		},
 	},
 };
 
-export const getCurrentUserSchema = { params: userByIdParamsSchema };
+export const getCurrentUserSchema = { params: idParamsSchema };
 export const updateProfileSchema = { body: updateProfileBodySchema };
 export const changePasswordSchema = { body: changePasswordBodySchema };
 
