@@ -1,4 +1,9 @@
-import { baseListQueryProperties, idParamsSchema, objectIdSchema, REGEX } from "./common.schema.js";
+import {
+	baseListQueryProperties,
+	idParamsSchema,
+	objectIdSchema,
+	REGEX,
+} from "#/shared/schemas/common.schema.js";
 
 const quizzesQuerySchema = {
 	type: "object",

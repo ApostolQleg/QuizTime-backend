@@ -1,4 +1,8 @@
-import { baseListQueryProperties, idParamsSchema, objectIdSchema } from "./common.schema.js";
+import {
+	baseListQueryProperties,
+	idParamsSchema,
+	objectIdSchema,
+} from "#/shared/schemas/common.schema.js";
 
 const resultsQuerySchema = {
 	type: "object",
