@@ -10,7 +10,7 @@
 		"test": "bun --test",
 		"test:watch": "bun --test --watch",
 		"start": "bun src/app/server.js",
-		"lint": "biome lint",
+		"lint": "bunx biome check --write",
 		"seed": "bun src/shared/utils/dataUtil.js"
 	},
 	"keywords": [],
