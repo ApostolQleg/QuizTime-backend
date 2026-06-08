@@ -1,4 +1,4 @@
-import { oauthTokenSchema } from "#/shared/schemas/common.schema.js";
+import { oauthTokenSchema } from "#src/shared/schemas/common.schema.js";
 
 const tokenBody = {
 	type: "object",
