@@ -1,6 +1,6 @@
 export const REGEX = {
 	OBJECT_ID: "^[a-fA-F0-9]{24}$",
-	UNIVERSAL_TEXT: "^[^\\x00-\\x1F\\x7F-\\x9F]+$",
+	UNIVERSAL_TEXT: "^(?!.*[\\u0300-\\u036f]{3,})[^\\x00-\\x1F\\x7F-\\x9F]+$",
 	SYSTEM_NAME: "^[a-zA-Z0-9#_\\-]+$",
 	COLOR: "^(?:(hsl|hsla|rgb|rgba)\\([0-9.,\\s%]+\\)|#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8}))$",
 	STRICT_CODE: "^[a-zA-Z0-9]+$",
