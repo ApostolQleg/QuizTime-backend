@@ -1,4 +1,4 @@
-import { User } from "#src/modules/users/index.js";
+import { User } from "#src/modules/user/index.js";
 
 export const findUserByEmail = async (email) => {
 	return User.findOne({ email });

@@ -1,4 +1,4 @@
-import { Result } from "#src/modules/results/index.js";
+import { Result } from "#src/modules/result/index.js";
 import * as quizRepository from "../repositories/quiz.repository.js";
 import * as userRepository from "../repositories/user.repository.js";
 

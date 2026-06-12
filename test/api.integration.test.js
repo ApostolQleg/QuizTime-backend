@@ -23,9 +23,9 @@ before(async () => {
 	process.env.NODE_ENV = "test";
 
 	const appModule = await import("#src/app/app.js");
-	const usersModule = await import("#src/modules/users/index.js");
-	const quizzesModule = await import("#src/modules/quizzes/index.js");
-	const resultsModule = await import("#src/modules/results/index.js");
+	const usersModule = await import("#src/modules/user/index.js");
+	const quizzesModule = await import("#src/modules/quiz/index.js");
+	const resultsModule = await import("#src/modules/result/index.js");
 
 	app = appModule.app;
 	User = usersModule.User;
